@@ -1,2 +1,20 @@
+@font-face{
+    font-family: kablammo;
+    src: url("../src/assets/font/Kablammo-Regular-VariableFont_MORF.ttf")
+}
+
+@font-face{
+    font-family: elite;
+    src: url("../src/assets/font/SpecialElite-Regular.ttf")
+}
+
 @import "tailwindcss";
+
+@theme{
+    --font-kablammo: kablammo, 'sans-serif';
+    --font-elite: elite, 'sans-serif';
+    --color-gold: #D4AF37;
+    --color-darkgold: #FFD700;
+    --color-wood: #4B2E2B;
+}
 
