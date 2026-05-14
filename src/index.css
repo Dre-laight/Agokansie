@@ -16,5 +16,49 @@
     --color-gold: #D4AF37;
     --color-darkgold: #FFD700;
     --color-wood: #4B2E2B;
+    --animate-next: nextArrow 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    --animate-previous: previousArrow 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    --animate-float: float 1.5s infinite ease-in-out;
 }
 
+
+@keyframes nextArrow {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: translateX(20px);
+    opacity: 1;
+  }
+}
+
+@keyframes previousArrow {
+    0%, 
+    100% {
+        transform: translateX(0);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translateX(-20px);
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  25% {
+    transform: translateY(-12px);
+  }
+
+  75% {
+    transform: translateY(4px);
+  }
+}
