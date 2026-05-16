@@ -37,13 +37,37 @@
                 audio.play()
         }
 
+        const startGame = async () => {
+                try {
+                    const response = await fetch('http://192.168.88.29:5000/game-type', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': "application/json",
+                    },
+                    body: JSON.stringify(
+                            { game_choice: games[current].name}
+                        )
+
+                })
+
+                const data = await response.json()
+                console.log(data)
+
+
+                } catch (error) {
+                    console.log(error)
+                }
+                
+            console.log(games[current].name)
+        }
+
 
         return (
             <PageWrapper>
                 <div className="relative flex h-screen w-full items-center justify-center overflow-x-hidden">
 
                     {/* background image */}
-                         <img src={games[current].backgroundImage} alt="background image" className="absolute object-cover w-full h-full blur-[3px]"/>   
+                         <img src={games[current].backgroundImage} alt="background image" className="absolute object-cover w-full h-full"/>   
                    
 
                     <div className="flex flex-col gap-15 justify-center items-center z-10 h-screen">
@@ -54,8 +78,6 @@
 
                         <div className="w-screen flex justify-between items-center z-10 ">
                                 
-
-
                             {/* previous toggle */}
                             <ChevronLeft className='size-30 text-gold cursor-pointer ml-3 animate-previous' onClick={previousGame} strokeWidth={1}/>
 
@@ -80,18 +102,14 @@
 
                         </div>
 
-
                         {/* selection buttons */}
                         <div className="flex items-center justify-center gap-8 ">
-                            <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-2xl transition-smooth duration-300" >Play</button>
+                            <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-2xl transition-smooth duration-300" onClick={startGame} >Play</button>
 
                             <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-2xl transition-smooth duration-300">Tutorial</button>
                         </div>
                         
-                    </div>
-
-
-                    
+                    </div>   
                 </div>
 
             </PageWrapper>
