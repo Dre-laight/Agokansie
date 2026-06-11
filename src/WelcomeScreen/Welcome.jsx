@@ -1,4 +1,4 @@
-import React from 'react'
+import { useRef } from 'react'
 import bg from '../assets/background.png'
 import {motion} from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
@@ -8,10 +8,11 @@ import woodTapSound from '../assets/sound/woodTap.mp3'
 function WelcomeScreen(){
     const navigate = useNavigate()
 
-    const woodTap = new Audio(woodTapSound)
+    const woodTap = useRef(new Audio(woodTapSound))
 
     const playSound = () => {
-        woodTap.play()
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
 
     }
 
@@ -25,6 +26,7 @@ function WelcomeScreen(){
     }
 
     return(
+
         <PageWrapper>
             <div className='relative flex h-screen w-full items-center justify-center overflow-x-hidden'>
                 <img 

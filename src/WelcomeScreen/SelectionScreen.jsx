@@ -1,43 +1,44 @@
-    import React from "react";
     import PageWrapper from "./PageWrapper";
+    import GameScreen from "../PlayGame/startGame";
+    
 
-    import dameBg from '../assets/checkersBg.png'
-    import owareBg from '../assets/owareBg.png'
-    import achiBg from '../assets/achiBg.png'
-    import bg2 from '../assets/bg_selection.png'
-
-    import { useState, useRef} from 'react'
-    import { getAnimatableNone } from "framer-motion";
+    import { useState, useRef, useContext} from 'react'
     import { ChevronRight, ChevronLeft } from 'lucide-react'
+    import { GameContext } from "../context/GameContext";
 
     import swipeSound from '../assets/sound/uiSwipeSound.mp3'
+    import woodTapSound from '../assets/sound/woodTap.mp3'
+    import { useNavigate } from "react-router-dom";
 
 
 
     function SelectionScreen() {
-        const games = [
-            {key: 0, name: 'Oware',  backgroundImage: owareBg,},
-            {key: 1, name: 'Dame', backgroundImage: dameBg,  },
-            {key: 2, name: 'Achi',   backgroundImage: achiBg,  }
-        ]
-
-        const [current, setCurrent] = useState(0)
-        const audio = new Audio(swipeSound)
+       
+        const {games, currentGame, setCurrentGame} = useContext(GameContext)
+        const swipeAudio = useRef(new Audio(swipeSound))
 
     
         const nextGame = () => {
-            setCurrent((previous) => (previous + 1) % games.length)
-            audio.play()
+            setCurrentGame((previous) => (previous + 1) % games.length)
+            swipeAudio.current.currentTime = 0
+            swipeAudio.current.play()
     
         }
 
         const previousGame = () => {
-            setCurrent( (previous) => 
+            setCurrentGame( (previous) => 
                 previous === 0 ? games.length - 1 : previous - 1)
-                audio.play()
+                swipeAudio.current.currentTime = 0  
+                swipeAudio.current.play()
         }
 
-        const startGame = async () => {
+        const navigate = useNavigate()
+        const woodTap = useRef(new Audio(woodTapSound))
+
+
+        const startGame = () => {
+
+            async function sendPostRequest(){
                 try {
                     const response = await fetch('http://192.168.88.29:5000/game-type', {
                     method: 'POST',
@@ -45,21 +46,24 @@
                         'Content-Type': "application/json",
                     },
                     body: JSON.stringify(
-                            { game_choice: games[current].name}
+                            { game_choice: games[currentGame].name}
                         )
 
                 })
 
-                const data = await response.json()
-                console.log(data)
-
-
                 } catch (error) {
                     console.log(error)
                 }
+            }
+                sendPostRequest()
+
+                navigate('/gameScreen')
+
+                woodTap.current.currentTime = 0
+                woodTap.current.play()  
                 
-            console.log(games[current].name)
         }
+
 
 
         return (
@@ -67,7 +71,7 @@
                 <div className="relative flex h-screen w-full items-center justify-center overflow-x-hidden">
 
                     {/* background image */}
-                         <img src={games[current].backgroundImage} alt="background image" className="absolute object-cover w-full h-full"/>   
+                         <img src={games[currentGame].backgroundImage} alt="background image" className="absolute object-cover w-full h-full"/>   
                    
 
                     <div className="flex flex-col gap-15 justify-center items-center z-10 h-screen">
@@ -85,7 +89,7 @@
                             {/* Game text*/}
                                 <p className="uppercase font-kablammo font-bold text-darkgold text-9xl select-none">
                                 {
-                                    games[current].name.split("").map((letter, index) => (
+                                    games[currentGame].name.split("").map((letter, index) => (
                                         <span
                                             key={index}
                                             className="animate-float inline-block"

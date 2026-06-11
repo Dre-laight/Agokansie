@@ -1,0 +1,114 @@
+import { useContext } from 'react'
+import PageWrapper from '../WelcomeScreen/PageWrapper'
+import { GameContext } from '../context/GameContext'
+import thinking_image  from '../assets/black_man_thinking.webp'
+import bg from '../assets/background-collage.png'
+
+
+function GameScreen(){
+    const {games, currentGame} = useContext(GameContext)
+
+    const thinking = "..."
+
+    return(
+        <PageWrapper >
+            
+            <div className='absolute inset-0 bg-gradient-to-r from-[#3b1f0f]/80 via-[#8b5a2b]/70 to-[#d4a017]/80 -z-1 min-h-screen flex flex-col items-center justify-center'>
+                <img src={bg} alt="background image" className="absolute object-cover w-full h-full -z-1 opacity-[0.3]"/>   
+</div>
+
+        <div className='flex flex-col h-screen w-full'>
+
+       
+            <div className='flex flex-row items-start gap-4 p-6 shrink-0' >
+                
+                <img src={thinking_image} className='h-40'/>
+
+                <div>
+                    <div>
+                        <p className='text-4xl text-white'>
+                            {
+                                thinking.split("").map((dot, index) => (
+                                    <span
+                                        key={index}
+                                        style={{animationDelay: `${index * 0.2}s`}}
+                                        className='inline-block animate-float'
+                                    >{dot}
+                                    </span>
+                                ))
+                            }
+                        </p>
+                    </div>
+                            
+                    <div className='relative w-[50%] shadow-lg rounded-lg p-3 text-[17px] backdrop-blur-md text-white'>
+                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque, quae sit sint culpa rerum possimus magni? Dolorum vero dolores, facere qui porro facilis?</p>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <div class="flex-1 flex items-center justify-center">
+
+                <div class="flex flex-col items-center">
+
+                    <div class="w-67 h-22 bg-[#6b3f1d] border-4 border-b-0 border-[#4a2a12] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
+                        <div class="w-65 h-17 bg-[#5c3317] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4"></div>
+                    </div>
+
+                    <div class="bg-[#8b5a2b] p-6 border-x-4 border-[#5a3418] shadow-2xl rounded-4xl">
+
+                    <div class="flex gap-4 mb-5">
+
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-2">
+                        
+                        </div>
+
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-2">
+                        
+                        </div>
+
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner"></div>
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner"></div>
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner"></div>
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner"></div>
+
+                    </div>
+
+                    <div class="flex gap-4">
+
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner"></div>
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner"></div>
+
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-2">
+                        
+                        </div>
+
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-2">
+                        
+                        </div>
+
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner"></div>
+                        <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner"></div>
+
+                    </div>
+
+                    </div>
+
+                    <div class="w-67 h-22 bg-[#6b3f1d] border-4 border-t-0 border-[#4a2a12] rounded-b-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
+                        <div class="w-65 h-17 bg-[#5c3317] rounded-b-[3rem] flex items-center justify-center gap-3 p-4">
+
+                    </div>
+                    </div>
+
+            </div>
+
+        </div>
+             </div>
+            
+        </PageWrapper>
+        
+    )   
+}
+
+export default GameScreen
