@@ -26,7 +26,6 @@ function WelcomeScreen(){
     }
 
     return(
-
         <PageWrapper>
             <div className='relative flex h-screen w-full items-center justify-center overflow-x-hidden'>
                 <img 

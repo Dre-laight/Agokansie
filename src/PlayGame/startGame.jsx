@@ -1,13 +1,17 @@
-import { useContext, useState, useRef, useEffect } from 'react'
+import { useContext, useState, useRef, useEffect, use } from 'react'
 import PageWrapper from '../WelcomeScreen/PageWrapper'
 import { GameContext } from '../context/GameContext'
 import thinking_image  from '../assets/black_man_thinking.webp'
 import bg from '../assets/background-collage.png'
 import woodTapSound from '../assets/sound/woodTap.mp3'
+import { ArrowRight, ArrowLeft } from 'lucide-react'
+import { useNavigate } from "react-router-dom";
 
 
 function GameScreen(){
     const {games, currentGame} = useContext(GameContext)
+
+    const navigate = useNavigate()
 
     const thinking = "..."
 
@@ -81,7 +85,19 @@ function GameScreen(){
 
         woodTap.current.currentTime = 0
         woodTap.current.play()
-    }   
+    }  
+    
+    const goBack = () => {
+            navigate(-1)
+            woodTap.current.currentTime = 0
+            woodTap.current.play()
+        }
+
+        const goForward = () => {
+            navigate(1)
+            woodTap.current.currentTime = 0
+            woodTap.current.play()
+        }
 
     return(
         <PageWrapper >
@@ -91,6 +107,11 @@ function GameScreen(){
         </div>
 
         <div className='flex flex-col h-screen w-full'>
+
+            <div className="absolute top-0 right-0 flex items-center gap-4 z-50 backdrop-blur p-3 rounded-lg">
+                <ArrowLeft className=' left-3 size-8 cursor-pointer text-wood ' onClick={goBack} />
+                <ArrowRight className=' size-8 text-gold-300 cursor-pointer text-wood' onClick={goForward} />
+            </div>
 
        
             <div className='flex flex-row items-start gap-4 p-6 shrink-0' >
@@ -166,6 +187,8 @@ function GameScreen(){
                     </div>
 
                     <button onClick={getBoardState} className='absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-[19px] transition-smooth duration-300'>I've played</button>
+
+
 
             </div>
 

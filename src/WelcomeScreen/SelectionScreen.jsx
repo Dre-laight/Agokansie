@@ -3,7 +3,7 @@ import GameScreen from "../PlayGame/startGame";
 
 
 import { useState, useRef, useContext} from 'react'
-import { ChevronRight, ChevronLeft } from 'lucide-react'
+import { ChevronRight, ChevronLeft, ArrowLeft, ArrowRight } from 'lucide-react'
 import { GameContext } from "../context/GameContext";
 
 import swipeSound from '../assets/sound/uiSwipeSound.mp3'
@@ -18,6 +18,8 @@ import { motion } from 'framer-motion'
        
         const {games, currentGame, setCurrentGame} = useContext(GameContext)
         const swipeAudio = useRef(new Audio(swipeSound))
+        const navigate = useNavigate()
+
 
     
         const nextGame = () => {
@@ -45,7 +47,6 @@ import { motion } from 'framer-motion'
             }
         }
 
-        const navigate = useNavigate()
         const woodTap = useRef(new Audio(woodTapSound))
 
 
@@ -79,6 +80,18 @@ import { motion } from 'framer-motion'
                 
         }
 
+        const goBack = () => {
+            navigate(-1)
+            woodTap.current.currentTime = 0
+            woodTap.current.play()
+        }
+
+        const goForward = () => {
+            navigate(1)
+            woodTap.current.currentTime = 0
+            woodTap.current.play()
+        }
+
 
 
         return (
@@ -89,13 +102,15 @@ import { motion } from 'framer-motion'
 
                     {/* background image */}
                          <img src={games[currentGame].backgroundImage} alt="background image" className="absolute object-cover w-full h-full"/>   
-                   
+                         
+                            {/* back buttons */}
+                    <div className="absolute top-0 left-0 flex items-center gap-4 z-50 backdrop-blur p-3 rounded-lg">
+                         <ArrowLeft className=' left-3 size-8 cursor-pointer text-gold ' onClick={goBack} />
+                        <ArrowRight className=' size-8 text-gold-300 cursor-pointer text-gold ' onClick={goForward} />
+                    </div>
+                       
 
                     <div className="flex flex-col gap-15 justify-center items-center z-10 h-screen">
-                        {/* <div className="mb-20">
-                            <p className="uppercase font-elite font-bold text-white text-7xl select-none">what do you want to play?</p>
-
-                        </div> */}
 
                         <div className="w-screen flex justify-between items-center z-10 ">
                                 
@@ -124,7 +139,7 @@ import { motion } from 'framer-motion'
                         </div>
 
                         {/* selection buttons */}
-                        <div className="flex items-center justify-center gap-8 ">
+                        <div className="flex items-center justify-center gap-8 select-none">
                             <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-2xl transition-smooth duration-300" onClick={startGame} >Play</button>
 
                             <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-2xl transition-smooth duration-300">Tutorial</button>
