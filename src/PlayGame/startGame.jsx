@@ -1,8 +1,9 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useRef, useEffect } from 'react'
 import PageWrapper from '../WelcomeScreen/PageWrapper'
 import { GameContext } from '../context/GameContext'
 import thinking_image  from '../assets/black_man_thinking.webp'
 import bg from '../assets/background-collage.png'
+import woodTapSound from '../assets/sound/woodTap.mp3'
 
 
 function GameScreen(){
@@ -13,6 +14,11 @@ function GameScreen(){
     const [beadCount, setBeadCount] = useState(4)
 
     const [leftOverBeads, setLeftOverBeads] = useState(0)
+
+    const [boardValueList, setBoardValueList] = useState([])
+
+
+    const woodTap = useRef(new Audio(woodTapSound))
 
     const OutOfPlay = ({leftOverBeads}) => {
         return(
@@ -33,7 +39,7 @@ function GameScreen(){
     const Pit = ({beadCount}) => {
         return(
             <>
-                 <div class="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-4">
+                 <div className="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-4">
                     <div className='grid grid-cols gap-1 justify-items-center items-center'></div>                        
                     {Array.from( {length: beadCount }).map((_, index) =>(
                         <div key={index}
@@ -46,6 +52,36 @@ function GameScreen(){
         )
     }
 
+    const getRequest = async () => {
+            try {
+                const response = await fetch('http://192.168.88.40:5000/api/game/state')
+
+                if(!response.ok){
+                    throw new Error('Request failed')
+                }
+
+                const BoardData = await response.json()
+                setBoardValueList(BoardData.board)
+                console.log(BoardData.board)
+            }
+
+            catch (error) {
+                console.log(error.message)
+            }
+
+               
+        }
+
+    useEffect(() => {
+        getRequest()
+    }, [])
+
+    const getBoardState = () => {
+        getRequest()
+
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
+    }   
 
     return(
         <PageWrapper >
@@ -85,54 +121,56 @@ function GameScreen(){
                 
             </div>
 
-            <div class="flex-1 flex items-center justify-center">
+            <div className="flex-1 flex items-center justify-center">
 
-                <div class="flex flex-col items-center">
+                <div className="flex flex-col items-center">
 
-                    <div class="w-67 h-22 bg-[#6b3f1d] border-4 border-b-0 border-[#4a2a12] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                        <div class="w-65 h-17 bg-[#5c3317] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                            <OutOfPlay leftOverBeads={7}/>
+                    <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-b-0 border-[#4a2a12] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
+                        <div className="w-65 h-17 bg-[#5c3317] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
+                            <OutOfPlay leftOverBeads={boardValueList[12]}/>
                         </div>
                     </div>
 
-                    <div class="bg-[#8b5a2b] p-6 border-x-4 border-[#5a3418] shadow-2xl rounded-4xl">
+                    <div className="bg-[#8b5a2b] p-6 border-x-4 border-[#5a3418] shadow-2xl rounded-4xl">
 
-                    <div class="flex gap-4 mb-5">
+                    <div className="flex gap-4 mb-5">
 
-                        <Pit beadCount={6}/>
-                        <Pit beadCount={4}/>
-                        <Pit beadCount={7}/>
-                        <Pit beadCount={12}/>
-                        <Pit beadCount={8}/>
-                        <Pit beadCount={10}/>
+                        <Pit beadCount={boardValueList[0]}/>
+                        <Pit beadCount={boardValueList[1]}/>
+                        <Pit beadCount={boardValueList[2]}/>
+                        <Pit beadCount={boardValueList[3]}/>
+                        <Pit beadCount={boardValueList[4]}/>
+                        <Pit beadCount={boardValueList[5]}/>
 
-
-                    </div>
-
-                    <div class="flex gap-4">
-
-                    <Pit beadCount={6}/>
-                        <Pit beadCount={1}/>
-                        <Pit beadCount={9}/>
-                        <Pit beadCount={14}/>
-                        <Pit beadCount={8}/>
-                        <Pit beadCount={5}/>
 
                     </div>
 
+                    <div className="flex gap-4">
+
+                        <Pit beadCount={boardValueList[6]}/>
+                        <Pit beadCount={boardValueList[7]}/>
+                        <Pit beadCount={boardValueList[8]}/>
+                        <Pit beadCount={boardValueList[9]}/>
+                        <Pit beadCount={boardValueList[10]}/>
+                        <Pit beadCount={boardValueList[11]}/>
+
                     </div>
 
-                    <div class="w-67 h-22 bg-[#6b3f1d] border-4 border-t-0 border-[#4a2a12] rounded-b-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                        <div class="w-65 h-17 bg-[#5c3317] rounded-b-[3rem] flex items-center justify-center gap-3 p-4">
-                            <OutOfPlay leftOverBeads={20}/>
+                    </div>
+
+                    <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-t-0 border-[#4a2a12] rounded-b-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
+                        <div className="w-65 h-17 bg-[#5c3317] rounded-b-[3rem] flex items-center justify-center gap-3 p-4">
+                            <OutOfPlay leftOverBeads={boardValueList[13]}/>
 
                     </div>
                     </div>
+
+                    <button onClick={getBoardState} className='absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-[19px] transition-smooth duration-300'>I've played</button>
 
             </div>
 
-        </div>
-             </div>
+            </div>
+            </div>
             
         </PageWrapper>
         

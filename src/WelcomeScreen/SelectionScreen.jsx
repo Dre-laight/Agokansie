@@ -1,14 +1,16 @@
-    import PageWrapper from "./PageWrapper";
-    import GameScreen from "../PlayGame/startGame";
-    
+import PageWrapper from "./PageWrapper";
+import GameScreen from "../PlayGame/startGame";
 
-    import { useState, useRef, useContext} from 'react'
-    import { ChevronRight, ChevronLeft } from 'lucide-react'
-    import { GameContext } from "../context/GameContext";
 
-    import swipeSound from '../assets/sound/uiSwipeSound.mp3'
-    import woodTapSound from '../assets/sound/woodTap.mp3'
-    import { useNavigate } from "react-router-dom";
+import { useState, useRef, useContext} from 'react'
+import { ChevronRight, ChevronLeft } from 'lucide-react'
+import { GameContext } from "../context/GameContext";
+
+import swipeSound from '../assets/sound/uiSwipeSound.mp3'
+import woodTapSound from '../assets/sound/woodTap.mp3'
+import { useNavigate } from "react-router-dom";
+
+import { motion } from 'framer-motion'
 
 
 
@@ -32,6 +34,17 @@
                 swipeAudio.current.play()
         }
 
+        const SWIPE_THRESHOLD = 75
+        const handleSwipe = (event, info) => {
+            if (info.offset.x < -SWIPE_THRESHOLD){
+                nextGame()
+            }
+
+            if (info.offset.x > SWIPE_THRESHOLD){
+                previousGame()
+            }
+        }
+
         const navigate = useNavigate()
         const woodTap = useRef(new Audio(woodTapSound))
 
@@ -40,18 +53,20 @@
 
             async function sendPostRequest(){
                 try {
-                    const response = await fetch('http://192.168.88.29:5000/game-type', {
+                    const response = await fetch('http://192.168.88.40:5000/api/game/select', {
                     method: 'POST',
                     headers: {
                         'Content-Type': "application/json",
                     },
                     body: JSON.stringify(
-                            { game_choice: games[currentGame].name}
+                            { game: games[currentGame].name}
                         )
 
                 })
 
-                } catch (error) {
+                } 
+                
+                catch (error) {
                     console.log(error)
                 }
             }
@@ -68,7 +83,11 @@
 
         return (
             <PageWrapper>
-                <div className="relative flex h-screen w-full items-center justify-center overflow-x-hidden">
+                <motion.div className="relative flex h-screen w-full items-center justify-center overflow-x-hidden"
+                            drag='x'
+                            dragConstraints={{left:0, right:0}}
+                            onDragEnd={handleSwipe}
+                >
 
                     {/* background image */}
                          <img src={games[currentGame].backgroundImage} alt="background image" className="absolute object-cover w-full h-full"/>   
@@ -114,7 +133,7 @@
                         </div>
                         
                     </div>   
-                </div>
+                </motion.div>
 
             </PageWrapper>
         
