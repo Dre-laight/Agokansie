@@ -84,9 +84,7 @@ import { motion } from 'framer-motion'
         return (
             <PageWrapper>
                 <motion.div className="relative flex h-screen w-full items-center justify-center overflow-x-hidden"
-                            drag='x'
-                            dragConstraints={{left:0, right:0}}
-                            onDragEnd={handleSwipe}
+                            onPanEnd={handleSwipe}
                 >
 
                     {/* background image */}
