@@ -73,7 +73,15 @@ import { motion } from 'framer-motion'
             }
                 sendPostRequest()
 
-                navigate('/gameScreen')
+                if(games[currentGame].key == 0){
+                    navigate('/gameScreen')
+
+                } else if (games[currentGame].key == 1){
+                    navigate('/dameScreen')
+                    
+                } else {
+                    navigate('/achiScreen')
+                }
 
                 woodTap.current.currentTime = 0
                 woodTap.current.play()  

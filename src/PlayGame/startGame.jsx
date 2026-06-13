@@ -56,17 +56,45 @@ function GameScreen(){
         )
     }
 
-    const getRequest = async () => {
+    // const getRequest = async () => {
+    //         try {
+    //             const response = await fetch('http://192.168.88.40:5000/api/game/play')
+
+    //             if(!response.ok){
+    //                 throw new Error('Request failed')
+    //             }
+
+    //             const BoardData = await response.json()
+    //             setBoardValueList(BoardData.board)
+    //             console.log(BoardData.board)
+    //         }
+
+    //         catch (error) {
+    //             console.log(error.message)
+    //         }
+
+               
+    //     }
+
+    const postRequest = async () => {
             try {
-                const response = await fetch('http://192.168.88.40:5000/api/game/state')
-
-                if(!response.ok){
-                    throw new Error('Request failed')
-                }
-
+                const response = await fetch('http://192.168.88.40:5000/api/game/scan', 
+                    {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': "application/json",
+                    },
+                    body: JSON.stringify(
+                            { game: games[currentGame].name}
+                        )
+                    }
+                )
+                      
                 const BoardData = await response.json()
+
                 setBoardValueList(BoardData.board)
-                console.log(BoardData.board)
+                console.log(BoardData)
+
             }
 
             catch (error) {
@@ -77,11 +105,13 @@ function GameScreen(){
         }
 
     useEffect(() => {
-        getRequest()
+        // getRequest()
+        postRequest()
+        
     }, [])
 
     const getBoardState = () => {
-        getRequest()
+            postRequest()
 
         woodTap.current.currentTime = 0
         woodTap.current.play()
@@ -148,7 +178,7 @@ function GameScreen(){
 
                     <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-b-0 border-[#4a2a12] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
                         <div className="w-65 h-17 bg-[#5c3317] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                            <OutOfPlay leftOverBeads={boardValueList[12]}/>
+                            <OutOfPlay leftOverBeads={boardValueList[0]}/>
                         </div>
                     </div>
 
