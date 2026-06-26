@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import PageWrapper from './PageWrapper'
 import woodTapSound from '../assets/sound/woodTap.mp3'
 
-function WelcomeScreen(){
+function WelcomeScreen({music}){
     const navigate = useNavigate()
 
     const woodTap = useRef(new Audio(woodTapSound))
@@ -21,6 +21,7 @@ function WelcomeScreen(){
     }
     
     const handleClick = () => {
+        music()
         navigateFxn()
         playSound()
     }
@@ -34,7 +35,6 @@ function WelcomeScreen(){
                     className='absolute w-full h-full object-cover'
                 />
 
-                
                 <div className='relative flex flex-col justify-center items-center rounded-lg'>
                     <p className='capitalize font-elite text-gold font-bold text-7xl'>Discover Ghanaian<br/> game culture with  </p>
                     <p className='uppercase text-darkgold text-7xl font-bold font-kablammo'>Agokansie</p >

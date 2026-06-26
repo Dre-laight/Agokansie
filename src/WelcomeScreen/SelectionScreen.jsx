@@ -17,10 +17,9 @@ import { motion } from 'framer-motion'
     function SelectionScreen() {
        
         const {games, currentGame, setCurrentGame} = useContext(GameContext)
+        const [isLoading, setIsLoading] = useState(false)
         const swipeAudio = useRef(new Audio(swipeSound))
         const navigate = useNavigate()
-
-
     
         const nextGame = () => {
             setCurrentGame((previous) => (previous + 1) % games.length)
@@ -49,31 +48,51 @@ import { motion } from 'framer-motion'
 
         const woodTap = useRef(new Audio(woodTapSound))
 
+        
+        async function sendPostRequest(){
+            try {
+                const response = await fetch('http://192.168.88.44:5000/api/game/select', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': "application/json",
+                },
+                body: JSON.stringify(
+                        { game: games[currentGame].name}
+                    )
 
-        const startGame = () => {
+            })
 
-            async function sendPostRequest(){
-                try {
-                    const response = await fetch('http://192.168.88.40:5000/api/game/select', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': "application/json",
-                    },
-                    body: JSON.stringify(
-                            { game: games[currentGame].name}
-                        )
-
-                })
-
-                } 
-                
-                catch (error) {
-                    console.log(error)
-                }
+            if (!response.ok){
+                throw new Error('Failed to select game')
             }
-                sendPostRequest()
 
-                if(games[currentGame].key == 0){
+            return true
+
+            } 
+            
+            catch (error) {
+                console.log(error)
+                return false
+            }
+        }
+
+        const startGame = async () => {
+
+                if(isLoading) return
+                setIsLoading(true)
+
+                
+
+                try {
+                    const success = await sendPostRequest()
+
+                    if(!success) {
+                        setIsLoading(false)
+                        return
+                    }
+
+                    
+                if (games[currentGame].key == 0){
                     navigate('/gameScreen')
 
                 } else if (games[currentGame].key == 1){
@@ -85,6 +104,17 @@ import { motion } from 'framer-motion'
 
                 woodTap.current.currentTime = 0
                 woodTap.current.play()  
+
+                setIsLoading(false)
+                console.log('button clicked')
+
+                } catch (error){
+                    console.log(error)
+                    setIsLoading(false)
+                }   
+
+                
+
                 
         }
 
@@ -127,12 +157,13 @@ import { motion } from 'framer-motion'
 
 
                             {/* Game text*/}
+
                                 <p className="uppercase font-kablammo font-bold text-darkgold text-9xl select-none">
                                 {
                                     games[currentGame].name.split("").map((letter, index) => (
                                         <span
                                             key={index}
-                                            className="animate-float inline-block"
+                                            className={`${isLoading? 'animate-spin inline-block': 'animate-float inline-block'}`}
                                             style={{animationDelay: `${index * 0.1}s`}}
                                         >
                                             {letter}
@@ -148,9 +179,12 @@ import { motion } from 'framer-motion'
 
                         {/* selection buttons */}
                         <div className="flex items-center justify-center gap-8 select-none">
-                            <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-2xl transition-smooth duration-300" onClick={startGame} >Play</button>
+                            <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-105 transition-smooth duration-300" 
+                            onClick={startGame}
+                            disabled={isLoading}
+                            >{isLoading ? (<div className="text-2xl animate-pulse   ">...</div>) : 'Play'}</button>
 
-                            <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-2xl transition-smooth duration-300">Tutorial</button>
+                            <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-105 transition-smooth duration-300">Tutorial</button>
                         </div>
                         
                     </div>   
@@ -158,7 +192,7 @@ import { motion } from 'framer-motion'
 
             </PageWrapper>
         
-        )   
+        )       
     }
 
     export default SelectionScreen
