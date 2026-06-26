@@ -11,6 +11,8 @@ import cleverMove from '../assets/sound/clevermove.mp3'
 import nicelyPlayed from '../assets/sound/nicelyplayed.mp3'
 import wellDone from '../assets/sound/welldone.mp3'
 import interestingame from '../assets/sound/interestingame.mp3'
+import { Settings } from 'lucide-react'
+import { CornerDownLeft } from 'lucide-react'
 
 
 function GameScreen(){
@@ -229,6 +231,16 @@ function GameScreen(){
             
         }
 
+
+        const [displayScreen, setDisplayScreen] = useState(false)
+        const toggleSettingScreen = () => {
+            setDisplayScreen(!displayScreen)
+        }
+
+        const returnScreen = () => {
+            setDisplayScreen(false)
+        }
+
        
 
 
@@ -242,11 +254,43 @@ function GameScreen(){
 
         <div className='flex flex-col h-screen w-full'>
 
-            <div className="absolute top-0 right-0 flex items-center gap-4 z-50 backdrop-blur p-3 rounded-lg">
-                <ArrowLeft className=' left-3 size-8 cursor-pointer text-wood ' onClick={goBack} />
-                <ArrowRight className=' size-8 text-gold-300 cursor-pointer text-wood' onClick={goForward} />
+            <div className="absolute top-0 right-0 flex items-center gap-5 z-50 backdrop-blur p-3 rounded-lg">
+                <div className='flex items-center justify-center'>
+                    <ArrowLeft className=' left-3 size-7 cursor-pointer' onClick={goBack} />
+                    <ArrowRight className=' size-7 text-gold-300 cursor-pointer' onClick={goForward} />
+                </div>
+                <div className='flex'>
+                    <Settings className='cursor-pointer' onClick={toggleSettingScreen} />
+                </div>
             </div>
-{/* input */}
+
+            {displayScreen ?
+                <div className='absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 backdrop-blur border-1 rounded-lg w-220 h-150 '>
+                    <p className='uppercase text-7xl font-kablammo text-center p-1'>oware</p>
+                    <div className='p-2'>
+                        <CornerDownLeft onClick={returnScreen} className='cursor-pointer size-10'/>
+
+                        <div className='flex items-center justify-between'>
+                        <div className='flex flex-col items-center justfify-center'>
+                            <p>Music</p>
+                            <input type='range' min={0} max={100}       />
+                        </div>
+                         <div className='flex flex-col items-center justfify-center'>
+                            <p>SFX</p>
+                            <input type='range'/>
+                        </div>
+                         </div>
+                    </div>
+
+
+                </div>
+                
+                : null
+        
+        
+            }
+
+
             <div className='absolute top-15 right-0 flex gap-4'>
                 <input type='number' placeholder='Enter pit number' value={pit} onChange={(e) => setPit(e.target.value)} className='p-3 border-1 rounded-lg'/>
                 <button className='text-xl p-3 cursor-pointer border-1 rounded-lg' onClick={postPitNumber} >Enter</button>

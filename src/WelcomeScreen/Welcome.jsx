@@ -24,7 +24,7 @@ function WelcomeScreen({music}){
         music()
         navigateFxn()
         playSound()
-    }
+    }   
 
     return(
         <PageWrapper>

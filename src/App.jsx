@@ -15,6 +15,7 @@ function AnimatedRoutes(){
 
     const startMusic = () => {
         audioRef.current.play()
+        audioRef.current.volume = 0.15
     }
 
     return(
