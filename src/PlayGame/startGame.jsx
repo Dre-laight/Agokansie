@@ -18,7 +18,7 @@ import { Settings,Volume2, Gamepad2, Monitor, RotateCcw, Check, Music, AudioLine
 function GameScreen(){
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://10.217.236.206:5000'
+    const API = 'http://10.35.156.206:5000'
 
     const navigate = useNavigate()
 

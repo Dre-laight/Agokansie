@@ -96,14 +96,14 @@ return(
                         
             <div className="absolute inset-0 flex items-center justify-center mt-35 -z-1">
                 <div className="grid grid-cols-8 border-4 border-gray-900 scale-95">
-                {board.map((row) => row.map((cell) => (
+                {board.map((row, rowIndex) => row.map((singleSquare, colIndex) => (
                             <div
-                                key={cell}
-                                className="h-16 w-16 border flex items-center justify-center text-xs">
-                                {cell}
+                                key={`${rowIndex}-${colIndex}`}
+                                className={`${(rowIndex + colIndex) % 2 === 0 ? 'bg-gold': 'bg-wood1' } h-16 w-16 border flex items-center justify-center text-xs`}>
+                                {singleSquare}
                             </div>
-        ))
-    )}
+                            ))
+                        )}
                 </div>
             </div>
 
@@ -117,4 +117,4 @@ return(
 
 }
 
-export default DameGame
+export default DameGame 

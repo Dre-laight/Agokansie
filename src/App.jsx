@@ -20,7 +20,7 @@ function AnimatedRoutes(){
 
     return(
         <>
-        <audio ref={audioRef} src={BackgroundMusic} loop/>
+        <audio ref={audioRef} src={BackgroundMusic} loop/>  
         <AnimatePresence mode='wait'>
             <Routes location={location} key={location.pathname}>
                 <Route path='/' element={<WelcomeScreen music={startMusic}/>}/>
