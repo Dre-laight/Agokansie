@@ -11,12 +11,14 @@ import cleverMove from '../assets/sound/clevermove.mp3'
 import nicelyPlayed from '../assets/sound/nicelyplayed.mp3'
 import wellDone from '../assets/sound/welldone.mp3'
 import interestingame from '../assets/sound/interestingame.mp3'
-import { Settings } from 'lucide-react'
-import { CornerDownLeft } from 'lucide-react'
+import { Settings,Volume2, Gamepad2, Monitor, RotateCcw, Check, Music, AudioLines, CornerDownLeft, CircleX } from 'lucide-react'
+
 
 
 function GameScreen(){
     const {games, currentGame} = useContext(GameContext)
+
+    const API = 'http://10.217.236.206:5000'
 
     const navigate = useNavigate()
 
@@ -85,7 +87,7 @@ function GameScreen(){
 
     const postRequest = async () => {
             try {
-                const response = await fetch('http://192.168.88.44:5000/api/game/scan', 
+                const response = await fetch(`${API}/api/game/scan` ,
                     {
                         method: 'POST',
                         headers: {
@@ -113,7 +115,7 @@ function GameScreen(){
 
          const playRequest = async () => {
             try {
-                const response = await fetch('http://192.168.88.44:5000/api/game/play', 
+                const response = await fetch(`${API}/api/game/play`,
                     {
                         method: 'POST',
                         headers: {
@@ -170,7 +172,7 @@ function GameScreen(){
 
         const postPitNumber = async () => {
             try {
-                const response = await fetch('http://192.168.88.44:5000/api/game/oware-play-human-move', 
+                const response = await fetch(`${API}/api/game/oware-play-human-move`, 
                     {
                         method: 'POST',
                         headers: {
@@ -265,25 +267,192 @@ function GameScreen(){
             </div>
 
             {displayScreen ?
-                <div className='absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 backdrop-blur border-1 rounded-lg w-220 h-150 '>
-                    <p className='uppercase text-7xl font-kablammo text-center p-1'>oware</p>
-                    <div className='p-2'>
-                        <CornerDownLeft onClick={returnScreen} className='cursor-pointer size-10'/>
+                <div className='absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-220 h-150 '>
+                        
 
-                        <div className='flex items-center justify-between'>
-                        <div className='flex flex-col items-center justfify-center'>
-                            <p>Music</p>
-                            <input type='range' min={0} max={100}       />
-                        </div>
-                         <div className='flex flex-col items-center justfify-center'>
-                            <p>SFX</p>
-                            <input type='range'/>
-                        </div>
-                         </div>
-                    </div>
+      {/* Card */}
+      <div className="rounded-3xl border-4 border-[#b98b56] bg-[#efe0c2] shadow-2xl overflow-hidden bg-wood1">
 
+        {/* Header */}
+        <div className="relative py-2 text-center border-b border-[#c8aa73] ">
+
+          <button className="absolute right-3 top-3 cursor-pointer hover:scale-110 transition" onClick={returnScreen}>
+            <CircleX className='size-9 text-gold'/>
+          </button>
+
+          <h1
+            className="text-6xl tracking-widest text-darkgold font-kablammo "
+          >
+            {games[currentGame].name}
+          </h1>
+
+          <p className="text-gold uppercase tracking-[4px] mt-1">
+            SETTINGS
+          </p>
+        </div>
+
+        {/* Body */}
+        <div className="p-8 space-y-10">
+
+          {/* ---------------- SOUND ---------------- */}
+
+          <section>
+
+            <div className="flex items-center gap-3 mb-5">
+
+              <div className="w-14 h-14 rounded-full bg-[#5f4326] text-white flex items-center justify-center">
+                <Volume2 size={28} />
+              </div>
+
+              <h2 className="text-2xl font-bold">
+                SOUND
+              </h2>
+
+            </div>
+
+            <div className="space-y-5 ml-20">
+
+              <div className="flex items-center gap-4">
+
+                <Music />
+
+                <label className="w-24">
+                  Music
+                </label>
+
+                <input
+                  type="range"
+                  defaultValue={70}
+                  className="flex-1 accent-sky-500"
+                />
+
+                <span>70%</span>
+
+              </div>
+
+              <div className="flex items-center gap-4">
+
+                <AudioLines />
+
+                <label className="w-24">
+                  SFX
+                </label>
+
+                <input
+                  type="range"
+                  defaultValue={60}
+                  className="flex-1 accent-sky-500"
+                />
+
+                <span>60%</span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+          {/* ---------------- GAMEPLAY ---------------- */}
+
+          <section>
+
+            <div className="flex items-center gap-3 mb-5">
+
+              <div className="w-14 h-14 rounded-full bg-[#5f4326] text-white flex items-center justify-center">
+                <Gamepad2 size={28} />
+              </div>
+
+              <h2 className="text-2xl font-bold">
+                GAMEPLAY
+              </h2>
+
+            </div>
+
+            <div className="ml-20 space-y-6">
+
+              {/* Difficulty */}
+
+              <div className="flex items-center">
+
+                <label className="w-36">
+                  Difficulty
+                </label>
+
+                <div className="flex gap-3">
+
+                  <button className="px-6 py-2 rounded-xl border">
+                    Easy
+                  </button>
+
+                  <button className="px-6 py-2 rounded-xl bg-[#4a3220] text-white">
+                    Normal
+                  </button>
+
+                  <button className="px-6 py-2 rounded-xl border">
+                    Hard
+                  </button>
 
                 </div>
+
+              </div>
+
+              {/* Player */}
+
+              <div className="flex items-center">
+
+                <label className="w-36">
+                  Play As
+                </label>
+
+                <div className="flex gap-3">
+
+                  <button className="px-6 py-2 rounded-xl bg-[#4a3220] text-white">
+                    Player 1
+                  </button>
+
+                  <button className="px-6 py-2 rounded-xl border">
+                    Player 2
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+        </div>
+
+        {/* Footer */}
+
+        <div className="flex justify-between p-8 border-t border-[#c8aa73]">
+
+          <button className="flex items-center gap-2 border px-6 py-3 rounded-xl hover:bg-[#e8d6b4] transition">
+
+            <RotateCcw size={18} />
+
+            Reset
+
+          </button>
+
+          <button className="flex items-center gap-2 bg-[#5A3A22] text-white px-8 py-3 rounded-xl hover:bg-[#382416] transition">
+
+            <Check size={18} />
+
+            Save & Close
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+              
                 
                 : null
         

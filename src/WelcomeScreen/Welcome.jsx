@@ -37,7 +37,7 @@ function WelcomeScreen({music}){
 
                 <div className='relative flex flex-col justify-center items-center rounded-lg'>
                     <p className='capitalize font-elite text-gold font-bold text-7xl'>Discover Ghanaian<br/> game culture with  </p>
-                    <p className='uppercase text-darkgold text-7xl font-bold font-kablammo'>Agokansie</p >
+                    <p className='uppercase text-darkgold text-7xl font-bold font-kablammo'>Agokansiɛ</p >
                     <p className='text-xl mt-5 mb-10 text-orange-100 tracking-widest'>Learn. Play. Preserve</p>
                     <div className=' flex items-center justify-center'>
                         <button onClick={handleClick}  className='border-none p-3 w-60 text-xl text-d rounded-lg animate-bounce cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:w-50 transition-smooth duration-300'>Play Now</button>

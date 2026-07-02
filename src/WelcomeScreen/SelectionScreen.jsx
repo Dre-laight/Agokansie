@@ -15,6 +15,8 @@ import { motion } from 'framer-motion'
 
 
     function SelectionScreen() {
+
+        const API = 'http://10.217.236.206:5000/api/game/select'
        
         const {games, currentGame, setCurrentGame} = useContext(GameContext)
         const [isLoading, setIsLoading] = useState(false)
@@ -51,7 +53,7 @@ import { motion } from 'framer-motion'
         
         async function sendPostRequest(){
             try {
-                const response = await fetch('http://192.168.88.44:5000/api/game/select', {
+                const response = await fetch(API, {
                 method: 'POST',
                 headers: {
                     'Content-Type': "application/json",
