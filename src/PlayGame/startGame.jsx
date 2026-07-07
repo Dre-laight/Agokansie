@@ -18,7 +18,7 @@ import { Settings,Volume2, Gamepad2, Monitor, RotateCcw, Check, Music, AudioLine
 function GameScreen(){
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://10.35.156.206:5000'
+    const API = 'http://10.218.164.206:5000' 
 
     const navigate = useNavigate()
 
@@ -29,6 +29,8 @@ function GameScreen(){
     const [leftOverBeads, setLeftOverBeads] = useState(0)
 
     const [boardValueList, setBoardValueList] = useState([])
+
+    const [status, setStatus] = useState('')
 
 
     const woodTap = useRef(new Audio(woodTapSound))
@@ -101,7 +103,7 @@ function GameScreen(){
                       
                 const BoardData = await response.json()
 
-                setBoardValueList(BoardData.board)
+                setBoardValueList(BoardData.state.board)
                 console.log(BoardData)
 
             }
@@ -114,6 +116,8 @@ function GameScreen(){
         }
 
          const playRequest = async () => {
+            
+
             try {
                 const response = await fetch(`${API}/api/game/play`,
                     {
@@ -129,8 +133,9 @@ function GameScreen(){
                       
                 const BoardData = await response.json()
 
-                setBoardValueList(BoardData.board)
+                setBoardValueList(BoardData.state.board)
                 console.log(BoardData)
+                
 
             }
 
@@ -138,8 +143,31 @@ function GameScreen(){
                 console.log(error.message)
             }
 
+            
+
                
         }
+
+        const getStatus = async () => {
+            try {
+                const response = await fetch(`${API}/api/game/state`)
+                const data = await response.json()
+                setStatus(data.status)
+
+                console.log(data.status)
+            } catch (error) {
+                console.log(error)
+            }
+
+        }
+
+        useEffect(() => {
+            getStatus()
+
+            const interval = setInterval(getStatus, 3000)
+
+            return () => clearInterval(interval)
+        },[])
 
     useEffect(() => {
         // getRequest()
@@ -150,6 +178,7 @@ function GameScreen(){
     const getBoardState = () => {
         getGreatMoveResponses()
         playRequest()
+        getStatus()
         
 
         woodTap.current.currentTime = 0
@@ -460,10 +489,20 @@ function GameScreen(){
             }
 
 
-            <div className='absolute top-15 right-0 flex gap-4'>
-                <input type='number' placeholder='Enter pit number' value={pit} onChange={(e) => setPit(e.target.value)} className='p-3 border-1 rounded-lg'/>
-                <button className='text-xl p-3 cursor-pointer border-1 rounded-lg' onClick={postPitNumber} >Enter</button>
+            <div className='absolute top-15 right-0 flex flex-col gap-4'>
+                {/* <div>
+                    <input type='number' placeholder='Enter pit number' value={pit} onChange={(e) => setPit(e.target.value)} className='p-3 border-1 rounded-lg'/>
+                    <button className='text-xl p-3 cursor-pointer border-1 rounded-lg' onClick={postPitNumber} >Enter</button>
+                </div> */}
+                
+                <div className=' border-none p-2 text-xl rounded-lg text-center bg-gradient-to-br from-gold to-darkgold text-[#F7E7CE]'>
+                    <p>{`Status: ${status}`}</p>
+                </div>
             </div>
+
+
+
+            
 
        
             <div className='flex flex-row items-start gap-4 p-6 shrink-0' >
@@ -508,7 +547,7 @@ function GameScreen(){
 
                     <div className="flex gap-4 mb-5">
 
-                       <Pit beadCount={boardValueList[11 ]}/>
+                       <Pit beadCount={boardValueList[11]}/>
                         <Pit beadCount={boardValueList[10]}/>
                         <Pit beadCount={boardValueList[9]}/>
                         <Pit beadCount={boardValueList[8]}/>
@@ -539,7 +578,8 @@ function GameScreen(){
                     </div>
                     </div>
 
-                    <button onClick={getBoardState} className='absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:text-[19px] transition-smooth duration-300'>I've played</button>
+                    <button onClick={getBoardState} className='absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300'>I've played</button>
+
 
 
 
