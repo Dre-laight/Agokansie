@@ -40,10 +40,9 @@ import nicelyExecuted from '../assets/sound/player_captures_seeds/nicelyExecuted
 
 {/**Player wins */}
 import excellentGame from '../assets/sound/player_wins/excellentGame.m4a'
-import tillNextgame from '../assets/sound/player_wins/tillNextgame.m4a'
+import tillNextgame from '../assets/sound/player_wins/tillNextGame.m4a'
 import wellDeserved from '../assets/sound/player_wins/wellDeserved.m4a'
 import wellDone from '../assets/sound/player_wins/wellDone.m4a'
-
 
 {/**robot_captured_seed */}
 import opportunity from '../assets/sound/robot_captures_seeds/opportunity.m4a'
