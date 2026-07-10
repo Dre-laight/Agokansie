@@ -8,15 +8,23 @@
     src: url("../src/assets/font/SpecialElite-Regular.ttf")
 }
 
+@font-face{
+    font-family: fingerpaint;
+    src: url("../src/assets/font/FingerPaint-Regular.ttf")
+}
+
 @import "tailwindcss";
 
 @theme{
     --font-kablammo: kablammo, 'sans-serif';
     --font-elite: elite, 'sans-serif';
+    --font-fingerpaint: fingerpaint, 'sans-serif';
     --color-gold: #D4AF37;
     --color-darkgold: #FFD700;
     --color-wood: #4B2E2B;
-    --color-wood1: #6F4E37  ;
+    --color-wood1: #6F4E37;
+    --color-dark: #1B1713;
+    --color-midGold: #E6C15A; 
     --animate-next: nextArrow 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
     --animate-previous: previousArrow 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
     --animate-float: float 1.5s infinite ease-in-out;

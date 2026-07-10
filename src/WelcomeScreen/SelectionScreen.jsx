@@ -16,7 +16,7 @@ import { motion } from 'framer-motion'
 
     function SelectionScreen() {
 
-        const API = 'http://10.218.164.206:5000/api/game/select'
+        const API = 'http://127.0.0.1:5000/api/game/select'
        
         const {games, currentGame, setCurrentGame} = useContext(GameContext)
         const [isLoading, setIsLoading] = useState(false)
@@ -80,7 +80,7 @@ import { motion } from 'framer-motion'
 
         const startGame = async () => {
 
-                if(isLoading) return
+                if(isLoading) return    
                 setIsLoading(true)
 
                 
@@ -96,7 +96,7 @@ import { motion } from 'framer-motion'
                     
                 if (games[currentGame].key == 0){
                     navigate('/gameScreen')
-
+                    
                 } else if (games[currentGame].key == 1){
                     navigate('/dameScreen')
                     
@@ -114,8 +114,6 @@ import { motion } from 'framer-motion'
                     console.log(error)
                     setIsLoading(false)
                 }   
-
-                
 
                 
         }

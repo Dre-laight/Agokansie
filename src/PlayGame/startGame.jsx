@@ -4,21 +4,211 @@ import { GameContext } from '../context/GameContext'
 import thinking_image  from '../assets/black_man_thinking.webp'
 import bg from '../assets/background-collage.png'
 import woodTapSound from '../assets/sound/woodTap.mp3'
-import { ArrowRight, ArrowLeft } from 'lucide-react'
-import { useNavigate } from "react-router-dom";
-import awesomeMove from '../assets/sound/awesomemove.mp3'
-import cleverMove from '../assets/sound/clevermove.mp3'
-import nicelyPlayed from '../assets/sound/nicelyplayed.mp3'
-import wellDone from '../assets/sound/welldone.mp3'
-import interestingame from '../assets/sound/interestingame.mp3'
-import { Settings,Volume2, Gamepad2, Monitor, RotateCcw, Check, Music, AudioLines, CornerDownLeft, CircleX } from 'lucide-react'
+import { useNavigate } from "react-router-dom"; 
+import { Settings,Volume2, Gamepad2, Monitor, RotateCcw, Check, Music, AudioLines, CornerDownLeft, CircleX, ArrowRight, ArrowLeft, House, ChartNoAxesCombined, Trophy } from 'lucide-react'
+
+import player from '../assets/player.jpg'
+import robot from '../assets/robot.jpg'
+
+{/**Bad move */}
+import bestOption from '../assets/sound/bad_move/bestOption.m4a'
+import costYou from '../assets/sound/bad_move/costYou.m4a'
+import leaveOpening from '../assets/sound/bad_move/leaveOpening.m4a'
+import myFavor from '../assets/sound/bad_move/myFavor.m4a'
+import whereItLeads from '../assets/sound/bad_move/whereItLeads.m4a'
+
+{/**EndGame */}
+import finalStage from '../assets/sound/endGame/finalStage.m4a'
+
+{/**Great move */}
+import cleverMove from '../assets/sound/great_move/cleverMove.m4a'
+import excellentChoice from '../assets/sound/great_move/excellentChoice.m4a'
+import nicelyPlayed from '../assets/sound/great_move/nicelyPlayed.m4a'
+import severalMoves from '../assets/sound/great_move/severalMoves.m4a'
+import underPressure from '../assets/sound/great_move/underPressure.m4a'
+
+{/**Invalid move */}
+import anotherMove from '../assets/sound/invalid_move/anotherMove.m4a'
+import breaksRules from '../assets/sound/invalid_move/breaksRules.m4a'
+
+{/**Player captures seeds */}
+import didNotExpect from '../assets/sound/player_captures_seeds/didNotExpect.m4a'
+import foundOpening from '../assets/sound/player_captures_seeds/foundOpening.m4a'
+import goodCapture from '../assets/sound/player_captures_seeds/goodCapture.m4a'
+import nicelyExecuted from '../assets/sound/player_captures_seeds/nicelyExecuted.m4a'
+
+
+{/**Player wins */}
+import excellentGame from '../assets/sound/player_wins/excellentGame.m4a'
+import tillNextgame from '../assets/sound/player_wins/tillNextgame.m4a'
+import wellDeserved from '../assets/sound/player_wins/wellDeserved.m4a'
+import wellDone from '../assets/sound/player_wins/wellDone.m4a'
+
+
+{/**robot_captured_seed */}
+import opportunity from '../assets/sound/robot_captures_seeds/opportunity.m4a'
+import seedCounts from '../assets/sound/robot_captures_seeds/seedCounts.m4a'
+import takingSeeds from '../assets/sound/robot_captures_seeds/takingSeeds.m4a'
+import usefulHarvest from '../assets/sound/robot_captures_seeds/usefulHarvest.m4a'
+import workedWell from '../assets/sound/robot_captures_seeds/workedWell.m4a'
+
+{/**Robot wins */}
+import enjoyable from '../assets/sound/robot_wins/enjoyable.m4a'
+import playedWell from '../assets/sound/robot_wins/playedWell.m4a'
+import victoryMine from '../assets/sound/robot_wins/victoryMine.m4a'
+
+{/**Welcome */}
+import boardReady from '../assets/sound/welcome/boardReady.m4a'
+import enjoyableGame from '../assets/sound/welcome/enjoyGame.m4a'
+import goodLuck from '../assets/sound/welcome/goodLuck.m4a'
+import shallWeBegin from '../assets/sound/welcome/shallWeBegin.m4a'
+import strategistWin from '../assets/sound/welcome/strategistWin.m4a'
+
 
 
 
 function GameScreen(){
+    
+    
+
+    const useRobotCaputureSeedResponses = () => {
+        const RobotCaptureSeedResponses = [
+            {
+                text: "I'll take those seeds",
+                voice: takingSeeds
+            },
+            {
+                text: "A useful harvest",
+                voice: usefulHarvest
+            },
+            {
+                text: "That worked out well for me",
+                voice: workedWell
+            },
+            {
+                text: "Every seed counts",
+                voice: seedCounts
+            },
+            {
+                text: "Thank you for the opportunity",
+                voice: opportunity
+            },
+        ]
+
+        const responseIndex = Math.floor(Math.random() * RobotCaptureSeedResponses.length)
+            const selectedResponse = RobotCaptureSeedResponses[responseIndex]
+            setResponse(selectedResponse.text)
+
+            const voiceover = new Audio(selectedResponse.voice)
+            voiceover.play()
+    }
+
+    const usePlayerCaputureSeedResponses = () => {
+        const RobotCaptureSeedResponses = [
+            {
+                text: "Well done",
+                voice: wellDone
+            },
+            {
+                text: "You found the opening",
+                voice: foundOpening
+            },
+            {
+                text: "That was a good capture",
+                voice: goodCapture
+            },
+            {
+                text: "I didn't expect that",
+                voice: didNotExpect
+            },
+            {
+                text: "Nicely executed",
+                voice: nicelyExecuted
+            },
+        ]
+
+        const responseIndex = Math.floor(Math.random() * RobotCaptureSeedResponses.length)
+            const selectedResponse = RobotCaptureSeedResponses[responseIndex]
+            setResponse(selectedResponse.text)
+
+            const voiceover = new Audio(selectedResponse.voice)
+            voiceover.play()
+    }
+
+    const useRobotWinsResponses = () => {
+        const RobotWinsResponses = [
+            {
+                text: "Well played. Let's play again",
+                voice: playedWell
+            },
+            {
+                text: "Good game. That was enjoyable",
+                voice: enjoyableGame
+            },
+            {
+                text: "Victory is mine this time",
+                voice: victoryMine
+            },
+        
+        ]
+
+        const responseIndex = Math.floor(Math.random() * RobotWinsResponses.length)
+            const selectedResponse = RobotWinsResponses[responseIndex]
+            setResponse(selectedResponse.text)
+
+            const voiceover = new Audio(selectedResponse.voice)
+            voiceover.play()
+    }
+
+    const usePlayerWinsResponses = () => {
+        const playerWinsResponses = [
+            {
+                text: "Well deserved. You win",
+                voice: wellDeserved
+            },
+            {
+                text: "Excellent game. I enjoyed that",
+                voice: excellentGame
+            },
+            {
+                text: "Until our next game",
+                voice: tillNextgame
+            },
+            {
+                text: "Congratulations. You played very well",
+                voice: wellDone
+            },
+            
+        ]
+
+        const responseIndex = Math.floor(Math.random() * playerWinsResponses.length)
+            const selectedResponse = playerWinsResponses[responseIndex]
+            setResponse(selectedResponse.text)
+
+            const voiceover = new Audio(selectedResponse.voice)
+            voiceover.play()
+    }
+
+
+    const useEndGameResponses = () => {
+        const useEndGameResponses = [
+           {
+            text:"We're entering the final stage",
+            voice: finalStage
+           }
+        ]
+            setResponse(useEndGameResponses[0].text)
+            const voiceover = new Audio(useEndGameResponses[0].voice)
+            voiceover.play()
+    }
+
+
+
+
+
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://10.218.164.206:5000' 
+    const API = 'http://127.0.0.1:5000' 
 
     const navigate = useNavigate()
 
@@ -31,6 +221,9 @@ function GameScreen(){
     const [boardValueList, setBoardValueList] = useState([])
 
     const [status, setStatus] = useState('')
+
+    const [response, setResponse] = useState('')
+
 
 
     const woodTap = useRef(new Audio(woodTapSound))
@@ -104,6 +297,7 @@ function GameScreen(){
                 const BoardData = await response.json()
 
                 setBoardValueList(BoardData.state.board)
+                setBoardState(BoardData)
                 console.log(BoardData)
 
             }
@@ -114,6 +308,8 @@ function GameScreen(){
 
                
         }
+
+        const [boardState, setBoardState] = useState()
 
          const playRequest = async () => {
             
@@ -134,6 +330,7 @@ function GameScreen(){
                 const BoardData = await response.json()
 
                 setBoardValueList(BoardData.state.board)
+                setBoardState(BoardData)
                 console.log(BoardData)
                 
 
@@ -142,10 +339,7 @@ function GameScreen(){
             catch (error) {
                 console.log(error.message)
             }
-
-            
-
-               
+     
         }
 
         const getStatus = async () => {
@@ -176,7 +370,6 @@ function GameScreen(){
     }, []) 
 
     const getBoardState = () => {
-        getGreatMoveResponses()
         playRequest()
         getStatus()
         
@@ -222,47 +415,7 @@ function GameScreen(){
 
         }
 
-        const [response, setResponse] = useState('')
-
-        const getGreatMoveResponses = () => {
-            const greatMoveResponses = [
-            {
-                text: 'Awesome move!',
-                voice: awesomeMove
-            },
-
-            {
-                text: 'Nicely played.',
-                voice: nicelyPlayed
-            },
-
-            {
-                text: 'That was a clever move!',
-                voice: cleverMove
-            },
-
-            {
-                text: "You are making this game interesting...  ",
-                voice: interestingame
-            },
-
-            {
-                text: "Well done. I didn't see that coming",
-                voice: wellDone
-            },
         
-        ]
-
-            const responseIndex = Math.floor(Math.random() * greatMoveResponses.length)
-            const selectedResponse = greatMoveResponses[responseIndex]
-            setResponse(selectedResponse.text)
-
-            const voiceover = new Audio(selectedResponse.voice)
-            voiceover.play()
-            
-        }
-
-
         const [displayScreen, setDisplayScreen] = useState(false)
         const toggleSettingScreen = () => {
             setDisplayScreen(!displayScreen)
@@ -272,20 +425,188 @@ function GameScreen(){
             setDisplayScreen(false)
         }
 
-       
+        const useWelcomeResponses = () => {
+        const welcomeResponses = [
+            {
+                text: "Welcome, Let's enjoy a game of Oware",
+                voice: enjoyableGame
+            },
+            {
+                text: "The Board is ready. Your move",
+                voice: boardReady
+            },
+            {
+                text: "Good luck. Let's see what you've got",
+                voice: goodLuck
+            },
+            {
+                text: "Everything is set. Shall we begin?",
+                voice: shallWeBegin
+            },
+            {
+                text: "May the best strategist win",
+                voice: strategistWin
+            },
+        ]
+
+         const responseIndex = Math.floor(Math.random() * welcomeResponses.length)
+            const selectedResponse = welcomeResponses[responseIndex]
+            setResponse(selectedResponse.text)
+
+            const voiceover = new Audio(selectedResponse.voice)
+            voiceover.play()
+    }
+
+    useEffect(() => {
+        useWelcomeResponses()
+    },[])
+
+
+    const useGreatMoveResponses = () => {
+        const greatMoveResponses = [
+            {
+                text: "That was a clever move",
+                voice: cleverMove
+            },
+            {
+                text: "Nicely played",
+                voice: nicelyPlayed
+            },
+            {
+                text: "You've put me under pressure",
+                voice: underPressure
+            },
+            {
+                text: "Excellent choice",
+                voice: excellentChoice
+            },
+            {
+                text: "You're thinking several moves ahead",
+                voice: severalMoves
+            },
+        ]
+
+        const responseIndex = Math.floor(Math.random() * greatMoveResponses.length)
+            const selectedResponse = greatMoveResponses[responseIndex]
+            setResponse(selectedResponse.text)
+
+            const voiceover = new Audio(selectedResponse.voice)
+            voiceover.play()
+    }
+
+    const useBadMoveResponses = () => {
+        const badMoveResponses = [
+            {
+                text: "That may cost you later",
+                voice: costYou
+            },
+            {
+                text: "Be careful.That leaves an opening",
+                voice: leaveOpening
+            },
+            {
+                text: "I'm not sure that was you best option",
+                voice: bestOption
+            },
+            {
+                text: "Interesting... let's see where that leads",
+                voice: whereItLeads
+            },
+            {
+                text: "That changes the game in my favor",
+                voice: myFavor
+            },
+        ]
+
+        const responseIndex = Math.floor(Math.random() * badMoveResponses.length)
+            const selectedResponse = badMoveResponses[responseIndex]
+            setResponse(selectedResponse.text)
+
+            const voiceover = new Audio(selectedResponse.voice)
+            voiceover.play()
+
+    }
+
+    const [robotStatus, setRobotStatus] = useState('')
+    const [gameOver, setGameOver] = useState(true)
+    const [playerScore, setPlayerScore] = useState(24)
+    const [robotScore, setRobotScore] = useState(26)
+    const [winner, setWinner] = useState('')
+
+     
+    useEffect(() => {
+        if (boardState?.state?.ratings === 0) {
+            useBadMoveResponses();
+        } else if (boardState?.state?.ratings === 1) {
+            useGreatMoveResponses();
+        }
+
+        setRobotStatus(boardState?.state?.status)
+        console.log(robotStatus)
+
+        setGameOver(boardState?.state?.game_over)
+        console.log(gameOver)   
+
+        if(status === 'error'){
+            useInvalidMoveResponses()
+        }
+
+        if (gameOver && playerScore > robotScore) {
+            setWinner('You Win')
+            usePlayerWinsResponses()
+        } else if (gameOver && playerScore == robotScore ){
+            setWinner("It's a Draw")
+        } else {
+            setWinner('Agokansie Wins')
+            useRobotWinsResponses()
+        }
+
+    },[boardState])
+
+    const useInvalidMoveResponses = () => {
+        const invalidMovesResponses = [
+            {
+                text: "That move breaks the rules",
+                voice: breaksRules
+            },
+            {
+                text: "Please choose another move",
+                voice: anotherMove
+            }
+        ]
+
+        const responseIndex = Math.floor(Math.random() * invalidMovesResponses.length)
+            const selectedResponse = invalidMovesResponses[responseIndex]
+            setResponse(selectedResponse.text)
+
+            const voiceover = new Audio(selectedResponse.voice)
+            voiceover.play()
+    }
 
 
 
+    const BackToHome = () => {
+        navigate('/selectionScreen')
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
+    }
+
+    const restartGame = () => {
+        window.location.reload()
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
+    }
+    
+    
     return(
         <PageWrapper >
-            
-            <div className='absolute inset-0 bg-gradient-to-r from-[#3b1f0f]/80 via-[#8b5a2b]/70 to-[#d4a017]/80 -z-1 min-h-screen flex flex-col items-center justify-center'>
-                <img src={bg} alt="background image" className="absolute object-cover w-full h-full -z-1 opacity-[0.5]"/>   
+            <div className={`absolute inset-0 bg-gradient-to-r from-[#3b1f0f]/80 via-[#8b5a2b]/70 to-[#d4a017]/80 -z-1 min-h-screen flex flex-col items-center justify-center ${status === 'error' ? 'border-4 border-red-500' : ''} ${true ? 'bg-black': ''}`}>
+                <img src={bg} alt="background image" className={`absolute object-cover w-full h-full -z-1 opacity-[0.5]  `}/>   
         </div>
 
         <div className='flex flex-col h-screen w-full'>
 
-            <div className="absolute top-0 right-0 flex items-center gap-5 z-50 backdrop-blur p-3 rounded-lg">
+            <div className="absolute top-1 right-1 flex items-center gap-5 z-50 backdrop-blur p-3 rounded-lg">
                 <div className='flex items-center justify-center'>
                     <ArrowLeft className=' left-3 size-7 cursor-pointer' onClick={goBack} />
                     <ArrowRight className=' size-7 text-gold-300 cursor-pointer' onClick={goForward} />
@@ -294,6 +615,76 @@ function GameScreen(){
                     <Settings className='cursor-pointer' onClick={toggleSettingScreen} />
                 </div>
             </div>
+
+ {/* game over screen */}
+
+            {
+                gameOver ? 
+                
+                <div className='absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-220 h-150 z-100'>
+                    <div className='flex flex-col justify-center items-center rounded-3xl border-4 border-[#b98b56] bg-[#efe0c2] shadow-2xl overflow-hidden bg-dark p-5 gap-10'>
+
+                        <p className='font-elite text-7xl font-bold text-darkgold'>GAME OVER</p>
+
+                        <div className='rounded-lg border-1 w-3/4 h-90 shadow-darkgold shadow-lg flex flex-col'>
+
+                            
+                            <div className='flex items-center justify-center '>
+                                <p className='border-1 border-t-0 text-[16px] font-bold p-2 rounded-bl rounded-br text-midGold'>{winner}</p>
+                            </div>
+                            
+                            <div className='flex w-full size-65'>
+                                
+                                <div className='w-3/7 flex flex-col items-center justify-center gap-3'>
+                                     <img src={player} className={`border-1 size-35 rounded-[50%] ${winner == 'You Win' ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
+                                    <p className={`font-elite text-xl font-bold ${winner == 'You Win' ? 'text-darkgold' : 'text-midGold'} `}>You</p>
+                                    <p className={`text-6xl font-bold ${winner == 'You Win' ? 'text-darkgold' : 'text-midGold'}`}>{playerScore}</p>
+                                </div>
+
+                                <div className='w-1/7 flex items-center justify-center'>
+                                    <p className='font-fingerpaint text-5xl font-bold text-midGold'>VS</p>
+                                </div>
+
+                                <div className='w-3/7 flex flex-col items-center justify-center gap-3'>
+                                     <img src={robot} className={`border-1 size-35 rounded-[50%] ${winner == 'Agokansie Wins' ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
+                                    <p className={`font-elite text-xl font-bold ${winner == 'Agokansie Wins' ? 'text-darkgold' : 'text-midGold'} `}>Agokansie</p>
+                                    <p className={`text-6xl font-bold ${winner == 'Agokansie Wins' ? 'text-darkgold' : 'text-midGold'}`}>{robotScore}</p>
+                                </div>
+                            </div>
+
+                            <div className='flex items-center justify-center '>
+                                <p className='border-1 text-[16px] font-bold p-2 rounded-lg text-midGold'>A crab cannot give birth to a bird</p>
+                            </div>
+
+                        </div>
+
+                        <div className='flex items-center justify-between w-9/10'>
+                            <button className='flex items-center justify-center p-3 gap-2 border-1 rounded-lg cursor-pointer font-bold text-xl text-midGold hover:scale-95 duration-300' onClick={restartGame}>
+                                <RotateCcw/>
+                                <p>PLAY AGAIN </p>  
+                            </button>
+
+                             <button className='flex items-center justify-center p-3 gap-2 border-1 rounded-lg cursor-pointer font-bold text-xl animate-float text-midGold hover:scale-95 duration-300  '>
+                                <Trophy />
+                                <p>CLAIM YOUR REWARD</p>
+                            </button>
+
+                             <button className='flex items-center justify-center p-3 gap-2 border-1 rounded-lg cursor-pointer font-bold text-xl text-midGold hover:scale-95 duration-300' onClick={BackToHome}>
+                                <House />
+                                <p>BACK TO HOME</p>
+                            </button>
+                        </div>
+                    </div>
+
+                </div> 
+                
+                
+                
+                : null
+
+            }
+
+            
 
             {displayScreen ?
                 <div className='absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-220 h-150 '>
@@ -489,13 +880,13 @@ function GameScreen(){
             }
 
 
-            <div className='absolute top-15 right-0 flex flex-col gap-4'>
+            <div className='absolute top-15 right-1 flex flex-col gap-4'>
                 {/* <div>
                     <input type='number' placeholder='Enter pit number' value={pit} onChange={(e) => setPit(e.target.value)} className='p-3 border-1 rounded-lg'/>
                     <button className='text-xl p-3 cursor-pointer border-1 rounded-lg' onClick={postPitNumber} >Enter</button>
                 </div> */}
                 
-                <div className=' border-none p-2 text-xl rounded-lg text-center bg-gradient-to-br from-gold to-darkgold text-[#F7E7CE]'>
+                <div className= {`border-none p-2 text-xl rounded-[2px] text-center bg-gold text-black ${status === 'error' ? 'bg-red-500':''}`}>
                     <p>{`Status: ${status}`}</p>
                 </div>
             </div>
@@ -539,7 +930,7 @@ function GameScreen(){
 
                     <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-b-0 border-[#4a2a12] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
                         <div className="w-65 h-17 bg-[#5c3317] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                            <OutOfPlay leftOverBeads={boardValueList[12]}/>
+                            <OutOfPlay leftOverBeads={boardState?.state?.scores?.robot}/>
                         </div>
                     </div>
 
@@ -573,12 +964,16 @@ function GameScreen(){
 
                     <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-t-0 border-[#4a2a12] rounded-b-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
                         <div className="w-65 h-17 bg-[#5c3317] rounded-b-[3rem] flex items-center justify-center gap-3 p-4">
-                            <OutOfPlay leftOverBeads={boardValueList[13]}/>
+                            <OutOfPlay leftOverBeads={boardState?.state?.scores?.player}/>
 
                     </div>
                     </div>
 
-                    <button onClick={getBoardState} className='absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300'>I've played</button>
+                    <button onClick={getBoardState} className={`absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-all duration-300
+                     ${status === 'robot_is_playing' ? 'text-darkgold' : ''}`}
+                    disabled={
+                        status === 'robot_is_playing'? true : false
+                    }>I've played</button>
 
 
 
