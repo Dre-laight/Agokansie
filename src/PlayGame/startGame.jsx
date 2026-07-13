@@ -204,7 +204,7 @@ function OwareGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://192.168.88.235:5000' 
+    const API = 'http://192.168.74.2:5000' 
 
     const navigate = useNavigate()
 
@@ -351,13 +351,13 @@ function OwareGame(){
 
         }
 
-        // useEffect(() => {
-        //     getStatus()
+        useEffect(() => {
+            getStatus()
 
-        //     const interval = setInterval(getStatus, 5000)
+            const interval = setInterval(getStatus, 5000)
 
-        //     return () => clearInterval(interval)
-        // },[])
+            return () => clearInterval(interval)
+        },[])
 
     useEffect(() => {
         // getRequest()
