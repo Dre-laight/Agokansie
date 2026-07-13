@@ -86,7 +86,7 @@ const getBoardState = () => {
         console.log(steps[currentStep].step)
     }
 
-    const Lesson3Continuation = () => {
+    const LessonState = () => {
         if(currentStep === steps.length - 1){
             setNextLesson(true)
         } else {
@@ -94,9 +94,9 @@ const getBoardState = () => {
         }
     }
 
-    const Lesson4Navigation = () => {
+    const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/lesson5')
+            navigate('/lesson6')
         } else {
             nextStep()
         }
@@ -121,7 +121,7 @@ const getBoardState = () => {
     
 
     useEffect(() => {
-        Lesson3Continuation()
+        LessonState()
         PreviousLesson()
     }, [currentStep])
 

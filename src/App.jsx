@@ -15,6 +15,9 @@ import Lesson2 from './PlayGame/Tutorial/Lessons/Lesson2.jsx'
 import Lesson3 from './PlayGame/Tutorial/Lessons/Lesson3.jsx'
 import Lesson4 from './PlayGame/Tutorial/Lessons/Lesson4.jsx'
 import Lesson5 from './PlayGame/Tutorial/Lessons/Lesson5.jsx'
+import Lesson6 from './PlayGame/Tutorial/Lessons/Lesson6.jsx'
+import Lesson7 from './PlayGame/Tutorial/Lessons/Lesson7.jsx'
+import Lesson8 from './PlayGame/Tutorial/Lessons/Lesson8.jsx'
 
 function AnimatedRoutes(){
     const location = useLocation()
@@ -43,6 +46,10 @@ function AnimatedRoutes(){
                 <Route path='/lesson3' element={<Lesson3/>}/>
                 <Route path='/lesson4' element={<Lesson4/>}/>
                 <Route path='/lesson5' element={<Lesson5/>}/>
+                <Route path='/lesson6' element={<Lesson6/>}/>
+                <Route path='/lesson7' element={<Lesson7/>}/>
+                <Route path='/lesson8' element={<Lesson8/>}/>
+                
 
 
             </Routes>

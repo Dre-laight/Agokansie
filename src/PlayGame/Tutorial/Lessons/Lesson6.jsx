@@ -7,13 +7,12 @@ import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
 
 
-function Lesson4(){
+function Lesson6(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
 const navigate = useNavigate()
-
 
 
 const goBack = () => {
@@ -96,7 +95,7 @@ const getBoardState = () => {
 
     const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/lesson5')
+            navigate('/lesson7')
         } else {
             nextStep()
         }
@@ -113,7 +112,7 @@ const getBoardState = () => {
 
     const PreviousLessonNavigation = () => {
         if (previousLessonVariable){
-            navigate('/lesson3')
+            navigate('/lesson5')
         } else {
             previousStep()
         }
@@ -183,11 +182,11 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>capturing seeds</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>feeding your opponent</p>
             </div>
 
             <div className='flex items-center justify-between'>
-                <p className=' text-midGold'>Lesson 4</p>
+                <p className=' text-midGold'>Lesson 6</p>
                 <p className='text-midGold'>{`Step ${steps[currentStep].step}`}</p>
             </div>
             
@@ -247,4 +246,4 @@ return(
 )
 }
 
-export default Lesson4
+export default Lesson6

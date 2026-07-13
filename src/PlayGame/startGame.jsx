@@ -204,7 +204,7 @@ function OwareGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://192.168.88.231:5000' 
+    const API = 'http://192.168.88.235:5000' 
 
     const navigate = useNavigate()
 

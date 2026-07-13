@@ -7,14 +7,12 @@ import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
 
 
-function Lesson4(){
+function Lesson8(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
 const navigate = useNavigate()
-
-
 
 const goBack = () => {
         navigate(-1)
@@ -94,9 +92,9 @@ const getBoardState = () => {
         }
     }
 
-    const nextLessonNavigation = () => {
+    const endTutorialNavigation = () => {
         if (nextLesson){
-            navigate('/lesson5')
+            navigate('/selectionScreen')
         } else {
             nextStep()
         }
@@ -113,7 +111,7 @@ const getBoardState = () => {
 
     const PreviousLessonNavigation = () => {
         if (previousLessonVariable){
-            navigate('/lesson3')
+            navigate('/lesson7')
         } else {
             previousStep()
         }
@@ -169,7 +167,7 @@ return(
             </div>          
         </div>
 
-        <button onClick={nextLessonNavigation} className='absolute bottom-5 right-5 border-none p-3 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3 bg-dark/30'> 
+        <button onClick={endTutorialNavigation} className='absolute bottom-5 right-5 border-none p-3 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3 bg-dark/30'> 
             <p>{nextLesson ? 'Next Lesson' : 'Next'}</p>
             <CornerDownRight /> 
         </button>
@@ -183,11 +181,11 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>capturing seeds</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>Last lesson</p>
             </div>
 
             <div className='flex items-center justify-between'>
-                <p className=' text-midGold'>Lesson 4</p>
+                <p className=' text-midGold'>Lesson 8</p>
                 <p className='text-midGold'>{`Step ${steps[currentStep].step}`}</p>
             </div>
             
@@ -247,4 +245,4 @@ return(
 )
 }
 
-export default Lesson4
+export default Lesson8

@@ -80,7 +80,7 @@ const getBoardState = () => {
         console.log(steps[currentStep].step)
     }
 
-    const Lesson2Continuation = () => {
+    const LessonState = () => {
         if(currentStep === steps.length - 1){
             setNextLesson(true)
         } else {
@@ -89,10 +89,10 @@ const getBoardState = () => {
     }
 
     useEffect(() => {
-        Lesson2Continuation()
+        LessonState()
     }, [currentStep])
 
-    const Lesson2Navigation = () => {
+    const nextLessonNavigation = () => {
         if (nextLesson){
             navigate('/lesson2')
         } 
@@ -145,7 +145,7 @@ return(
             </div>          
         </div>
 
-        <button onClick={Lesson2Navigation} className='absolute bottom-5 right-5 border-none p-3 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3 bg-dark/30'> 
+        <button onClick={nextLessonNavigation} className='absolute bottom-5 right-5 border-none p-3 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3 bg-dark/30'> 
             <p>{nextLesson ? 'Next Lesson' : 'Next'}</p>
             <CornerDownRight /> 
         </button>
