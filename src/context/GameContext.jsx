@@ -10,7 +10,7 @@ export const GameProvider = ({children}) => {
     const [currentGame, setCurrentGame] = useState(0)
 
      const games = [
-                {key: 0, name: 'Oware',  backgroundImage: owareBg,},
+                {key: 0, name: 'Oware',  backgroundImage: owareBg,},        
                 {key: 1, name: 'Dame', backgroundImage: dameBg,  },
                 {key: 2, name: 'Achi',   backgroundImage: achiBg,  }
             ]
@@ -22,7 +22,7 @@ export const GameProvider = ({children}) => {
                 currentGame,
                 setCurrentGame  
             }}
-            >
+            >   
             {children}
         </GameContext.Provider>
     )

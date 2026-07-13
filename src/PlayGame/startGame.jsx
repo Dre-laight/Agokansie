@@ -66,7 +66,7 @@ import strategistWin from '../assets/sound/welcome/strategistWin.m4a'
 
 
 
-function GameScreen(){
+function OwareGame(){
     
     
 
@@ -202,12 +202,9 @@ function GameScreen(){
     }
 
 
-
-
-
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://127.0.0.1:5000' 
+    const API = 'http://192.168.88.231:5000' 
 
     const navigate = useNavigate()
 
@@ -354,13 +351,13 @@ function GameScreen(){
 
         }
 
-        useEffect(() => {
-            getStatus()
+        // useEffect(() => {
+        //     getStatus()
 
-            const interval = setInterval(getStatus, 3000)
+        //     const interval = setInterval(getStatus, 5000)
 
-            return () => clearInterval(interval)
-        },[])
+        //     return () => clearInterval(interval)
+        // },[])
 
     useEffect(() => {
         // getRequest()
@@ -528,8 +525,8 @@ function GameScreen(){
 
     const [robotStatus, setRobotStatus] = useState('')
     const [gameOver, setGameOver] = useState(true)
-    const [playerScore, setPlayerScore] = useState(24)
-    const [robotScore, setRobotScore] = useState(26)
+    const [playerScore, setPlayerScore] = useState()
+    const [robotScore, setRobotScore] = useState()
     const [winner, setWinner] = useState('')
 
      
@@ -540,11 +537,18 @@ function GameScreen(){
             useGreatMoveResponses();
         }
 
+
         setRobotStatus(boardState?.state?.status)
         console.log(robotStatus)
 
         setGameOver(boardState?.state?.game_over)
         console.log(gameOver)   
+
+        setRobotScore(boardState?.state?.scores?.robot)
+        console.log(robotScore)
+
+        setPlayerScore(boardState?.state?.scores?.player)
+        console.log(playerScore)
 
         if(status === 'error'){
             useInvalidMoveResponses()
@@ -555,7 +559,7 @@ function GameScreen(){
             usePlayerWinsResponses()
         } else if (gameOver && playerScore == robotScore ){
             setWinner("It's a Draw")
-        } else {
+        } else if (gameOver && robotScore > playerScore) {
             setWinner('Agokansie Wins')
             useRobotWinsResponses()
         }
@@ -599,7 +603,7 @@ function GameScreen(){
     
     return(
         <PageWrapper >
-            <div className={`absolute inset-0 bg-gradient-to-r from-[#3b1f0f]/80 via-[#8b5a2b]/70 to-[#d4a017]/80 -z-1 min-h-screen flex flex-col items-center justify-center ${status === 'error' ? 'border-4 border-red-500' : ''} ${true ? 'bg-black': ''}`}>
+            <div className={`absolute inset-0 bg-gradient-to-r from-[#3b1f0f]/80 via-[#8b5a2b]/70 to-[#d4a017]/80 -z-1 min-h-screen flex flex-col items-center justify-center ${status === 'error' ? 'border-4 border-red-500' : ''} ${gameOver ? 'bg-black': ''}`}>
                 <img src={bg} alt="background image" className={`absolute object-cover w-full h-full -z-1 opacity-[0.5]  `}/>   
         </div>
 
@@ -869,10 +873,7 @@ function GameScreen(){
       </div>
 
     </div>
-
-
-              
-                
+  
                 : null
         
         
@@ -929,7 +930,7 @@ function GameScreen(){
 
                     <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-b-0 border-[#4a2a12] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
                         <div className="w-65 h-17 bg-[#5c3317] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                            <OutOfPlay leftOverBeads={boardState?.state?.scores?.robot}/>
+                            <OutOfPlay leftOverBeads={robotScore}/>
                         </div>
                     </div>
 
@@ -954,16 +955,13 @@ function GameScreen(){
                         <Pit beadCount={boardValueList[4]}/>
                         <Pit beadCount={boardValueList[5]}/>
 
-
-                        
-
                     </div>
 
                     </div>
 
                     <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-t-0 border-[#4a2a12] rounded-b-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
                         <div className="w-65 h-17 bg-[#5c3317] rounded-b-[3rem] flex items-center justify-center gap-3 p-4">
-                            <OutOfPlay leftOverBeads={boardState?.state?.scores?.player}/>
+                            <OutOfPlay leftOverBeads={playerScore}/>
 
                     </div>
                     </div>
@@ -987,4 +985,4 @@ function GameScreen(){
     )   
 }
 
-export default GameScreen
+export default OwareGame

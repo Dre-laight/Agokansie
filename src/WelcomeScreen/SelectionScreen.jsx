@@ -13,10 +13,9 @@ import { useNavigate } from "react-router-dom";
 import { motion } from 'framer-motion'
 
 
-
     function SelectionScreen() {
 
-        const API = 'http://127.0.0.1:5000/api/game/select'
+        const API = 'http://192.168.88.231:5000/api/game/select'
        
         const {games, currentGame, setCurrentGame} = useContext(GameContext)
         const [isLoading, setIsLoading] = useState(false)
@@ -26,7 +25,7 @@ import { motion } from 'framer-motion'
         const nextGame = () => {
             setCurrentGame((previous) => (previous + 1) % games.length)
             swipeAudio.current.currentTime = 0
-            swipeAudio.current.play()
+            swipeAudio.current.play()   
     
         }
 
@@ -35,7 +34,7 @@ import { motion } from 'framer-motion'
                 previous === 0 ? games.length - 1 : previous - 1)
                 swipeAudio.current.currentTime = 0  
                 swipeAudio.current.play()
-        }
+        }               
 
         const SWIPE_THRESHOLD = 75
         const handleSwipe = (event, info) => {
@@ -95,8 +94,8 @@ import { motion } from 'framer-motion'
 
                     
                 if (games[currentGame].key == 0){
-                    navigate('/gameScreen')
-                    
+                    navigate('/owareScreen')
+
                 } else if (games[currentGame].key == 1){
                     navigate('/dameScreen')
                     
@@ -128,6 +127,18 @@ import { motion } from 'framer-motion'
             navigate(1)
             woodTap.current.currentTime = 0
             woodTap.current.play()
+        }
+
+        const startTutorial = () => {
+            if (games[currentGame].key == 0){
+                    navigate('/owareLessonScreen')
+
+                } else if (games[currentGame].key == 1){
+                    navigate('/dameTutorial')
+                    
+                } else {
+                    navigate('/achiTutorial')
+                }
         }
 
 
@@ -184,7 +195,7 @@ import { motion } from 'framer-motion'
                             disabled={isLoading}
                             >{isLoading ? (<div className="text-2xl animate-pulse   ">...</div>) : 'Play'}</button>
 
-                            <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-105 transition-smooth duration-300">Tutorial</button>
+                            <button className="border-none p-3 w-40 text-xl text-d rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-105 transition-smooth duration-300" onClick={startTutorial}>Tutorial</button>
                         </div>
                         
                     </div>   
