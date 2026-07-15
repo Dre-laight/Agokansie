@@ -33,7 +33,7 @@ python_exec = os.path.join(
 
 
 browser_cmd = [
-    "chromium",
+    "chromium-browser",
     "--kiosk",
     "--incognito",
     "--disable-infobars",
@@ -214,16 +214,13 @@ def restart():
 
 try:
 
-    start_services()          # <-- leave this exactly as-is
+    start_services()
 
 
-    try:
-        keyboard.add_hotkey(
-            "f9",
-            restart
-        )
-    except ImportError:
-        print("⚠ F9 hotkey disabled (need root/input-group permissions on Linux). Continuing without it.")
+    keyboard.add_hotkey(
+        "f9",
+        restart
+    )
 
 
     while True:
@@ -235,8 +232,6 @@ try:
 except KeyboardInterrupt:
 
     pass
-
-
 
 finally:
 
