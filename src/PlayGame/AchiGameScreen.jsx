@@ -1,147 +1,3 @@
-// import { useContext, useState, useRef, useEffect, } from 'react'
-// import PageWrapper from '../WelcomeScreen/PageWrapper'
-// import bg from '../assets/background-collage.png'
-// import thinking_image  from '../assets/black_man_thinking.webp'
-// import { ArrowRight, ArrowLeft } from 'lucide-react'
-// import { useNavigate } from "react-router-dom";
-// import woodTapSound from '../assets/sound/woodTap.mp3'
-
-
-
-// function AchiGame(){
-
-// const woodTap = useRef(new Audio(woodTapSound))
-// const thinking = "..."
-
-// const navigate = useNavigate()
-
-
-
-// const goBack = () => {
-//         navigate(-1)
-//         woodTap.current.currentTime = 0
-//         woodTap.current.play()
-//     }
-
-// const goForward = () => {
-//     navigate(1)
-//     woodTap.current.currentTime = 0
-//     woodTap.current.play()
-// }
-
-// const getBoardState = () => {
-//     console.log('i have played')
-// }
-
-// return(
-// <PageWrapper>
-//     <div className='absolute inset-0 bg-linear-to-r from-[#3b1f0f]/80 via-[#8b5a2b]/70 to-[#d4a017]/80 -z-1 min-h-screen flex flex-col items-center justify-center'>
-//         <img src={bg} alt="background image" className="absolute object-cover w-full h-full -z-1 opacity-[0.3]"/>   
-//     </div> 
-
-//     <div className='flex flex-col h-screen w-full'>
-
-//     <div className="absolute top-0 right-0 flex items-center gap-4 z-50 backdrop-blur p-3 rounded-lg">
-//         <ArrowLeft className=' left-3 size-8 cursor-pointer text-wood ' onClick={goBack} />
-//         <ArrowRight className=' size-8 text-gold-300 cursor-pointer text-wood' onClick={goForward} />
-//     </div>
-
-
-//     <div className='flex flex-row items-start gap-4 p-6 shrink-0' >
-        
-//         <img src={thinking_image} className='h-40'/>
-
-//         <div>
-//             <div>
-//                 <p className='text-4xl text-white'>
-//                     {
-//                         thinking.split("").map((dot, index) => (
-//                             <span
-//                                 key={index}
-//                                 style={{animationDelay: `${index * 0.2}s`}}
-//                                 className='inline-block animate-float'
-//                             >{dot}
-//                             </span>
-//                         ))
-//                     }
-//                 </p>
-//             </div>
-                    
-//             <div className='relative w-[50%] shadow-lg rounded-lg p-3 text-[17px] backdrop-blur-md text-white'>
-//                 <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque, quae sit sint culpa rerum possimus magni? Dolorum vero dolores, facere qui porro facilis?</p>
-//             </div>
-            
-//         </div>
-//         </div>
-
-//              <div class="flex flex-col items-center justify-center mt-20">
-//             <div class="relative h-96 w-96 border-2 bg-radial from-gold to-wood">
-
-//                 <div class="absolute left-1/3 top-0 h-full w-[2px] -translate-x-1/2 bg-black"></div>
-//                 <div class="absolute left-2/3 top-0 h-full w-[2px] -translate-x-1/2 bg-black"></div>
-
-
-//                 <div class="absolute top-1/3 left-0 h-[2px] w-full -translate-y-1/2 bg-black"></div>
-//                 <div class="absolute top-2/3 left-0 h-[2px] w-full -translate-y-1/2 bg-black"></div>
-
-
-//                 <div class="absolute left-0 top-0 h-[2px] w-[136%] origin-top-left rotate-45 bg-black"></div>
-//                 <div class="absolute right-0 top-0 h-[2px] w-[136%] origin-top-right -rotate-45 bg-black"></div>
-
-
-//                 <div class="grid h-full w-full grid-cols-3 grid-rows-3">
-//                 <div class="flex items-center justify-center">
-//                     <div class="h-6 w-6 rounded-full bg-black"></div>
-//                 </div>
-
-//                 <div class="flex items-center justify-center">
-//                     <div class="h-6 w-6 rounded-full bg-black"></div>
-//                 </div>
-
-//                 <div class="flex items-center justify-center">
-//                     <div class="h-6 w-6 rounded-full bg-black"></div>
-//                 </div>
-
-//                 <div class="flex items-center justify-center">
-//                     <div class="h-6 w-6 rounded-full bg-black"></div>
-//                 </div>
-
-//                 <div class="flex items-center justify-center">
-//                     <div class="h-6 w-6 rounded-full bg-black"></div>
-//                 </div>
-
-//                 <div class="flex items-center justify-center">
-//                     <div class="h-6 w-6 rounded-full bg-black"></div>
-//                 </div>
-
-//                 <div class="flex items-center justify-center">
-//                     <div class="h-6 w-6 rounded-full bg-black"></div>
-//                 </div>
-
-//                 <div class="flex items-center justify-center">
-//                     <div class="h-6 w-6 rounded-full bg-black"></div>
-//                 </div>
-
-//                 <div class="flex items-center justify-center">
-//                     <div class="h-6 w-6 rounded-full bg-black"></div>
-//                 </div>
-//                 </div>
-//             </div>
-//             </div> 
-
-//         <button onClick={getBoardState} className='absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300'>I've played</button>
-
-        
-    
-//     </div>
-// </PageWrapper>
-
-
-// )
-// }
-
-// export default AchiGame
-
 import { useContext, useState, useRef, useEffect, } from 'react'
 import PageWrapper from '../WelcomeScreen/PageWrapper'
 import { GameContext } from '../context/GameContext'
@@ -346,9 +202,10 @@ function AchiGame(){
     }
 
 
+
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://192.168.88.231:5000' 
+    const API = 'http://127.0.0.1:5000' 
 
     const navigate = useNavigate()
 
@@ -358,67 +215,12 @@ function AchiGame(){
 
     const [leftOverBeads, setLeftOverBeads] = useState(0)
 
-    const [boardValueList, setBoardValueList] = useState([])
-
     const [status, setStatus] = useState('')
 
     const [response, setResponse] = useState('')
 
 
-
-    const woodTap = useRef(new Audio(woodTapSound))
-
-    const OutOfPlay = ({leftOverBeads}) => {
-        return(
-            <>
-
-                <div className='flex flex-wrap items-center justify-center gap-1 p-4'>
-                    {Array.from({length: leftOverBeads}).map((_, index) => (
-                                        <div key={index}
-                                            className='rounded-full bg-gradient-to-br from-grey-500 to-green-200 size-4'></div>
-                                    ))}
-                </div>
-               
-            </>
-    
-        )
-    }
-
-    const Pit = ({beadCount}) => {
-        return(
-            <>
-                 <div className="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-4">
-                    <div className='grid grid-cols gap-1 justify-items-center items-center'></div>                        
-                    {Array.from( {length: beadCount }).map((_, index) =>(
-                        <div key={index}
-                        className='rounded-full bg-gradient-to-br from-grey-600 to-green-300 size-4'></div>
-
-                    ))}
-                </div>
-            </>
-
-        )
-    }
-
-    // const getRequest = async () => {
-    //         try {
-    //             const response = await fetch('http://192.168.88.40:5000/api/game/play')
-
-    //             if(!response.ok){
-    //                 throw new Error('Request failed')
-    //             }
-
-    //             const BoardData = await response.json()
-    //             setBoardValueList(BoardData.board)
-    //             console.log(BoardData.board)
-    //         }
-
-    //         catch (error) {
-    //             console.log(error.message)
-    //         }
-
-               
-    //     }
+   const woodTap = useRef(new Audio(woodTapSound))
 
     const postRequest = async () => {
             try {
@@ -436,8 +238,8 @@ function AchiGame(){
                       
                 const BoardData = await response.json()
 
-                setBoardValueList(BoardData.state.board)
                 setBoardState(BoardData)
+                setBoard(BoardData.state.board)
                 console.log(BoardData)
 
             }
@@ -468,15 +270,13 @@ function AchiGame(){
                 )
                       
                 const BoardData = await response.json()
-
-                setBoardValueList(BoardData.state.board)
-                setBoardState(BoardData)
+                setBoard(BoardData.state.board)
                 console.log(BoardData)
                 
 
             }
 
-            catch (error) {
+            catch (error) { 
                 console.log(error.message)
             }
      
@@ -671,16 +471,18 @@ function AchiGame(){
     const [gameOver, setGameOver] = useState(true)
     const [playerScore, setPlayerScore] = useState()
     const [robotScore, setRobotScore] = useState()
+    const [playerWins, setPlayerWins] = useState(false)
+    const [agokansieWins, setAgokansieWins] = useState(false)
     const [winner, setWinner] = useState('')
 
      
     useEffect(() => {
-        if (boardState?.state?.ratings === 0) {
-            useBadMoveResponses();
-        } else if (boardState?.state?.ratings === 1) {
-            useGreatMoveResponses();
-        }
 
+        // if (boardState?.state?.ratings === 0) {
+        //     useBadMoveResponses();
+        // } else if (boardState?.state?.ratings === 1) {
+        //     useGreatMoveResponses();
+        // }
 
         setRobotStatus(boardState?.state?.status)
         console.log(robotStatus)
@@ -703,12 +505,30 @@ function AchiGame(){
             usePlayerWinsResponses()
         } else if (gameOver && playerScore == robotScore ){
             setWinner("It's a Draw")
-        } else if (gameOver && robotScore > playerScore) {
-            setWinner('Agokansie Wins')
-            useRobotWinsResponses()
+        } else if (gameOver && robotScore > playerScore ) {
+            setWinner('Agokansie wins!'); 
+            setAgokansieWins(true)
+            useRobotWinsResponses();
         }
-
     },[boardState])
+
+    useEffect (()=>{
+    if (gameOver && playerScore > robotScore){ 
+        setWinner('You win!'); 
+        setPlayerWins(true)
+        usePlayerWinsResponses();
+    }
+
+    else if (gameOver && playerScore === robotScore){
+        setWinner("It's a draw")
+    }
+
+    else {
+        setWinner('Robot wins!'); 
+        setAgokansieWins(true)
+        useRobotWinsResponses();
+    }
+}, [playerScore, robotScore])
 
     const useInvalidMoveResponses = () => {
         const invalidMovesResponses = [
@@ -743,7 +563,61 @@ function AchiGame(){
         woodTap.current.currentTime = 0
         woodTap.current.play()
     }
+
+    const getLineStyle = (start, end) => {
+    const x1 = parseFloat(POSITIONS[start].left);
+    const y1 = parseFloat(POSITIONS[start].top);
+
+    const x2 = parseFloat(POSITIONS[end].left);
+    const y2 = parseFloat(POSITIONS[end].top);
+
+    const length = Math.sqrt(
+        Math.pow(x2 - x1, 2) +
+        Math.pow(y2 - y1, 2)
+    );
+
+    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+
+    return {
+        width: `${length}%`,
+        left: `${x1}%`,
+        top: `${y1}%`,
+        transform: `rotate(${angle}deg)`,
+        transformOrigin: "0 50%",
+    };
+};
+
+    const POSITIONS = [
+    { top: "0%", left: "0%" },      // 0
+    { top: "0%", left: "50%" },     // 1
+    { top: "0%", left: "100%" },    // 2
+
+    { top: "50%", left: "0%" },     // 3
+    { top: "50%", left: "50%" },    // 4
+    { top: "50%", left: "100%" },   // 5
+
+    { top: "100%", left: "0%" },    // 6
+    { top: "100%", left: "50%" },   // 7
+    { top: "100%", left: "100%" },  // 8
+];
+
+const LINES = [
+    [0,1],[1,2],
+    [3,4],[4,5],
+    [6,7],[7,8],
+
+    [0,3],[0,6],
+    [1,4],[4,7],
+    [2,5],[5,8],
+
+    [0,4],[4,8],
+    [2,4],[4,6],
+
+];
     
+    const createBoard = () => Array(9).fill(0)
+    const [board, setBoard] = useState(createBoard)
+
     
     return(
         <PageWrapper >
@@ -783,9 +657,9 @@ function AchiGame(){
                             <div className='flex w-full size-65'>
                                 
                                 <div className='w-3/7 flex flex-col items-center justify-center gap-3'>
-                                     <img src={player} className={`border-1 size-35 rounded-[50%] ${winner == 'You Win' ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
-                                    <p className={`font-elite text-xl font-bold ${winner == 'You Win' ? 'text-darkgold' : 'text-midGold'} `}>You</p>
-                                    <p className={`text-6xl font-bold ${winner == 'You Win' ? 'text-darkgold' : 'text-midGold'}`}>{playerScore}</p>
+                                     <img src={player} className={`border-1 size-35 rounded-[50%] ${playerWins ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
+                                    <p className={`font-elite text-xl font-bold ${playerWins ? 'text-darkgold' : 'text-midGold'} `}>You</p>
+                                    <p className={`text-6xl font-bold ${playerWins == 'You Win' ? 'text-darkgold' : 'text-midGold'}`}>{playerScore}</p>
                                 </div>
 
                                 <div className='w-1/7 flex items-center justify-center'>
@@ -793,9 +667,9 @@ function AchiGame(){
                                 </div>
 
                                 <div className='w-3/7 flex flex-col items-center justify-center gap-3'>
-                                     <img src={robot} className={`border-1 size-35 rounded-[50%] ${winner == 'Agokansie Wins' ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
-                                    <p className={`font-elite text-xl font-bold ${winner == 'Agokansie Wins' ? 'text-darkgold' : 'text-midGold'} `}>Agokansie</p>
-                                    <p className={`text-6xl font-bold ${winner == 'Agokansie Wins' ? 'text-darkgold' : 'text-midGold'}`}>{robotScore}</p>
+                                     <img src={robot} className={`border-1 size-35 rounded-[50%] ${agokansieWins ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
+                                    <p className={`font-elite text-xl font-bold ${agokansieWins ? 'text-darkgold' : 'text-midGold'} `}>Agokansie</p>
+                                    <p className={`text-6xl font-bold ${agokansieWins ? 'text-darkgold' : 'text-midGold'}`}>{robotScore}</p>
                                 </div>
                             </div>
 
@@ -1017,10 +891,7 @@ function AchiGame(){
       </div>
 
     </div>
-
-
-              
-                
+  
                 : null
         
         
@@ -1037,10 +908,6 @@ function AchiGame(){
                     <p>{`Status: ${status}`}</p>
                 </div>
             </div>
-
-
-
-            
 
        
             <div className='flex flex-row items-start gap-4 p-6 shrink-0' >
@@ -1071,61 +938,57 @@ function AchiGame(){
                 
             </div>
 
-            {/* <div className="flex-1 flex items-center justify-center">
+        <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1'>
+            <div className='border-3 p-18 rounded-lg border-dark bg-dark/70'>
 
-                <div className="flex flex-col items-center">
+            <div className="relative w-[450px] h-[450px] bg-radial from-gold via-wood1 to-dark ">
 
-                    <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-b-0 border-[#4a2a12] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                        <div className="w-65 h-17 bg-[#5c3317] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                            <OutOfPlay leftOverBeads={robotScore}/>
-                        </div>
-                    </div>
+                {/* Lines */}
+                {LINES.map(([start, end], index) => (
+                    <div
+                        key={index}
+                        className="absolute h-1 bg-darkgold"
+                        style={getLineStyle(start, end)}
+                    />
+                ))}
 
-                    <div className="bg-[#8b5a2b] p-6 border-x-4 border-[#5a3418] shadow-2xl rounded-4xl">
+                {/* Nodes */}
+                {POSITIONS.map((position, index) => (
+                    <div
+                        key={index}
+                        className="absolute size-4 z-10 rounded-full bg-darkgold -translate-x-1/2 -translate-y-1/2"
+                        style={position}
+                    />
+                ))}
 
-                    <div className="flex gap-4 mb-5">
+                {/* Pieces */}
+                {board.map((square, index) =>
+                    square !== 0 && (
+                        <div
+                            key={index}
+                            className={`absolute z-20 size-14 rounded-full border-2 border-gold
+                                -translate-x-1/2 -translate-y-1/2
+                                ${
+                                    square === 1
+                                        ? "bg-black"
+                                        : "bg-darkgold"
+                                }`}
+                            style={POSITIONS[index]}
+                        />
+                    )
+                )}
+             </div>
 
-                       <Pit beadCount={boardValueList[11]}/>
-                        <Pit beadCount={boardValueList[10]}/>
-                        <Pit beadCount={boardValueList[9]}/>
-                        <Pit beadCount={boardValueList[8]}/>
-                        <Pit beadCount={boardValueList[7]}/>
-                        <Pit beadCount={boardValueList[6]}/> 
-
-                    </div>
-
-                    <div className="flex gap-4">
-                        <Pit beadCount={boardValueList[0]}/>
-                        <Pit beadCount={boardValueList[1]}/>
-                        <Pit beadCount={boardValueList[2]}/>
-                        <Pit beadCount={boardValueList[3]}/>
-                        <Pit beadCount={boardValueList[4]}/>
-                        <Pit beadCount={boardValueList[5]}/>
-
-
-                        
-
-                    </div>
-
-                    </div>
-
-                    <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-t-0 border-[#4a2a12] rounded-b-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                        <div className="w-65 h-17 bg-[#5c3317] rounded-b-[3rem] flex items-center justify-center gap-3 p-4">
-                            <OutOfPlay leftOverBeads={playerScore}/>
-
-                    </div>
-                    </div>
-
+        </div>
+</div>
+            
             </div>
-
-            </div> */}
 
              <button onClick={getBoardState} className={`absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-all duration-300
                      ${status === 'robot_is_playing' ? 'text-darkgold' : ''}`}
                     disabled={
                         status === 'robot_is_playing'? true : false
                     }>I've played</button>
-            </div>
             
         </PageWrapper>
         

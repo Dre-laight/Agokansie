@@ -12,6 +12,8 @@ import lesson4 from '../../assets/lesson4.png'
 import lesson5 from '../../assets/lesson5.png'
 import lesson6 from '../../assets/lesson6.png'
 import lesson7 from '../../assets/lesson7.png'
+import lesson8 from '../../assets/lesson8.png'
+
 
 
 function OwareLesson(){
@@ -135,15 +137,12 @@ return(
                 <p className='border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg p-2 text-darkgold'>Lesson 8</p>
 
                 <div className='flex flex-col items-center justify-start p-3 gap-2'>
-                    <div className='border size-30 rounded-full'></div>
+                    <img src={lesson8} className='size-30 rounded-full' />
                     <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Practice and challenge</p>
                     <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/lesson8')}}>Begin</button>
                 </div>  
                 
             </div>
-            
-            
-        
         </div>
     </div>
     

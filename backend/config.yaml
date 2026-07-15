@@ -1,0 +1,77 @@
+name: "KHTT MACHINE"
+board: "ESP32 Dev Controller V4"
+
+stepping:
+  engine: RMT
+  idle_ms: 250
+  dir_delay_us: 1
+  pulse_us: 4
+  disable_delay_us: 0
+
+axes:
+  shared_stepper_disable_pin: gpio.32
+
+  x:
+    steps_per_mm: 800
+    max_rate_mm_per_min: 2000
+    acceleration_mm_per_sec2: 25
+    max_travel_mm: 600
+    motor0:
+      stepstick:
+        direction_pin: gpio.16
+        step_pin: gpio.4
+
+  y:
+    steps_per_mm: 800
+    max_rate_mm_per_min: 2000
+    acceleration_mm_per_sec2: 25
+    max_travel_mm: 600
+    motor0:
+      stepstick:
+        direction_pin: gpio.18
+        step_pin: gpio.19
+    motor1:
+      stepstick:
+        direction_pin: gpio.21
+        step_pin: gpio.22
+
+  b:
+    steps_per_mm: 800
+    max_rate_mm_per_min: 2000
+    acceleration_mm_per_sec2: 25
+    max_travel_mm: 600
+    motor0:
+      stepstick:
+        direction_pin: gpio.25
+        step_pin: gpio.33
+
+  a:
+    steps_per_mm: 800
+    max_rate_mm_per_min: 2000
+    acceleration_mm_per_sec2: 25
+    max_travel_mm: 600
+    motor0:
+      stepstick:
+        direction_pin: gpio.26
+        step_pin: gpio.27
+
+  z:
+    steps_per_mm: 1.0
+    max_rate_mm_per_min: 5000 
+    acceleration_mm_per_sec2: 100
+    max_travel_mm: 180
+    homing:
+      cycle: 0
+      mpos_mm: 0.000
+      
+    motor0:
+      rc_servo:
+        pwm_hz: 50
+        output_pin: gpio.13
+        min_pulse_us: 500
+        max_pulse_us: 2000
+
+start:
+  must_home: false
+  deactivate_parking: false
+  check_limits: false

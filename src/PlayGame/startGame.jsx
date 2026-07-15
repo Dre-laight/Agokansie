@@ -204,7 +204,7 @@ function OwareGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://192.168.74.2:5000' 
+    const API = 'http://127.0.0.1:5000' 
 
     const navigate = useNavigate()
 
@@ -292,8 +292,9 @@ function OwareGame(){
                       
                 const BoardData = await response.json()
 
-                setBoardValueList(BoardData.state.board)
                 setBoardState(BoardData)
+                setBoardValueList(BoardData.state.board)
+
                 console.log(BoardData)
 
             }
@@ -527,15 +528,17 @@ function OwareGame(){
     const [gameOver, setGameOver] = useState(true)
     const [playerScore, setPlayerScore] = useState()
     const [robotScore, setRobotScore] = useState()
+    const [playerWins, setPlayerWins] = useState(false)
+    const [agokansieWins, setAgokansieWins] = useState(false)
     const [winner, setWinner] = useState('')
 
      
     useEffect(() => {
-        if (boardState?.state?.ratings === 0) {
-            useBadMoveResponses();
-        } else if (boardState?.state?.ratings === 1) {
-            useGreatMoveResponses();
-        }
+        // if (boardState?.state?.ratings === 0) {
+        //     useBadMoveResponses();
+        // } else if (boardState?.state?.ratings === 1) {
+        //     useGreatMoveResponses();
+        // }
 
 
         setRobotStatus(boardState?.state?.status)
@@ -553,18 +556,27 @@ function OwareGame(){
         if(status === 'error'){
             useInvalidMoveResponses()
         }
-
-        if (gameOver && playerScore > robotScore) {
-            setWinner('You Win')
-            usePlayerWinsResponses()
-        } else if (gameOver && playerScore == robotScore ){
-            setWinner("It's a Draw")
-        } else if (gameOver && robotScore > playerScore) {
-            setWinner('Agokansie Wins')
-            useRobotWinsResponses()
-        }
+   
 
     },[boardState])
+
+    useEffect (()=>{
+        if (gameOver && playerScore > robotScore){ 
+            setWinner('You win!'); 
+            setPlayerWins(true)
+            usePlayerWinsResponses();
+        }
+
+        else if (gameOver && playerScore === robotScore){
+            setWinner("It's a draw")
+        }
+
+        else if (gameOver && robotScore > playerScore ) {
+            setWinner('Agokansie wins!'); 
+            setAgokansieWins(true)
+            useRobotWinsResponses();
+        }
+    }, [playerScore, robotScore])
 
     const useInvalidMoveResponses = () => {
         const invalidMovesResponses = [
@@ -604,30 +616,30 @@ function OwareGame(){
     return(
         <PageWrapper >
             <div className={`absolute inset-0 bg-gradient-to-r from-[#3b1f0f]/80 via-[#8b5a2b]/70 to-[#d4a017]/80 -z-1 min-h-screen flex flex-col items-center justify-center ${status === 'error' ? 'border-4 border-red-500' : ''} ${gameOver ? 'bg-black': ''}`}>
-                <img src={bg} alt="background image" className={`absolute object-cover w-full h-full -z-1 opacity-[0.5]  `}/>   
+                <img src={bg} alt="background image" className={`absolute object-cover w-full h-full -z-1 opacity-[0.5]`}/>   
         </div>
 
         <div className='flex flex-col h-screen w-full'>
 
-            <div className="absolute top-1 right-1 flex items-center gap-5 z-50 backdrop-blur p-3 rounded-lg">
+            <div className="absolute top-0 right-0 flex items-center gap-5 z-50 bg-dark/80 p-3 rounded-bl-lg">
                 <div className='flex items-center justify-center'>
-                    <ArrowLeft className=' left-3 size-7 cursor-pointer' onClick={goBack} />
-                    <ArrowRight className=' size-7 text-gold-300 cursor-pointer' onClick={goForward} />
+                    <ArrowLeft className=' left-3 size-7 cursor-pointer text-gold' onClick={goBack} />
+                    <ArrowRight className=' size-7 text-gold-300 cursor-pointer text-gold' onClick={goForward} />
                 </div>
                 <div className='flex'>
-                    <Settings className='cursor-pointer' onClick={toggleSettingScreen} />
+                    <Settings className='cursor-pointer text-gold' onClick={toggleSettingScreen} />
                 </div>
             </div>
 
  {/* game over screen */}
 
             {
-                gameOver ? 
+                gameOver  ? 
                 
                 <div className='absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-220 h-150 z-100'>
-                    <div className='flex flex-col justify-center items-center rounded-3xl border-4 border-[#b98b56] bg-[#efe0c2] shadow-2xl overflow-hidden bg-dark p-5 gap-10'>
+                    <div className='flex flex-col justify-center items-center rounded-3xl border-4 border-[#b98b56] bg-[#efe0c2] shadow-2xl overflow-hidden bg-dark/98 p-5 gap-10'>
 
-                        <p className='font-elite text-7xl font-bold text-darkgold'>GAME OVER</p>
+                        <p className='font-elite text-6xl font-bold text-darkgold'>GAME OVER</p>
 
                         <div className='rounded-lg border-1 w-3/4 h-90 shadow-darkgold shadow-lg flex flex-col'>
 
@@ -639,9 +651,9 @@ function OwareGame(){
                             <div className='flex w-full size-65'>
                                 
                                 <div className='w-3/7 flex flex-col items-center justify-center gap-3'>
-                                     <img src={player} className={`border-1 size-35 rounded-[50%] ${winner == 'You Win' ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
-                                    <p className={`font-elite text-xl font-bold ${winner == 'You Win' ? 'text-darkgold' : 'text-midGold'} `}>You</p>
-                                    <p className={`text-6xl font-bold ${winner == 'You Win' ? 'text-darkgold' : 'text-midGold'}`}>{playerScore}</p>
+                                     <img src={player} className={`border-1 size-35 rounded-[50%] ${playerWins ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
+                                    <p className={`font-elite text-xl font-bold ${playerWins ? 'text-darkgold' : 'text-midGold'} `}>You</p>
+                                    <p className={`text-6xl font-bold ${playerWins ? 'text-darkgold' : 'text-midGold'}`}>{playerScore}</p>
                                 </div>
 
                                 <div className='w-1/7 flex items-center justify-center'>
@@ -649,11 +661,11 @@ function OwareGame(){
                                 </div>
 
                                 <div className='w-3/7 flex flex-col items-center justify-center gap-3'>
-                                     <img src={robot} className={`border-1 size-35 rounded-[50%] ${winner == 'Agokansie Wins' ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
-                                    <p className={`font-elite text-xl font-bold ${winner == 'Agokansie Wins' ? 'text-darkgold' : 'text-midGold'} `}>Agokansie</p>
-                                    <p className={`text-6xl font-bold ${winner == 'Agokansie Wins' ? 'text-darkgold' : 'text-midGold'}`}>{robotScore}</p>
+                                     <img src={robot} className={`border-1 size-35 rounded-[50%] ${agokansieWins ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
+                                    <p className={`font-elite text-xl font-bold ${agokansieWins ? 'text-darkgold' : 'text-midGold'} `}>Agokansie</p>
+                                    <p className={`text-6xl font-bold ${agokansieWins ? 'text-darkgold' : 'text-midGold'}`}>{robotScore}</p>
                                 </div>
-                            </div>
+                            </div>  
 
                             <div className='flex items-center justify-center '>
                                 <p className='border-1 text-[16px] font-bold p-2 rounded-lg text-midGold'>A crab cannot give birth to a bird</p>
@@ -928,8 +940,8 @@ function OwareGame(){
 
                 <div className="flex flex-col items-center">
 
-                    <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-b-0 border-[#4a2a12] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                        <div className="w-65 h-17 bg-[#5c3317] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
+                    <div className="w-75 h-27 bg-[#6b3f1d] border-4 border-b-0 border-[#4a2a12] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
+                        <div className="w-65 h-22 bg-[#5c3317] rounded-t-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
                             <OutOfPlay leftOverBeads={robotScore}/>
                         </div>
                     </div>
@@ -954,13 +966,13 @@ function OwareGame(){
                         <Pit beadCount={boardValueList[3]}/>
                         <Pit beadCount={boardValueList[4]}/>
                         <Pit beadCount={boardValueList[5]}/>
-
+                        
                     </div>
 
                     </div>
 
-                    <div className="w-67 h-22 bg-[#6b3f1d] border-4 border-t-0 border-[#4a2a12] rounded-b-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
-                        <div className="w-65 h-17 bg-[#5c3317] rounded-b-[3rem] flex items-center justify-center gap-3 p-4">
+                    <div className="w-75 h-27 bg-[#6b3f1d] border-4 border-t-0 border-[#4a2a12] rounded-b-[3rem] shadow-2xl flex items-center justify-center gap-3 p-4">
+                        <div className="w-65 h-22 bg-[#5c3317] rounded-b-[3rem] flex items-center justify-center gap-3 p-4">
                             <OutOfPlay leftOverBeads={playerScore}/>
 
                     </div>
@@ -971,9 +983,6 @@ function OwareGame(){
                     disabled={
                         status === 'robot_is_playing'? true : false
                     }>I've played</button>
-
-
-
 
             </div>
 

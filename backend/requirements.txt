@@ -1,0 +1,415 @@
+React
+  ↓
+Flask routes
+  ↓
+Game Manager
+  ↓
+Camera Service
+  ↓
+Game Vision (OWARE / ACHI / DAME)
+  ↓
+Board State
+  ↓
+AI
+  ↓
+Robot Controller
+  ↓
+Physical Move
+  ↓
+Camera rescans
+
+
+
+
+backend/
+│
+├── app.py
+│
+├── routes/
+│   └── game_routes.py
+│
+├── session/
+│   └── game_session.py
+│
+├── services/
+│   ├── game_manager.py
+│   ├── camera_service.py
+│   └── robot_controller.py
+│
+├── games/
+│   ├── base_game.py
+│   │
+│   ├── oware/
+│   │   ├── game.py
+│   │   ├── ai.py
+│   │   └── vision.py
+│   │
+│   ├── achi/
+│   │   ├── game.py
+│   │   ├── ai.py
+│   │   └── vision.py
+│   │
+│   └── dame/
+│       ├── game.py
+│       ├── ai.py
+│       └── vision.py
+│
+└── requirements.txt
+
+
+
+
+
+
+
+frontend/
+│
+├── src/
+│   │
+│   ├── api/
+│   │   └── gameApi.js
+│   │
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   └── GamePage.jsx
+│   │
+│   ├── components/
+│   │   ├── BoardView.jsx
+│   │   ├── ControlPanel.jsx
+│   │   ├── StatusPanel.jsx
+│   │   └── CameraView.jsx
+│   │
+│   ├── App.jsx
+│   └── main.jsx
+│
+└── package.json
+
+
+put a textbox to input the pits
+
+
+
+
+
+
+board: ESP32
+
+name: OwareRobot
+
+stepping:
+  engine: RMT
+  idle_ms: 255
+
+axes:
+  x:
+    steps_per_mm: 100
+    max_rate_mm_per_min: 5000
+    acceleration_mm_per_sec2: 300
+    max_travel_mm: 300
+
+    motor0:
+      limit_neg_pin: gpio.32:low
+      stepstick:
+        step_pin: gpio.25
+        direction_pin: gpio.26
+
+  y:
+    steps_per_mm: 100
+    max_rate_mm_per_min: 5000
+    acceleration_mm_per_sec2: 300
+    max_travel_mm: 300
+
+    motor0:
+      limit_neg_pin: gpio.33:low
+      stepstick:
+        step_pin: gpio.27
+        direction_pin: gpio.14
+
+servo:
+  pwm_hz: 50
+
+  z_servo:
+    pin: gpio.13
+    min_pulse_us: 500
+    max_pulse_us: 2500
+
+user_outputs:
+  gripper:
+    pin: gpio.19
+    pwm_hz: 1000
+
+start:
+  must_home: true
+
+homing:
+  cycle0: X
+  cycle1: Y
+
+
+
+
+
+
+  second board: ESP32
+
+name: OwareRobot
+
+stepping:
+  engine: RMT
+  idle_ms: 255
+
+axes:
+  x:
+    steps_per_mm: 100
+    max_rate_mm_per_min: 5000
+    acceleration_mm_per_sec2: 300
+    max_travel_mm: 300
+
+    motor0:
+      stepstick:
+        step_pin: gpio.25
+        direction_pin: gpio.26
+
+  y:
+    steps_per_mm: 100
+    max_rate_mm_per_min: 5000
+    acceleration_mm_per_sec2: 300
+    max_travel_mm: 300
+
+    motor0:
+      stepstick:
+        step_pin: gpio.27
+        direction_pin: gpio.14
+
+servo:
+  pwm_hz: 50
+
+  z_servo:
+    pin: gpio.13
+    min_pulse_us: 500
+    max_pulse_us: 2500
+
+user_outputs:
+  gripper:
+    pin: gpio.19
+    pwm_hz: 1000
+
+start:
+  must_home: false
+
+
+
+
+
+
+
+
+
+
+
+
+working
+  board: ESP32
+
+name: OwareRobot
+
+stepping:
+  engine: RMT
+  idle_ms: 255
+
+axes:
+  x:
+    steps_per_mm: 100
+    max_rate_mm_per_min: 5000
+    acceleration_mm_per_sec2: 300
+    max_travel_mm: 300
+    motor0:
+      stepstick:
+        step_pin: gpio.25
+        direction_pin: gpio.26
+
+  y:
+    steps_per_mm: 100
+    max_rate_mm_per_min: 5000
+    acceleration_mm_per_sec2: 300
+    max_travel_mm: 300
+    motor0:
+      stepstick:
+        step_pin: gpio.27
+        direction_pin: gpio.14
+
+start:
+  must_home: false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+board: Esp32 Dev module 
+name: Agokansie
+
+
+kinematics:
+  Cartesian:
+
+stepping:
+  engine: RMT
+  idle_ms: 255
+  pulse_us: 4
+  dir_delay_us: 1
+  disable_delay_us: 0
+axes:
+  shared_stepper_disable_pin: NO_PIN
+  x:
+    steps_per_mm: 80
+    max_rate_mm_per_min: 5000
+    acceleration_mm_per_sec2: 100
+    max_travel_mm: 895
+    soft_limits: true
+    homing:
+      cycle: 2
+      positive_direction: false
+      mpos_mm: 0.000
+      feed_mm_per_min: 100.000
+      seek_mm_per_min: 400.000
+      settle_ms: 500
+      seek_scaler: 1.100
+      feed_scaler: 1.100
+
+    motor0:
+      limit_neg_pin: gpio.32:high:pu
+      hard_limits: true
+      pulloff_mm: 2.000
+      stepstick:
+        step_pin: gpio.27
+        direction_pin: gpio.26
+
+  y:
+    steps_per_mm: 80
+    max_rate_mm_per_min: 5000
+    acceleration_mm_per_sec2: 100
+    max_travel_mm: 895
+    soft_limits: true
+    homing:
+      cycle: 2
+      positive_direction: false
+      mpos_mm: 0.000
+      feed_mm_per_min: 100.000
+      seek_mm_per_min: 400.000
+      settle_ms: 500
+      seek_scaler: 1.100
+      feed_scaler: 1.100
+
+    motor0:
+      limit_neg_pin: gpio.33:high:pu
+      hard_limits: true
+      pulloff_mm: 2.000
+      stepstick:
+        step_pin: gpio.21
+        direction_pin: gpio.22
+ 
+  z:
+    steps_per_mm: 1.0
+    max_rate_mm_per_min: 15000 
+    acceleration_mm_per_sec2: 10000
+    max_travel_mm: 180
+    homing:
+      cycle: 0
+      mpos_mm: 0.000
+      
+    motor0:
+      rc_servo:
+        pwm_hz: 50
+        output_pin: gpio.13
+        min_pulse_us: 500
+        max_pulse_us: 2500
+  a:
+    steps_per_mm: 1.0
+    max_rate_mm_per_min: 300 
+    acceleration_mm_per_sec2: 10
+    max_travel_mm: 180
+    homing:
+      cycle: 0
+      mpos_mm: 0.000
+      
+    motor0:
+      rc_servo:
+        pwm_hz: 50
+        output_pin: gpio.12
+        min_pulse_us: 500
+        max_pulse_us: 2500
+  b:
+    steps_per_mm: 1.0
+    max_rate_mm_per_min: 300 
+    acceleration_mm_per_sec2: 10
+    max_travel_mm: 180
+    homing:
+      cycle: 0
+      mpos_mm: 0.000
+      
+    motor0:
+      rc_servo:
+        pwm_hz: 50
+        output_pin: gpio.14
+        min_pulse_us: 500
+        max_pulse_us: 2500
+
+Laser:
+  pwm_hz: 5000
+  output_pin: gpio.18
+  enable_pin: NO_PIN
+  disable_with_s0: false
+  s0_with_disable: true
+  tool_num: 0
+  speed_map: 0=0.000% 255=100.000%
+  off_on_alarm: true
+
+
+control:
+  safety_door_pin: NO_PIN
+  reset_pin: NO_PIN
+  feed_hold_pin: NO_PIN
+  cycle_start_pin: NO_PIN
+  macro0_pin: NO_PIN
+  macro1_pin: NO_PIN
+  macro2_pin: NO_PIN
+  macro3_pin: NO_PIN
+  fault_pin: gpio.34
+  estop_pin: gpio.2
+  homing_button_pin: NO_PIN
+
+
+start:
+  must_home: false
+  
+
+
+
+
+put the detect human move function in dame and achi
+
+
+
+tell andre that i have change how the board componentss

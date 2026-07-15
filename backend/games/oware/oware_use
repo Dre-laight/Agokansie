@@ -1,0 +1,473 @@
+
+
+
+import pygame
+import math
+from engine import Oware, minimax
+
+# =========================================================
+# CONFIG
+# =========================================================
+
+WIDTH = 1100
+HEIGHT = 650
+
+FPS = 60
+
+BOARD_COLOR = (120, 72, 32)
+BOARD_SHADOW = (70, 40, 15)
+
+BACKGROUND = (24, 24, 28)
+
+PIT_COLOR = (95, 55, 25)
+PIT_INNER = (65, 35, 10)
+
+PLAYER_COLOR = (70, 140, 255)
+AI_COLOR = (70, 200, 120)
+
+TEXT = (245, 245, 245)
+YELLOW = (255, 220, 70)
+RED = (255, 80, 80)
+
+PIT_RADIUS = 58
+
+# =========================================================
+# GUI
+# =========================================================
+
+class OwareGUI:
+
+    def __init__(self):
+
+        pygame.init()
+
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption("Oware Nam-Nam AI")
+
+        self.clock = pygame.time.Clock()
+
+        self.game = Oware()
+
+        self.font = pygame.font.SysFont("arial", 28, bold=True)
+        self.big_font = pygame.font.SysFont("arial", 54, bold=True)
+
+        self.last_ai_move = None
+
+        self.animating = False
+
+    # =====================================================
+    # PIT POSITIONS
+    # =====================================================
+
+    def pit_positions(self):
+
+        positions = []
+
+        start_x = 220
+        spacing = 110
+
+        top_y = 220
+        bottom_y = 430
+
+        # bottom row (0-5)
+        for i in range(6):
+            positions.append((start_x + i * spacing, bottom_y))
+
+        # top row (6-11)
+        for i in range(6):
+            positions.append((start_x + (5 - i) * spacing, top_y))
+
+        return positions
+
+    # =====================================================
+    # DRAW WOOD BOARD
+    # =====================================================
+
+    def draw_board(self):
+
+        shadow_rect = pygame.Rect(120, 120, 860, 420)
+        pygame.draw.rect(
+            self.screen,
+            BOARD_SHADOW,
+            shadow_rect,
+            border_radius=40
+        )
+
+        board_rect = pygame.Rect(110, 110, 860, 420)
+
+        pygame.draw.rect(
+            self.screen,
+            BOARD_COLOR,
+            board_rect,
+            border_radius=40
+        )
+
+        pygame.draw.rect(
+            self.screen,
+            (0, 0, 0),
+            board_rect,
+            4,
+            border_radius=40
+        )
+
+    # =====================================================
+    # DRAW SEEDS
+    # =====================================================
+
+    def draw_seeds(self, x, y, count):
+
+        if count == 0:
+            return
+
+        ring_radius = 20
+
+        for i in range(count):
+
+            angle = (360 / count) * i
+
+            dx = math.cos(math.radians(angle)) * ring_radius
+            dy = math.sin(math.radians(angle)) * ring_radius
+
+            sx = int(x + dx)
+            sy = int(y + dy)
+
+            pygame.draw.circle(
+                self.screen,
+                YELLOW,
+                (sx, sy),
+                7
+            )
+
+            pygame.draw.circle(
+                self.screen,
+                (0, 0, 0),
+                (sx, sy),
+                2
+            )
+
+    # =====================================================
+    # DRAW PIT
+    # =====================================================
+
+    def draw_pit(self, x, y, index, highlight=False):
+
+        color = PLAYER_COLOR if index < 6 else AI_COLOR
+
+        if highlight:
+            pygame.draw.circle(
+                self.screen,
+                RED,
+                (x, y),
+                PIT_RADIUS + 8,
+                6
+            )
+
+        pygame.draw.circle(
+            self.screen,
+            PIT_COLOR,
+            (x, y),
+            PIT_RADIUS
+        )
+
+        pygame.draw.circle(
+            self.screen,
+            PIT_INNER,
+            (x, y),
+            PIT_RADIUS - 10
+        )
+
+        pygame.draw.circle(
+            self.screen,
+            color,
+            (x, y),
+            PIT_RADIUS,
+            4
+        )
+
+        self.draw_seeds(x, y, self.game.board[index])
+
+        txt = self.font.render(
+            str(self.game.board[index]),
+            True,
+            TEXT
+        )
+
+        self.screen.blit(
+            txt,
+            (x - txt.get_width() // 2, y + 65)
+        )
+
+    # =====================================================
+    # DRAW UI
+    # =====================================================
+
+    def draw_ui(self):
+
+        human = self.font.render(
+            f"Human: {self.game.scores[0]}",
+            True,
+            PLAYER_COLOR
+        )
+
+        ai = self.font.render(
+            f"AI: {self.game.scores[1]}",
+            True,
+            AI_COLOR
+        )
+
+        self.screen.blit(human, (70, 40))
+        self.screen.blit(ai, (880, 40))
+
+        if self.game.current_player == 1:
+            status = "YOUR TURN"
+        else:
+            status = "AI THINKING..."
+
+        status_text = self.font.render(
+            status,
+            True,
+            TEXT
+        )
+
+        self.screen.blit(
+            status_text,
+            (WIDTH // 2 - 100, 570)
+        )
+
+    # =====================================================
+    # DRAW EVERYTHING
+    # =====================================================
+
+    def draw(self, highlight=None):
+
+        self.screen.fill(BACKGROUND)
+
+        self.draw_board()
+
+        positions = self.pit_positions()
+
+        for i, (x, y) in enumerate(positions):
+
+            hl = False
+
+            if highlight == i:
+                hl = True
+
+            if self.last_ai_move == i:
+                hl = True
+
+            self.draw_pit(x, y, i, hl)
+
+        self.draw_ui()
+
+        pygame.display.flip()
+
+    # =====================================================
+    # ANIMATION
+    # =====================================================
+
+    def animate_move(self, pit):
+
+        self.animating = True
+
+        positions = self.pit_positions()
+
+        result = self.game.play_move2(pit)
+
+        if result is None:
+            self.animating = False
+            return
+
+        sow_path = result["sow_path"] 
+        print(sow_path)
+
+        # --------------------------------------------
+        # SOW ANIMATION
+        # --------------------------------------------
+
+        for target in sow_path:
+
+            start = positions[pit]
+            end = positions[target]
+
+            for step in range(12):
+
+                self.draw()
+
+                t = step / 12
+
+                x = start[0] + (end[0] - start[0]) * t
+                y = start[1] + (end[1] - start[1]) * t
+
+                pygame.draw.circle(
+                    self.screen,
+                    YELLOW,
+                    (int(x), int(y - 20)),
+                    10
+                )
+
+                pygame.display.flip()
+
+                self.clock.tick(120)
+
+        # --------------------------------------------
+        # CAPTURE FLASH
+        # --------------------------------------------
+
+        for cap in result["captures"]:
+
+            for _ in range(3):
+
+                self.draw(highlight=cap)
+                pygame.time.delay(120)
+
+                self.draw()
+                pygame.time.delay(120)
+
+        self.animating = False
+
+    # =====================================================
+    # AI TURN
+    # =====================================================
+
+    def ai_turn(self):
+
+        _, move = minimax(
+            self.game.clone(),
+            2,
+            -float("inf"),
+            float("inf"),
+            True
+        )
+
+        if move is not None:
+
+            self.last_ai_move = move
+
+            pygame.time.delay(400)
+
+            self.animate_move(move)
+            print(move)
+
+    # =====================================================
+    # WINNER
+    # =====================================================
+
+    def show_winner(self):
+
+        p1 = self.game.scores[0]
+        p2 = self.game.scores[1]
+
+        if p1 > p2:
+            msg = "HUMAN WINS"
+        elif p2 > p1:
+            msg = "AI WINS"
+        else:
+            msg = "DRAW"
+
+        overlay = pygame.Surface((WIDTH, HEIGHT))
+        overlay.set_alpha(180)
+        overlay.fill((0, 0, 0))
+
+        self.screen.blit(overlay, (0, 0))
+
+        text = self.big_font.render(
+            msg,
+            True,
+            TEXT
+        )
+
+        self.screen.blit(
+            text,
+            (
+                WIDTH // 2 - text.get_width() // 2,
+                HEIGHT // 2 - 40
+            )
+        )
+
+        pygame.display.flip()
+
+        pygame.time.delay(5000)
+
+    # =====================================================
+    # MAIN LOOP
+    # =====================================================
+
+    def run(self):
+
+        running = True
+
+        while running:
+
+            self.clock.tick(FPS)
+
+            self.draw()
+
+            # ----------------------------------------
+            # GAME OVER
+            # ----------------------------------------
+
+            # if self.game.game_over():
+
+            #     self.show_winner()
+
+            #     running = False
+
+            #     continue
+
+            if self.game.game_over():
+
+                self.game.finalize_game()
+
+                self.show_winner()
+
+                running = False
+            # ----------------------------------------
+            # AI TURN
+            # ----------------------------------------
+
+            if self.game.current_player == 2 and not self.animating:
+
+                self.ai_turn()
+
+            # ----------------------------------------
+            # EVENTS
+            # ----------------------------------------
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+
+                if (
+                    event.type == pygame.MOUSEBUTTONDOWN
+                    and self.game.current_player == 1
+                    and not self.animating
+                ):
+
+                    mx, my = pygame.mouse.get_pos()
+
+                    positions = self.pit_positions()
+
+                    for i in range(6):
+
+                        px, py = positions[i]
+
+                        dist = (mx - px) ** 2 + (my - py) ** 2
+
+                        if dist <= PIT_RADIUS ** 2:
+
+                            if self.game.is_valid_move(i):
+
+                                self.animate_move(i)
+
+        pygame.quit()
+
+
+# =========================================================
+# RUN
+# =========================================================
+
+if __name__ == "__main__":
+
+    OwareGUI().run()

@@ -15,7 +15,7 @@ import { motion } from 'framer-motion'
 
     function SelectionScreen() {
 
-        const API = 'http://192.168.74.2:5000/api/game/select'
+        const API = 'http://127.0.0.1:5000/api/game/select'
        
         const {games, currentGame, setCurrentGame} = useContext(GameContext)
         const [isLoading, setIsLoading] = useState(false)
@@ -82,8 +82,6 @@ import { motion } from 'framer-motion'
                 if(isLoading) return    
                 setIsLoading(true)
 
-                
-
                 try {
                     const success = await sendPostRequest()
 
@@ -113,8 +111,6 @@ import { motion } from 'framer-motion'
                     console.log(error)
                     setIsLoading(false)
                 }   
-
-                
         }
 
         const goBack = () => {
