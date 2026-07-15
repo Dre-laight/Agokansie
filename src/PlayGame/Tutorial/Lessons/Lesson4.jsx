@@ -50,22 +50,22 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "Capturing happens only on your opponent's side of the board. If your last seed lands in one of your opponent's pits, and that pit now contains exactly two or three seeds, you capture them.",
+        text: "Players take turns making moves. On your turn, choose one pit from your own territory and pick up every seed from that pit.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "Watch closely. My last seed lands here, making exactly two seeds. That means I capture both seeds.",
+        text: "Moving in a counter-clockwise direction, place one seed into each pit until you have distributed all the seeds in your hand.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "Sometimes the previous pit also contains exactly two or three seeds after your move. If so, you continue capturing backwards until the pattern ends.",
+        text: "If your final seed lands in a pit that already contains other seeds, pick up all the seeds from that pit and continue sowing. This process may repeat several times during the same turn.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "Now it's your turn. Try making the capturing move yourself.",
+        text: "If your final seed lands in an empty pit, your turn ends immediately and play passes to your opponent. If your opponent has no seeds remaining, you must make a move that gives them seeds so the game can continue.",
         voice: 'Foolish boy Siaw'
 
     } ]
@@ -183,7 +183,7 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>capturing seeds</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>Sowing seeds</p>
             </div>
 
             <div className='flex items-center justify-between'>

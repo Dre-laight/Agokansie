@@ -49,22 +49,22 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "Capturing happens only on your opponent's side of the board. If your last seed lands in one of your opponent's pits, and that pit now contains exactly two or three seeds, you capture them.",
+        text: "A round comes to an end when only eight seeds remain on the board. If one player has already captured four more seeds than the other, that player receives the remaining four seeds.",
         voice: 'Foolish boy Siaw'
-
+ 
     },{
         step: '2',
-        text: "Watch closely. My last seed lands here, making exactly two seeds. That means I capture both seeds.",
+        text: "After all captured and remaining seeds have been counted, the player with the highest total number of seeds is declared the winner.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "Sometimes the previous pit also contains exactly two or three seeds after your move. If so, you continue capturing backwards until the pattern ends.",
+        text: "If both players finish with the same number of seeds, the game is considered a draw.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "Now it's your turn. Try making the capturing move yourself.",
+        text: "Once the winner has been announced, return all forty-eight seeds to the board to prepare for the next game.",
         voice: 'Foolish boy Siaw'
 
     } ]
@@ -182,7 +182,7 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>feeding your opponent</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>Game ends</p>
             </div>
 
             <div className='flex items-center justify-between'>
@@ -235,10 +235,6 @@ return(
 
             </div>
         
-        
-
-        
-    
     </div>
 </PageWrapper>
 

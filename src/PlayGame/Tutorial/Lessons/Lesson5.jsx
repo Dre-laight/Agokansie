@@ -49,22 +49,22 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "Capturing happens only on your opponent's side of the board. If your last seed lands in one of your opponent's pits, and that pit now contains exactly two or three seeds, you capture them.",
+        text: "You can capture seeds when your final seed lands in your opponent's territory and creates exactly four seeds in that pit.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "Watch closely. My last seed lands here, making exactly two seeds. That means I capture both seeds.",
+        text: "Captured seeds should immediately be removed from the board and placed into your collection container.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "Sometimes the previous pit also contains exactly two or three seeds after your move. If so, you continue capturing backwards until the pattern ends.",
+        text: "Capturing is only allowed in your own territory. Seeds that form four in your opponent's territory cannot be captured.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "Now it's your turn. Try making the capturing move yourself.",
+        text: "Keep careful track of every captured seed, as the player with the most captured seeds at the end of the game wins.",
         voice: 'Foolish boy Siaw'
 
     } ]
@@ -182,7 +182,7 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>feeding your opponent</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>capturing seeds</p>
             </div>
 
             <div className='flex items-center justify-between'>

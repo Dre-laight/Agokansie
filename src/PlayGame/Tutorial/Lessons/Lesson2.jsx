@@ -50,22 +50,22 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "Take a look at the board. It has twelve pits arranged in two rows. Each row contains six pits",
+        text: "Handle all the beads with care throughout the game. Rough handling may cause the pieces to scatter or become misplaced, making it difficult for the game to continue smoothly.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "The six pits closest to you belong to you. You'll always begin your turn by choosing one of these pits.",
+        text: "For your safety, never place your hand or any object in the robot's path while it is moving across the board. Wait until the robot has completely finished its move before interacting with the game.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "The six pits opposite you belong to your opponent. During the game, you'll sow seeds across both sides of the board.",
+        text: "Whenever you capture beads, place them neatly into your designated container pod. Keeping captured beads separate makes it easier to determine the winner at the end of the game.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "At the start of every game, each pit contains four seeds. Since there are twelve pits, that makes forty-eight seeds altogether.",
+        text: "Whenever you capture beads, place them neatly into your designated container pod. Keeping captured beads separate makes it easier to determine the winner at the end of the game.",
         voice: 'Foolish boy Siaw'
 
     } ]
@@ -184,7 +184,7 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>capturing seeds</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>General Rules</p>
             </div>
 
             <div className='flex items-center justify-between'>

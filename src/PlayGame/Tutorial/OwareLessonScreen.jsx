@@ -59,7 +59,7 @@ return(
     </div>
 
 
-    <div className='flex items-center justify-center min-h-screen'>
+    <div className='flex flex-col gap-10 items-center justify-center min-h-screen'>
         <div className='grid grid-cols-4 items-center gap-x-10 gap-y-10 '>
 
             <div className=' flex flex-col items-center gap-3 justify-start h-80 w-60 rounded-lg border-1 border-darkgold bg-dark/50 shadow-darkgold shadow-sm'>
@@ -78,7 +78,7 @@ return(
                 <p className='border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg p-2 text-darkgold'>Lesson 2</p>
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson2} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Understanding the board</p>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>General rules</p>
                     <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/lesson2')}}>Begin</button>
                 </div>
                 
@@ -88,7 +88,7 @@ return(
 
                 <div className='flex flex-col items-center justify-start p-3 gap-2'>
                     <img src={lesson3} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Making a move</p>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'> understanding the Board</p>
                     <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/lesson3')}}>Begin</button>
                 </div>
                 
@@ -98,17 +98,22 @@ return(
 
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson4} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Making moves</p>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Sowing seeds</p>
                     <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/lesson4')}}>Begin</button>
                 </div>
                 
             </div>
-            <div className=' flex flex-col items-center gap-3 justify-start h-80 w-60 rounded-lg border-1 border-darkgold bg-dark/50 shadow-darkgold shadow-sm'>
+
+        </div>
+
+        <div className='flex items-center justify-center'>
+            <div className='grid items-center grid-cols-3 gap-10'>
+             <div className=' flex flex-col items-center gap-3 justify-start h-80 w-60 rounded-lg border-1 border-darkgold bg-dark/50 shadow-darkgold shadow-sm'>
                 <p className='border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg p-2 text-darkgold '>Lesson 5</p>
 
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson5} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Capturing seeds</p>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>  seeds</p>
                     <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/lesson5')}}>Begin</button>
                 </div>
                 
@@ -133,17 +138,8 @@ return(
                 </div>
                 
             </div>
-            <div className=' flex flex-col items-center gap-3 justify-center h-80 w-60 rounded-lg border-1 border-darkgold bg-dark/50 shadow-darkgold shadow-sm'>
-                <p className='border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg p-2 text-darkgold'>Lesson 8</p>
-
-                <div className='flex flex-col items-center justify-start p-3 gap-2'>
-                    <img src={lesson8} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Practice and challenge</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/lesson8')}}>Begin</button>
-                </div>  
-                
-            </div>
-        </div>
+    </div>
+</div>
     </div>
     
 

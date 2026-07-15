@@ -50,15 +50,17 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "On your turn, select one pit from your side that contains at least one seed. Empty pits cannot be played.",
+        text: "The Oware board consists of twelve pits arranged in two rows of six. Each row belongs to one player and represents that player's territory.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "Pick up every seed from that pit. The pit becomes empty",
+        text: "The game begins with a total of forty-eight seeds distributed evenly across the board. Every pit starts with exactly four seeds, ensuring both players begin with an equal advantage.",
         voice: 'Foolish boy Siaw'
 
-    },{
+    }, 
+    /**Main points captured, these two are irrelevant  */
+    { 
         step: '3',
         text: "Moving counter-clockwise, drop one seed into each pit you pass. Continue until you've placed every seed.",
         voice: 'Foolish boy Siaw'

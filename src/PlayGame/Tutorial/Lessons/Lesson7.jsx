@@ -50,24 +50,27 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "Capturing happens only on your opponent's side of the board. If your last seed lands in one of your opponent's pits, and that pit now contains exactly two or three seeds, you capture them.",
+        text: "Always try to predict where your final seed will land before making a move. Thinking several steps ahead greatly improves your chances of creating captures and avoiding mistakes.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "Watch closely. My last seed lands here, making exactly two seeds. That means I capture both seeds.",
+        text: "Maintaining two or three seeds in several of your pits gives you more options for future turns and increases your chances of creating chain moves.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "Sometimes the previous pit also contains exactly two or three seeds after your move. If so, you continue capturing backwards until the pattern ends.",
+        text: "Make good use of pits containing five or more seeds. These allow you to spread seeds farther around the board and gain better control of the game.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "Now it's your turn. Try making the capturing move yourself.",
+        text: "Watch your opponent's possible moves carefully. Anticipating their strategy helps you avoid giving away easy captures while creating opportunities for yourself.",
         voice: 'Foolish boy Siaw'
 
+    }, {
+        step: '5',
+        text: "Congratulations! You've completed the Oware tutorial. You now understand the basic rules, how to sow seeds, capture your opponent's seeds, and think strategically before each move. Keep practising to sharpen your skills, challenge stronger opponents, and enjoy one of Africa's greatest traditional board games. Good luck, and have fun playing!",
     } ]
 
     const [currentStep, setCurrentStep] = useState(0)
@@ -96,7 +99,7 @@ const getBoardState = () => {
 
     const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/lesson8')
+            navigate('/selectionScreen')
         } else {
             nextStep()
         }
@@ -183,7 +186,7 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>feeding your opponent</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>Tips and tricks</p>
             </div>
 
             <div className='flex items-center justify-between'>
