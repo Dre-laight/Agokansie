@@ -523,7 +523,7 @@ function AchiGame(){
         setWinner("It's a draw")
     }
 
-    else {
+    else if (gameOver && robotScore > playerScore) {
         setWinner('Robot wins!'); 
         setAgokansieWins(true)
         useRobotWinsResponses();

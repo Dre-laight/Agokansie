@@ -514,11 +514,11 @@ function DameGame(){
 
      
     useEffect(() => {
-        if (boardState?.state?.ratings === 0) {
-            useBadMoveResponses();
-        } else if (boardState?.state?.ratings === 1) {
-            useGreatMoveResponses();
-        }
+        // if (boardState?.state?.ratings === 0) {
+        //     useBadMoveResponses();
+        // } else if (boardState?.state?.ratings === 1) {
+        //     useGreatMoveResponses();
+        // }
 
 
         setRobotStatus(boardState?.state?.status)
@@ -542,7 +542,7 @@ function DameGame(){
             usePlayerWinsResponses()
         } else if (gameOver && playerScore == robotScore ){
             setWinner("It's a Draw")
-        } else {
+        } else if (gameOver && playerScore === robotScore) {
             setWinner('Agokansie Wins')
             useRobotWinsResponses()
         }

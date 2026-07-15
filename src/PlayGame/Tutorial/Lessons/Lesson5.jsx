@@ -15,7 +15,6 @@ const thinking = "..."
 const navigate = useNavigate()
 
 
-
 const goBack = () => {
         navigate(-1)
         woodTap.current.currentTime = 0
@@ -169,7 +168,7 @@ return(
             </div>          
         </div>
 
-        <button onClick={Lesson4Navigation} className='absolute bottom-5 right-5 border-none p-3 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3 bg-dark/30'> 
+        <button onClick={nextLessonNavigation} className='absolute bottom-5 right-5 border-none p-3 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3 bg-dark/30'> 
             <p>{nextLesson ? 'Next Lesson' : 'Next'}</p>
             <CornerDownRight /> 
         </button>
