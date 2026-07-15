@@ -3,7 +3,6 @@ import signal
 import subprocess
 import time
 import requests
-import keyboard
 
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -188,23 +187,8 @@ def start_services():
 
 
 
-    print("\nAgokansie running 🚀")
-    print("Press F9 to restart\n")
+    print("\nAgokansie running 🚀\n")
 
-
-
-
-# -------------------------
-# Restart handler
-# -------------------------
-
-def restart():
-
-    print("\n===== RESTART REQUESTED =====")
-
-    stop_services()
-
-    start_services()
 
 
 
@@ -215,12 +199,6 @@ def restart():
 try:
 
     start_services()
-
-
-    keyboard.add_hotkey(
-        "f9",
-        restart
-    )
 
 
     while True:
