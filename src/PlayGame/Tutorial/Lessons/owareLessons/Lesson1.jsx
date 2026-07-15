@@ -1,18 +1,19 @@
 import { useContext, useState, useRef, useEffect, } from 'react'
-import PageWrapper from '../../../WelcomeScreen/PageWrapper'
-import bg from '../../../assets/background-collage.png'
-import thinking_image  from '../../../assets/black_man_thinking.webp'
+import PageWrapper from '../../../../WelcomeScreen/PageWrapper'
+import bg from '../../../../assets/background-collage.png'
+import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
-import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 
 
-function Lesson5(){
+function Lesson1(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
 const navigate = useNavigate()
+
 
 
 const goBack = () => {
@@ -49,34 +50,28 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "You can capture seeds when your final seed lands in your opponent's territory and creates exactly four seeds in that pit.",
+        text: "Welcome! I'm Agokansie, your Oware companion. Whether this is your very first game or you're looking to sharpen your skills, I'll guide you every step of the way. By the end of this tutorial, you'll understand the rules, know how to capture seeds, and be ready to play your first complete game. Let's begin!",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "Captured seeds should immediately be removed from the board and placed into your collection container.",
+        text: "Oware is one of the oldest and most popular traditional African board games. It belongs to the Mancala family of games and has been played for centuries across West Africa. Although the rules are simple, mastering Oware requires planning, strategy, and careful thinking.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "Capturing is only allowed in your own territory. Seeds that form four in your opponent's territory cannot be captured.",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '4',
-        text: "Keep careful track of every captured seed, as the player with the most captured seeds at the end of the game wins.",
+        text: "The objective is simple: collect more seeds than your opponent. There are forty-eight seeds in total, so collecting twenty-five guarantees victory. If each player collects twenty-four seeds, the game ends in a draw.",
         voice: 'Foolish boy Siaw'
 
     } ]
 
     const [currentStep, setCurrentStep] = useState(0)
     const [nextLesson, setNextLesson] = useState(false)
-    const [previousLesson, setPreviousLesson] = useState(false)
-    const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
 
     const previousStep = () => {
         setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
         console.log(steps[currentStep].step)
+
         
     }
 
@@ -93,37 +88,18 @@ const getBoardState = () => {
         }
     }
 
+    useEffect(() => {
+        LessonState()
+    }, [currentStep])
+
     const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/lesson6')
-        } else {
+            navigate('/owarelesson2')
+        } 
+        else{
             nextStep()
         }
     }
-
-
-    const PreviousLesson = () => {
-        if(currentStep === 0){
-            setPreviousLessonVariable(true)
-        } else {
-            setPreviousLessonVariable(false)
-        }
-    }
-
-    const PreviousLessonNavigation = () => {
-        if (previousLessonVariable){
-            navigate('/lesson4')
-        } else {
-            previousStep()
-        }
-    }
-    
-
-    useEffect(() => {
-        LessonState()
-        PreviousLesson()
-    }, [currentStep])
-
 
 
 return(
@@ -138,6 +114,7 @@ return(
         <ArrowLeft className=' left-3 size-8 cursor-pointer text-midGold' onClick={goBack} />
         <ArrowRight className=' size-8 text-gold-300 cursor-pointer text-midGold' onClick={goForward} />
         <House className=' size-7 text-gold-300 cursor-pointer text-midGold' onClick={() => {navigate('/selectionScreen')}}/>
+
     </div>
 
 
@@ -173,20 +150,20 @@ return(
             <CornerDownRight /> 
         </button>
 
-        <button onClick={PreviousLessonNavigation} className='absolute bottom-5 left-5 border-none p-3 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3'> 
+        <button onClick={previousStep} className='absolute bottom-5 left-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3'> 
             <CornerDownLeft /> 
-            <p>{previousLessonVariable ? 'Previous Lesson' : 'Previous'}</p>
+            <p>Previous</p>
         </button>
 
     
-       <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
+        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midgold shadow-sm'>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>capturing seeds</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>Introdution to oware</p>
             </div>
 
             <div className='flex items-center justify-between'>
-                <p className=' text-midGold'>Lesson 5</p>
+                <p className=' text-midGold'>Lesson 1</p>
                 <p className='text-midGold'>{`Step ${steps[currentStep].step}`}</p>
             </div>
             
@@ -246,4 +223,4 @@ return(
 )
 }
 
-export default Lesson5
+export default Lesson1

@@ -1,5 +1,5 @@
 
-function AchiTutorial(){
+function AchiLessonScreen(){
     return(
         <div>
             Achi tutorial
@@ -7,4 +7,4 @@ function AchiTutorial(){
     )
 }
 
-export default AchiTutorial
+export default AchiLessonScreen

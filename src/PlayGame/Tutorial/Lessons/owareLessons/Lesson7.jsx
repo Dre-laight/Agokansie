@@ -1,13 +1,13 @@
 import { useContext, useState, useRef, useEffect, } from 'react'
-import PageWrapper from '../../../WelcomeScreen/PageWrapper'
-import bg from '../../../assets/background-collage.png'
-import thinking_image  from '../../../assets/black_man_thinking.webp'
+import PageWrapper from '../../../../WelcomeScreen/PageWrapper'
+import bg from '../../../../assets/background-collage.png'
+import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
-import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 
 
-function Lesson2(){
+function Lesson7(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
@@ -50,24 +50,27 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "Handle all the beads with care throughout the game. Rough handling may cause the pieces to scatter or become misplaced, making it difficult for the game to continue smoothly.",
+        text: "Always try to predict where your final seed will land before making a move. Thinking several steps ahead greatly improves your chances of creating captures and avoiding mistakes.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "For your safety, never place your hand or any object in the robot's path while it is moving across the board. Wait until the robot has completely finished its move before interacting with the game.",
+        text: "Maintaining two or three seeds in several of your pits gives you more options for future turns and increases your chances of creating chain moves.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "Whenever you capture beads, place them neatly into your designated container pod. Keeping captured beads separate makes it easier to determine the winner at the end of the game.",
+        text: "Make good use of pits containing five or more seeds. These allow you to spread seeds farther around the board and gain better control of the game.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "Whenever you capture beads, place them neatly into your designated container pod. Keeping captured beads separate makes it easier to determine the winner at the end of the game.",
+        text: "Watch your opponent's possible moves carefully. Anticipating their strategy helps you avoid giving away easy captures while creating opportunities for yourself.",
         voice: 'Foolish boy Siaw'
 
+    }, {
+        step: '5',
+        text: "Congratulations! You've completed the Oware tutorial. You now understand the basic rules, how to sow seeds, capture your opponent's seeds, and think strategically before each move. Keep practising to sharpen your skills, challenge stronger opponents, and enjoy one of Africa's greatest traditional board games. Good luck, and have fun playing!",
     } ]
 
     const [currentStep, setCurrentStep] = useState(0)
@@ -96,7 +99,7 @@ const getBoardState = () => {
 
     const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/lesson3')
+            navigate('/selectionScreen')
         } else {
             nextStep()
         }
@@ -113,7 +116,7 @@ const getBoardState = () => {
 
     const PreviousLessonNavigation = () => {
         if (previousLessonVariable){
-            navigate('/lesson1')
+            navigate('/lesson6')
         } else {
             previousStep()
         }
@@ -139,7 +142,6 @@ return(
         <ArrowLeft className=' left-3 size-8 cursor-pointer text-midGold' onClick={goBack} />
         <ArrowRight className=' size-8 text-gold-300 cursor-pointer text-midGold' onClick={goForward} />
         <House className=' size-7 text-gold-300 cursor-pointer text-midGold' onClick={() => {navigate('/selectionScreen')}}/>
-
     </div>
 
 
@@ -184,11 +186,11 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>General Rules</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>Tips and tricks</p>
             </div>
 
             <div className='flex items-center justify-between'>
-                <p className=' text-midGold'>Lesson 2</p>
+                <p className=' text-midGold'>Lesson 7</p>
                 <p className='text-midGold'>{`Step ${steps[currentStep].step}`}</p>
             </div>
             
@@ -248,4 +250,4 @@ return(
 )
 }
 
-export default Lesson2 
+export default Lesson7

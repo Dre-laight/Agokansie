@@ -1,18 +1,19 @@
 import { useContext, useState, useRef, useEffect, } from 'react'
-import PageWrapper from '../../../WelcomeScreen/PageWrapper'
-import bg from '../../../assets/background-collage.png'
-import thinking_image  from '../../../assets/black_man_thinking.webp'
+import PageWrapper from '../../../../WelcomeScreen/PageWrapper'
+import bg from '../../../../assets/background-collage.png'
+import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
-import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 
 
-function Lesson6(){
+function Lesson4(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
 const navigate = useNavigate()
+
 
 
 const goBack = () => {
@@ -49,22 +50,22 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "A round comes to an end when only eight seeds remain on the board. If one player has already captured four more seeds than the other, that player receives the remaining four seeds.",
+        text: "Players take turns making moves. On your turn, choose one pit from your own territory and pick up every seed from that pit.",
         voice: 'Foolish boy Siaw'
- 
+
     },{
         step: '2',
-        text: "After all captured and remaining seeds have been counted, the player with the highest total number of seeds is declared the winner.",
+        text: "Moving in a counter-clockwise direction, place one seed into each pit until you have distributed all the seeds in your hand.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "If both players finish with the same number of seeds, the game is considered a draw.",
+        text: "If your final seed lands in a pit that already contains other seeds, pick up all the seeds from that pit and continue sowing. This process may repeat several times during the same turn.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "Once the winner has been announced, return all forty-eight seeds to the board to prepare for the next game.",
+        text: "If your final seed lands in an empty pit, your turn ends immediately and play passes to your opponent. If your opponent has no seeds remaining, you must make a move that gives them seeds so the game can continue.",
         voice: 'Foolish boy Siaw'
 
     } ]
@@ -95,7 +96,7 @@ const getBoardState = () => {
 
     const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/lesson7')
+            navigate('/lesson5')
         } else {
             nextStep()
         }
@@ -112,7 +113,7 @@ const getBoardState = () => {
 
     const PreviousLessonNavigation = () => {
         if (previousLessonVariable){
-            navigate('/lesson5')
+            navigate('/lesson3')
         } else {
             previousStep()
         }
@@ -182,11 +183,11 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>Game ends</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>Sowing seeds</p>
             </div>
 
             <div className='flex items-center justify-between'>
-                <p className=' text-midGold'>Lesson 6</p>
+                <p className=' text-midGold'>Lesson 4</p>
                 <p className='text-midGold'>{`Step ${steps[currentStep].step}`}</p>
             </div>
             
@@ -235,6 +236,10 @@ return(
 
             </div>
         
+        
+
+        
+    
     </div>
 </PageWrapper>
 
@@ -242,4 +247,4 @@ return(
 )
 }
 
-export default Lesson6
+export default Lesson4

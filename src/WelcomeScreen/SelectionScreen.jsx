@@ -130,10 +130,10 @@ import { motion } from 'framer-motion'
                     navigate('/owareLessonScreen')
 
                 } else if (games[currentGame].key == 1){
-                    navigate('/dameTutorial')
+                    navigate('/dameLessonScreen')
                     
                 } else {
-                    navigate('/achiTutorial')
+                    navigate('/achiLessonScreen')
                 }
         }
 

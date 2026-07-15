@@ -1,13 +1,13 @@
 import { useContext, useState, useRef, useEffect, } from 'react'
-import PageWrapper from '../../../WelcomeScreen/PageWrapper'
-import bg from '../../../assets/background-collage.png'
-import thinking_image  from '../../../assets/black_man_thinking.webp'
+import PageWrapper from '../../../../WelcomeScreen/PageWrapper'
+import bg from '../../../../assets/background-collage.png'
+import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
-import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 
 
-function Lesson7(){
+function Lesson3(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
@@ -50,27 +50,26 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "Always try to predict where your final seed will land before making a move. Thinking several steps ahead greatly improves your chances of creating captures and avoiding mistakes.",
+        text: "The Oware board consists of twelve pits arranged in two rows of six. Each row belongs to one player and represents that player's territory.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "Maintaining two or three seeds in several of your pits gives you more options for future turns and increases your chances of creating chain moves.",
+        text: "The game begins with a total of forty-eight seeds distributed evenly across the board. Every pit starts with exactly four seeds, ensuring both players begin with an equal advantage.",
         voice: 'Foolish boy Siaw'
 
-    },{
+    }, 
+    /**Main points captured, these two are irrelevant  */
+    { 
         step: '3',
-        text: "Make good use of pits containing five or more seeds. These allow you to spread seeds farther around the board and gain better control of the game.",
+        text: "Moving counter-clockwise, drop one seed into each pit you pass. Continue until you've placed every seed.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "Watch your opponent's possible moves carefully. Anticipating their strategy helps you avoid giving away easy captures while creating opportunities for yourself.",
+        text: "If you have enough seeds to go all the way around the board, do not place a seed back into the pit where you started. Simply skip it and continue sowing.",
         voice: 'Foolish boy Siaw'
 
-    }, {
-        step: '5',
-        text: "Congratulations! You've completed the Oware tutorial. You now understand the basic rules, how to sow seeds, capture your opponent's seeds, and think strategically before each move. Keep practising to sharpen your skills, challenge stronger opponents, and enjoy one of Africa's greatest traditional board games. Good luck, and have fun playing!",
     } ]
 
     const [currentStep, setCurrentStep] = useState(0)
@@ -99,7 +98,7 @@ const getBoardState = () => {
 
     const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/selectionScreen')
+            navigate('/lesson4')
         } else {
             nextStep()
         }
@@ -116,7 +115,7 @@ const getBoardState = () => {
 
     const PreviousLessonNavigation = () => {
         if (previousLessonVariable){
-            navigate('/lesson6')
+            navigate('/lesson2')
         } else {
             previousStep()
         }
@@ -186,11 +185,11 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>Tips and tricks</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>Making a move</p>
             </div>
 
             <div className='flex items-center justify-between'>
-                <p className=' text-midGold'>Lesson 7</p>
+                <p className=' text-midGold'>Lesson 3</p>
                 <p className='text-midGold'>{`Step ${steps[currentStep].step}`}</p>
             </div>
             
@@ -250,4 +249,4 @@ return(
 )
 }
 
-export default Lesson7
+export default Lesson3

@@ -1,5 +1,5 @@
 
-function DameTutorial(){
+function DameLessonScreen(){
     return(
         <div>
             Dame tutorial
@@ -7,4 +7,4 @@ function DameTutorial(){
     )
 }
 
-export default DameTutorial
+export default DameLessonScreen

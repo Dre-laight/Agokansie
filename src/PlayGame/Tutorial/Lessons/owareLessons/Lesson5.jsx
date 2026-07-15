@@ -1,19 +1,18 @@
 import { useContext, useState, useRef, useEffect, } from 'react'
-import PageWrapper from '../../../WelcomeScreen/PageWrapper'
-import bg from '../../../assets/background-collage.png'
-import thinking_image  from '../../../assets/black_man_thinking.webp'
+import PageWrapper from '../../../../WelcomeScreen/PageWrapper'
+import bg from '../../../../assets/background-collage.png'
+import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
-import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 
 
-function Lesson4(){
+function Lesson5(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
 const navigate = useNavigate()
-
 
 
 const goBack = () => {
@@ -50,22 +49,22 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "Players take turns making moves. On your turn, choose one pit from your own territory and pick up every seed from that pit.",
+        text: "You can capture seeds when your final seed lands in your opponent's territory and creates exactly four seeds in that pit.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "Moving in a counter-clockwise direction, place one seed into each pit until you have distributed all the seeds in your hand.",
+        text: "Captured seeds should immediately be removed from the board and placed into your collection container.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "If your final seed lands in a pit that already contains other seeds, pick up all the seeds from that pit and continue sowing. This process may repeat several times during the same turn.",
+        text: "Capturing is only allowed in your own territory. Seeds that form four in your opponent's territory cannot be captured.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "If your final seed lands in an empty pit, your turn ends immediately and play passes to your opponent. If your opponent has no seeds remaining, you must make a move that gives them seeds so the game can continue.",
+        text: "Keep careful track of every captured seed, as the player with the most captured seeds at the end of the game wins.",
         voice: 'Foolish boy Siaw'
 
     } ]
@@ -96,7 +95,7 @@ const getBoardState = () => {
 
     const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/lesson5')
+            navigate('/lesson6')
         } else {
             nextStep()
         }
@@ -113,7 +112,7 @@ const getBoardState = () => {
 
     const PreviousLessonNavigation = () => {
         if (previousLessonVariable){
-            navigate('/lesson3')
+            navigate('/lesson4')
         } else {
             previousStep()
         }
@@ -183,11 +182,11 @@ return(
        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>Sowing seeds</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>capturing seeds</p>
             </div>
 
             <div className='flex items-center justify-between'>
-                <p className=' text-midGold'>Lesson 4</p>
+                <p className=' text-midGold'>Lesson 5</p>
                 <p className='text-midGold'>{`Step ${steps[currentStep].step}`}</p>
             </div>
             
@@ -247,4 +246,4 @@ return(
 )
 }
 
-export default Lesson4
+export default Lesson5
