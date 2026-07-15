@@ -214,13 +214,16 @@ def restart():
 
 try:
 
-    start_services()
+    start_services()          # <-- leave this exactly as-is
 
 
-    keyboard.add_hotkey(
-        "f9",
-        restart
-    )
+    try:
+        keyboard.add_hotkey(
+            "f9",
+            restart
+        )
+    except ImportError:
+        print("⚠ F9 hotkey disabled (need root/input-group permissions on Linux). Continuing without it.")
 
 
     while True:
