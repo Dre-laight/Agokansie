@@ -32,7 +32,7 @@ python_exec = os.path.join(
 
 
 browser_cmd = [
-    "chromium-browser",
+    "chromium",
     "--kiosk",
     "--incognito",
     "--disable-infobars",
