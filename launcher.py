@@ -3,11 +3,16 @@ import signal
 import subprocess
 import time
 import requests
+import keyboard
 
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 processes = []
+
+browser = None
+backend = None
+frontend = None
 
 
 # -------------------------
@@ -16,6 +21,7 @@ processes = []
 
 env = os.environ.copy()
 env["FLASK_APP"] = "app.py"
+
 
 python_exec = os.path.join(
     ROOT,
@@ -54,7 +60,7 @@ def wait_for(url, timeout=60):
             r = requests.get(url, timeout=1)
 
             if r.status_code < 500:
-                print(f"✓ {url} is ready")
+                print(f"✓ {url} ready")
                 return True
 
         except:
@@ -66,13 +72,44 @@ def wait_for(url, timeout=60):
 
 
 
-try:
+# -------------------------
+# Stop services
+# -------------------------
 
-    # -------------------------
-    # Start Flask
-    # -------------------------
+def stop_services():
 
-    print("Starting Flask...")
+    global processes
+
+    print("\nStopping services...")
+
+    for p in processes:
+
+        try:
+            p.send_signal(signal.SIGTERM)
+
+        except:
+            pass
+
+
+    processes.clear()
+
+    time.sleep(2)
+
+
+
+# -------------------------
+# Start everything
+# -------------------------
+
+def start_services():
+
+    global backend
+    global frontend
+    global browser
+
+
+    print("\nStarting Flask...")
+
 
     backend = subprocess.Popen(
         [
@@ -86,15 +123,13 @@ try:
         env=env
     )
 
+
     processes.append(backend)
 
 
 
-    # -------------------------
-    # Build React
-    # -------------------------
+    print("Building React...")
 
-    print("Building React frontend...")
 
     subprocess.run(
         [
@@ -108,11 +143,8 @@ try:
 
 
 
-    # -------------------------
-    # Start Vite Preview
-    # -------------------------
-
     print("Starting frontend...")
+
 
     frontend = subprocess.Popen(
         [
@@ -126,56 +158,83 @@ try:
         cwd=ROOT
     )
 
+
     processes.append(frontend)
 
 
 
-    # -------------------------
-    # Wait until ready
-    # -------------------------
-
     if not wait_for("http://127.0.0.1:5000"):
-        raise RuntimeError("Flask failed to start")
+        raise RuntimeError(
+            "Flask failed"
+        )
 
 
     if not wait_for("http://127.0.0.1:4173"):
-        raise RuntimeError("Frontend failed to start")
+        raise RuntimeError(
+            "Frontend failed"
+        )
 
 
 
-    # -------------------------
-    # Launch Browser
-    # -------------------------
+    print("Opening Chromium...")
 
-    print("Launching kiosk mode...")
 
     browser = subprocess.Popen(
         browser_cmd
     )
 
+
     processes.append(browser)
 
 
-    print("\nAgokansie is running!\n")
+
+    print("\nAgokansie running 🚀")
+    print("Press F9 to restart\n")
 
 
-    browser.wait()
+
+
+# -------------------------
+# Restart handler
+# -------------------------
+
+def restart():
+
+    print("\n===== RESTART REQUESTED =====")
+
+    stop_services()
+
+    start_services()
+
+
+
+# -------------------------
+# Main
+# -------------------------
+
+try:
+
+    start_services()
+
+
+    keyboard.add_hotkey(
+        "f9",
+        restart
+    )
+
+
+    while True:
+
+        time.sleep(1)
 
 
 
 except KeyboardInterrupt:
+
     pass
 
 
 
 finally:
 
-    print("Stopping...")
-
-    for p in processes:
-
-        try:
-            p.send_signal(signal.SIGTERM)
-
-        except:
-            pass
+    stop_services()
