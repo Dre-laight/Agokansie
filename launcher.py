@@ -34,14 +34,20 @@ python_exec = os.path.join(
 browser_cmd = [
     "chromium",
     "--kiosk",
+    "--start-fullscreen",
+    "--start-maximized",
+    "--window-position=0,0",
+    "--window-size=1920,1080",  # replace with your actual resolution from xrandr
     "--incognito",
     "--disable-infobars",
     "--noerrdialogs",
     "--disable-session-crashed-bubble",
     "--disable-features=Translate",
+    "--no-first-run",
+    "--fast",
+    "--fast-start",
     "http://127.0.0.1:4173"
 ]
-
 
 # -------------------------
 # Wait for server
