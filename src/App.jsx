@@ -10,6 +10,9 @@ import { AnimatePresence } from 'framer-motion'
 import OwareLesson from './PlayGame/Tutorial/OwareLessonScreen.jsx'
 import DameLessonScreen from './PlayGame/Tutorial/DameLessonScreen.jsx'
 import AchiLessonScreen from './PlayGame/Tutorial/AchiLessonScreen.jsx'
+
+
+
 import OwareLesson1 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson1.jsx'
 import OwareLesson2 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson2.jsx'
 import OwareLesson3 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson3.jsx'
@@ -17,6 +20,16 @@ import OwareLesson4 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson4.jsx'
 import OwareLesson5 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson5.jsx'
 import OwareLesson6 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson6.jsx'
 import OwareLesson7 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson7.jsx'
+
+
+import DameLesson1 from './PlayGame/Tutorial/dameLessons/Lesson1.jsx'
+import DameLesson2 from './PlayGame/Tutorial/dameLessons/Lesson2.jsx'
+import DameLesson3 from './PlayGame/Tutorial/dameLessons/Lesson3.jsx'
+import DameLesson4 from './PlayGame/Tutorial/dameLessons/Lesson4.jsx'
+import DameLesson5 from './PlayGame/Tutorial/dameLessons/Lesson5.jsx'
+import DameLesson6 from './PlayGame/Tutorial/dameLessons/Lesson6.jsx'
+import DameLesson7 from './PlayGame/Tutorial/dameLessons/Lesson7.jsx'
+
 
 
 
@@ -36,12 +49,15 @@ function AnimatedRoutes(){
             <Routes location={location} key={location.pathname}>
                 <Route path='/' element={<WelcomeScreen music={startMusic}/>}/>
                 <Route path='/selectionScreen' element={<SelectionScreen/>}/>
+
                 <Route path='/owareScreen' element={<OwareGame/>}/>
                 <Route path='/dameScreen' element={<DameGame/>}/>
                 <Route path='/achiScreen' element={<AchiGame/>}/>
+
                 <Route path='/owareLessonScreen' element={<OwareLesson/>}/>
                 <Route path='/dameLessonScreen' element={<DameLessonScreen/>}/>
                 <Route path='/achiLessonScreen' element={<AchiLessonScreen/>}/>
+
                 <Route path='/owarelesson1' element={<OwareLesson1/>}/>
                 <Route path='/owarelesson2' element={<OwareLesson2/>}/>
                 <Route path='/owarelesson3' element={<OwareLesson3/>}/>
@@ -49,7 +65,16 @@ function AnimatedRoutes(){
                 <Route path='/owarelesson5' element={<OwareLesson5/>}/>
                 <Route path='/owarelesson6' element={<OwareLesson6/>}/>
                 <Route path='/owarelesson7' element={<OwareLesson7/>}/>
-                
+
+                <Route path='/damelesson1' element={<DameLesson1/>}/>
+                <Route path='/damelesson2' element={<DameLesson2/>}/>
+                <Route path='/damelesson3' element={<DameLesson3/>}/>
+                <Route path='/damelesson4' element={<DameLesson4/>}/>
+                <Route path='/damelesson5' element={<DameLesson5/>}/>
+                <Route path='/damelesson6' element={<DameLesson6/>}/>
+                <Route path='/damelesson7' element={<DameLesson7/>}/>
+
+                                
             </Routes>
         </AnimatePresence>
         </>

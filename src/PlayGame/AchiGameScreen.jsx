@@ -205,7 +205,7 @@ function AchiGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://127.0.0.1:5000' 
+    const API = 'http://192.168.74.206:5000' 
 
     const navigate = useNavigate()
 

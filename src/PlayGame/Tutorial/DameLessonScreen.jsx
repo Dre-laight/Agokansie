@@ -5,13 +5,13 @@ import thinking_image  from '../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../assets/sound/woodTap.mp3'
-import lesson1 from '../../assets/lesson1.png'
-import lesson2 from '../../assets/lesson2.png'
-import lesson3 from '../../assets/lesson3.png'
-import lesson4 from '../../assets/lesson4.png'
-import lesson5 from '../../assets/lesson5.png'
-import lesson6 from '../../assets/lesson6.png'
-import lesson7 from '../../assets/lesson7.png'
+import lesson1 from '../../assets/damelesson1.png'
+import lesson2 from '../../assets/damelesson2.png'
+import lesson3 from '../../assets/damelesson3.png'
+import lesson4 from '../../assets/damelesson4.png'
+import lesson5 from '../../assets/damelesson5.png'
+import lesson6 from '../../assets/damelesson6.png'
+import lesson7 from '../../assets/damelesson7.png'
 import lesson8 from '../../assets/lesson8.png'
 
 
@@ -66,8 +66,8 @@ return(
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>   
                         <img src={lesson1} className='size-30 rounded-full' />
                     
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Introduction to Oware</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={()=>{navigate('/owarelesson1')}}>Begin</button>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Introduction to Dame</p>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={()=>{navigate('/damelesson1')}}>Begin</button>
                 </div>
                 
             </div>
@@ -77,7 +77,7 @@ return(
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson2} className='size-30 rounded-full' />
                     <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>General rules</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/owarelesson2')}}>Begin</button>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/damelesson2')}}>Begin</button>
                 </div>
                 
             </div>
@@ -86,8 +86,8 @@ return(
 
                 <div className='flex flex-col items-center justify-start p-3 gap-2'>
                     <img src={lesson3} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'> understanding the Board</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/owarelesson3')}}>Begin</button>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'> Making Moves</p>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/damelesson3')}}>Begin</button>
                 </div>
                 
             </div>
@@ -96,8 +96,8 @@ return(
 
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson4} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Sowing seeds</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/owarelesson4')}}>Begin</button>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Capturing pieces</p>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/damelesson4')}}>Begin</button>
                 </div>
                 
             </div>
@@ -111,8 +111,8 @@ return(
 
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson5} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>  seeds</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/owarelesson5')}}>Begin</button>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Promotion  </p>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/damelesson5')}}>Begin</button>
                 </div>
                 
             </div>
@@ -121,8 +121,8 @@ return(
 
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson6} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>The end of the game</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/owarelesson6')}}>Begin</button>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Tips and strategies</p>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/damelesson6')}}>Begin</button>
                 </div>
                 
             </div>
@@ -131,8 +131,8 @@ return(
 
                 <div className='flex flex-col items-center justify-justify p-3 gap-2'>
                     <img src={lesson7} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Strategies and tips</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/owarelesson7')}}>Begin</button>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>The end of the game</p>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/damelesson7')}}>Begin</button>
                 </div>
                 
             </div>

@@ -68,7 +68,6 @@ import strategistWin from '../assets/sound/welcome/strategistWin.m4a'
 
 function OwareGame(){
     
-    
 
     const useRobotCaputureSeedResponses = () => {
         const RobotCaptureSeedResponses = [
@@ -204,7 +203,7 @@ function OwareGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://127.0.0.1:5000' 
+    const API = 'http://192.168.74.206:5000' 
 
     const navigate = useNavigate()
 
@@ -558,7 +557,7 @@ function OwareGame(){
         }
    
 
-    },[boardState])
+    },[boardState, status])
 
     useEffect (()=>{
         if (gameOver && playerScore > robotScore){ 
