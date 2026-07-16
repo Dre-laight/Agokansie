@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 
 
-function Lesson3(){
+function OwareLesson3(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
@@ -98,7 +98,7 @@ const getBoardState = () => {
 
     const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/lesson4')
+            navigate('/owarelesson4')
         } else {
             nextStep()
         }
@@ -115,7 +115,7 @@ const getBoardState = () => {
 
     const PreviousLessonNavigation = () => {
         if (previousLessonVariable){
-            navigate('/lesson2')
+            navigate('/owarelesson2')
         } else {
             previousStep()
         }
@@ -249,4 +249,4 @@ return(
 )
 }
 
-export default Lesson3
+export default OwareLesson3

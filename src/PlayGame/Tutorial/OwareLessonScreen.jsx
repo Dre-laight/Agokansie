@@ -69,7 +69,7 @@ return(
                         <img src={lesson1} className='size-30 rounded-full' />
                     
                     <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Introduction to Oware</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={()=>{navigate('/lesson1')}}>Begin</button>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={()=>{navigate('/owarelesson1')}}>Begin</button>
                 </div>
                 
             </div>
@@ -79,7 +79,7 @@ return(
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson2} className='size-30 rounded-full' />
                     <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>General rules</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/lesson2')}}>Begin</button>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/owarelesson2')}}>Begin</button>
                 </div>
                 
             </div>
@@ -89,7 +89,7 @@ return(
                 <div className='flex flex-col items-center justify-start p-3 gap-2'>
                     <img src={lesson3} className='size-30 rounded-full' />
                     <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'> understanding the Board</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/lesson3')}}>Begin</button>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/owarelesson3')}}>Begin</button>
                 </div>
                 
             </div>
@@ -99,7 +99,7 @@ return(
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson4} className='size-30 rounded-full' />
                     <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Sowing seeds</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/lesson4')}}>Begin</button>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/owarelesson4')}}>Begin</button>
                 </div>
                 
             </div>
@@ -114,7 +114,7 @@ return(
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson5} className='size-30 rounded-full' />
                     <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>  seeds</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/lesson5')}}>Begin</button>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/owarelesson5')}}>Begin</button>
                 </div>
                 
             </div>
@@ -124,7 +124,7 @@ return(
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson6} className='size-30 rounded-full' />
                     <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>The end of the game</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/lesson6')}}>Begin</button>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/owarelesson6')}}>Begin</button>
                 </div>
                 
             </div>
@@ -134,7 +134,7 @@ return(
                 <div className='flex flex-col items-center justify-justify p-3 gap-2'>
                     <img src={lesson7} className='size-30 rounded-full' />
                     <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>Strategies and tips</p>
-                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/lesson7')}}>Begin</button>
+                    <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold' onClick={() => {navigate('/owarelesson7')}}>Begin</button>
                 </div>
                 
             </div>

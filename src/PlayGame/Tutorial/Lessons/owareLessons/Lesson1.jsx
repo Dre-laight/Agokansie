@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 
 
-function Lesson1(){
+function OwareLesson1(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
@@ -223,4 +223,4 @@ return(
 )
 }
 
-export default Lesson1
+export default OwareLesson1

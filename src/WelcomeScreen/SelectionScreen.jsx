@@ -150,7 +150,7 @@ import { motion } from 'framer-motion'
                          
                             {/* back buttons */}
                     <div className="absolute top-0 left-0 flex items-center gap-4 z-50 backdrop-blur p-3 rounded-lg">
-                         <ArrowLeft className=' left-3 size-8 cursor-pointer text-gold ' onClick={goBack} />
+                         <ArrowLeft className=' left-3 size-8 cursor-pointer text-gold ' onClick={() => {navigate('/')}} />
                         <ArrowRight className=' size-8 text-gold-300 cursor-pointer text-gold ' onClick={goForward} />
                     </div>
                        
