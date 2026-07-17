@@ -268,8 +268,9 @@ function AchiGame(){
                         )
                     }
                 )
-                      
+                
                 const BoardData = await response.json()
+                setBoardState(BoardData)
                 setBoard(BoardData.state.board)
                 console.log(BoardData)
                 
@@ -468,12 +469,11 @@ function AchiGame(){
     }
 
     const [robotStatus, setRobotStatus] = useState('')
-    const [gameOver, setGameOver] = useState(true)
-    const [playerScore, setPlayerScore] = useState()
-    const [robotScore, setRobotScore] = useState()
+    const [gameOver, setGameOver] = useState(false)
     const [playerWins, setPlayerWins] = useState(false)
     const [agokansieWins, setAgokansieWins] = useState(false)
     const [winner, setWinner] = useState('')
+    const [victor, setVictor] = useState('')
 
      
     useEffect(() => {
@@ -490,45 +490,37 @@ function AchiGame(){
         setGameOver(boardState?.state?.game_over)
         console.log(gameOver)   
 
-        setRobotScore(boardState?.state?.scores?.robot)
-        console.log(robotScore)
-
-        setPlayerScore(boardState?.state?.scores?.player)
-        console.log(playerScore)
-
         if(status === 'error'){
             useInvalidMoveResponses()
         }
 
-        if (gameOver && playerScore > robotScore) {
-            setWinner('You Win')
-            usePlayerWinsResponses()
-        } else if (gameOver && playerScore == robotScore ){
-            setWinner("It's a Draw")
-        } else if (gameOver && robotScore > playerScore ) {
-            setWinner('Agokansie wins!'); 
-            setAgokansieWins(true)
-            useRobotWinsResponses();
-        }
+        // if (gameOver && playerScore > robotScore) {
+        //     setWinner('You Win')
+        //     usePlayerWinsResponses()
+        // } else if (gameOver && playerScore == robotScore ){
+        //     setWinner("It's a Draw")
+        // } else if (gameOver && robotScore > playerScore ) {
+        //     setWinner('Agokansie wins!'); 
+        //     setAgokansieWins(true)
+        //     useRobotWinsResponses();
+        // }
+
+        setVictor(boardState?.state?.winner)
+
     },[boardState])
 
     useEffect (()=>{
-    if (gameOver && playerScore > robotScore){ 
+    if (gameOver && victor === 'player' ){ 
         setWinner('You win!'); 
         setPlayerWins(true)
         usePlayerWinsResponses();
     }
-
-    else if (gameOver && playerScore === robotScore){
-        setWinner("It's a draw")
-    }
-
-    else if (gameOver && robotScore > playerScore) {
+    else if (gameOver && victor === 'robot') {
         setWinner('Robot wins!'); 
         setAgokansieWins(true)
         useRobotWinsResponses();
     }
-}, [playerScore, robotScore])
+}, [victor])
 
     const useInvalidMoveResponses = () => {
         const invalidMovesResponses = [
@@ -588,17 +580,17 @@ function AchiGame(){
 };
 
     const POSITIONS = [
-    { top: "0%", left: "0%" },      // 0
-    { top: "0%", left: "50%" },     // 1
-    { top: "0%", left: "100%" },    // 2
+    { top: "100%", left: "100%" },      // 0
+    { top: "100%", left: "50%" },     // 1
+    { top: "100%", left: "0%" },    // 2
 
-    { top: "50%", left: "0%" },     // 3
+    { top: "50%", left: "100%" },     // 3
     { top: "50%", left: "50%" },    // 4
-    { top: "50%", left: "100%" },   // 5
+    { top: "50%", left: "0%" },   // 5
 
-    { top: "100%", left: "0%" },    // 6
-    { top: "100%", left: "50%" },   // 7
-    { top: "100%", left: "100%" },  // 8
+    { top: "0%", left: "100%" },    // 6
+    { top: "0%", left: "50%" },   // 7
+    { top: "0%", left: "0%" },  // 8
 ];
 
 const LINES = [
@@ -659,7 +651,7 @@ const LINES = [
                                 <div className='w-3/7 flex flex-col items-center justify-center gap-3'>
                                      <img src={player} className={`border-1 size-35 rounded-[50%] ${playerWins ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
                                     <p className={`font-elite text-xl font-bold ${playerWins ? 'text-darkgold' : 'text-midGold'} `}>You</p>
-                                    <p className={`text-6xl font-bold ${playerWins == 'You Win' ? 'text-darkgold' : 'text-midGold'}`}>{playerScore}</p>
+                                    <p className={`text-6xl font-bold ${playerWins == 'You Win' ? 'text-darkgold' : 'text-midGold'}`}></p>
                                 </div>
 
                                 <div className='w-1/7 flex items-center justify-center'>
@@ -669,7 +661,7 @@ const LINES = [
                                 <div className='w-3/7 flex flex-col items-center justify-center gap-3'>
                                      <img src={robot} className={`border-1 size-35 rounded-[50%] ${agokansieWins ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
                                     <p className={`font-elite text-xl font-bold ${agokansieWins ? 'text-darkgold' : 'text-midGold'} `}>Agokansie</p>
-                                    <p className={`text-6xl font-bold ${agokansieWins ? 'text-darkgold' : 'text-midGold'}`}>{robotScore}</p>
+                                    <p className={`text-6xl font-bold ${agokansieWins ? 'text-darkgold' : 'text-midGold'}`}></p>
                                 </div>
                             </div>
 

@@ -12,7 +12,6 @@ import DameLessonScreen from './PlayGame/Tutorial/DameLessonScreen.jsx'
 import AchiLessonScreen from './PlayGame/Tutorial/AchiLessonScreen.jsx'
 
 
-
 import OwareLesson1 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson1.jsx'
 import OwareLesson2 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson2.jsx'
 import OwareLesson3 from './PlayGame/Tutorial/Lessons/owareLessons/Lesson3.jsx'
@@ -29,6 +28,13 @@ import DameLesson4 from './PlayGame/Tutorial/dameLessons/Lesson4.jsx'
 import DameLesson5 from './PlayGame/Tutorial/dameLessons/Lesson5.jsx'
 import DameLesson6 from './PlayGame/Tutorial/dameLessons/Lesson6.jsx'
 import DameLesson7 from './PlayGame/Tutorial/dameLessons/Lesson7.jsx'
+
+import AchiLesson1 from './PlayGame/Tutorial/achiLessons/Lesson1.jsx'
+import AchiLesson2 from './PlayGame/Tutorial/achiLessons/Lesson2.jsx'
+import AchiLesson3 from './PlayGame/Tutorial/achiLessons/Lesson3.jsx'
+import AchiLesson4 from './PlayGame/Tutorial/achiLessons/Lesson4.jsx'
+import AchiLesson5 from './PlayGame/Tutorial/achiLessons/Lesson5.jsx'
+import AchiLesson6 from './PlayGame/Tutorial/achiLessons/Lesson6.jsx'
 
 
 
@@ -73,6 +79,13 @@ function AnimatedRoutes(){
                 <Route path='/damelesson5' element={<DameLesson5/>}/>
                 <Route path='/damelesson6' element={<DameLesson6/>}/>
                 <Route path='/damelesson7' element={<DameLesson7/>}/>
+
+                <Route path='/achilesson1' element={<AchiLesson1/>}/>
+                <Route path='/achilesson2' element={<AchiLesson2/>}/>
+                <Route path='/achilesson3' element={<AchiLesson3/>}/>
+                <Route path='/achilesson4' element={<AchiLesson4/>}/>
+                <Route path='/achilesson5' element={<AchiLesson5/>}/>
+                <Route path='/achilesson6' element={<AchiLesson6/>}/>
 
                                 
             </Routes>

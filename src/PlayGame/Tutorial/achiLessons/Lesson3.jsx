@@ -1,21 +1,19 @@
 import { useContext, useState, useRef, useEffect, } from 'react'
 import PageWrapper from '../../../WelcomeScreen/PageWrapper'
 import bg from '../../../assets/background-collage.png'
+import {gsap} from 'gsap' 
 import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
-import { gsap } from 'gsap'
 
 
-function AchiLesson1(){
+function AchiLesson3(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
 const navigate = useNavigate()
-
-
 
 const goBack = () => {
         navigate(-1)
@@ -33,31 +31,36 @@ const getBoardState = () => {
     console.log('i have played')    
 }
 
-
     const steps = [{
         step: '1',
-        text: "Welcome! I'm Agokansie, your Achi companion. Whether this is your very first game or you're looking to sharpen your skills, I'll guide you every step of the way. By the end of this tutorial, you'll understand the rules of achi, learn how to move pieces, and tactical tricks to ensure victory. Let's begin!",
+        text: "At the beginning of the game, players take turns placing one of their pieces onto any empty point on the board.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "Archi is a traditional strategy game played by many people across Ghana. Despite its simple 3×3 board, it requires careful planning and smart decision-making.",
+        text: "Continue taking turns until all three pieces belonging to each player have been placed on the board.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "The objective of the game is to arrange all three of your pieces in a straight line. This line may be horizontal, vertical, or diagonal.",
+        text: "If a player forms a straight line while placing their final piece, they immediately win the game without entering the movement phase.",
+        voice: 'Foolish boy Siaw'
+
+    },{
+        step: '4',
+        text: "If neither player creates a straight line after all six pieces have been placed, the game continues with players moving their pieces around the board.",
         voice: 'Foolish boy Siaw'
 
     } ]
 
     const [currentStep, setCurrentStep] = useState(0)
     const [nextLesson, setNextLesson] = useState(false)
+    const [previousLesson, setPreviousLesson] = useState(false)
+    const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
 
     const previousStep = () => {
         setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
         console.log(steps[currentStep].step)
-
         
     }
 
@@ -74,21 +77,40 @@ const getBoardState = () => {
         }
     }
 
-    useEffect(() => {
-        LessonState()
-    }, [currentStep])
-
     const nextLessonNavigation = () => {
         if (nextLesson){
-            navigate('/achilesson2')
-        } 
-        else{
+            navigate('/achilesson4')
+        } else {
             nextStep()
         }
     }
 
 
-const getLineStyle = (start, end) => {
+    const PreviousLesson = () => {
+        if(currentStep === 0){
+            setPreviousLessonVariable(true)
+        } else {
+            setPreviousLessonVariable(false)
+        }
+    }
+
+    const PreviousLessonNavigation = () => {
+        if (previousLessonVariable){
+             navigate('/achilesson2')
+        } else {
+            previousStep()
+        }
+    }
+    
+
+    useEffect(() => {
+        LessonState()
+        PreviousLesson()
+    }, [currentStep])
+
+
+
+    const getLineStyle = (start, end) => {
     const x1 = parseFloat(POSITIONS[start].left);
     const y1 = parseFloat(POSITIONS[start].top);
 
@@ -140,69 +162,37 @@ const LINES = [
 ];
     
     const createBoard = () => Array(9).fill(0)
-    const [board, setBoard] = useState(createBoard) 
+    const [board, setBoard] = useState(createBoard)
+
+    // empty space tutotrial animation 
+    const nodeRefs = useRef([])
 
 
-// tutorials movement section
-
-const lineRefs = useRef([])
-
-useEffect(() => {
-    if(steps[currentStep].step === '3'){
-        highlightRedLine(12)
-    highlightRedLine(13)
-
-    highlightRedLine(14)
-    highlightRedLine(15)
-
-    highlightLine(8)
-    highlightLine(9)
-
-    highlightLine(2)
-    highlightLine(3)
+useEffect (()=> {if(steps[currentStep].step === '1'){ 
+    for (let i = 0; i < 9; i++ ){
+        animateNode(i)
     }
-}, [currentStep])
-const highlightLine = (index) => {
-    gsap.fromTo(
-        lineRefs.current[index],
-        {
-            backgroundColor: "#8B5A2B",
-            scaleX: 1,
-        },
-        {
-            backgroundColor: "#FFD700",
-            scaleX: 1, 
-            duration: 0.4,
-            repeat: -1,
-            yoyo: true,
-            ease: "power1.inOut",
-        }
-    );
-};
-
-const highlightRedLine = (index) => {
-    gsap.fromTo(
-        lineRefs.current[index],
-        {
-            backgroundColor: "#8B5A2B",
-            scaleX: 1,
-        },
-        {
-            backgroundColor: "green",
-            scaleX: 1, 
-            duration: 0.2,
-            repeat: -1,
-            yoyo: true,
-            ease: "power1.inOut",
-        }
-    );
-};
+   
+    
+}}, [currentStep])
 
 
-
-
-
-
+   const animateNode = (index) => { 
+    console.log(index)
+    console.log(nodeRefs.current[index]);
+    gsap.killTweensOf(nodeRefs.current[index]);
+    gsap.to(nodeRefs.current[index], { 
+        boxShadow: 
+        `0 0 15px #c57c08,
+        0 0 15px #c57c08,
+        0 0 15px #c57c08`, 
+        yoyo: true,
+        repeat: -1,
+        duration: 0.9,
+ 
+        ease: 'power1.inOut'
+    })
+   }
 
 
 return(
@@ -253,26 +243,26 @@ return(
             <CornerDownRight /> 
         </button>
 
-        <button onClick={previousStep} className='absolute bottom-5 left-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3'> 
+        <button onClick={PreviousLessonNavigation} className='absolute bottom-5 left-5 border-none p-3 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-smooth duration-300 flex items-center justify-center gap-3'> 
             <CornerDownLeft /> 
-            <p>Previous</p>
+            <p>{previousLessonVariable ? 'Previous Lesson' : 'Previous'}</p>
         </button>
 
     
-        <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midgold shadow-sm'>
+       <div className='absolute left-1/2 -translate-x-1/2 border-2 border-t-0 border-midGold rounded-br-lg rounded-bl-lg px-6 py-2 text-center bg-dark/90 text-darkgold shadow-midGold shadow-sm '>
 
             <div>
-                <p className='uppercase text-3xl font-bold font-fingerpaint'>Introdution to achi</p>
+                <p className='uppercase text-3xl font-bold font-fingerpaint'>Dropping Pieces</p>
             </div>
 
             <div className='flex items-center justify-between'>
-                <p className=' text-midGold'>Lesson 1</p>
+                <p className=' text-midGold'>Lesson 3</p>
                 <p className='text-midGold'>{`Step ${steps[currentStep].step}`}</p>
             </div>
             
         </div>
 
-        <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1 scale-90'>
+          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1'>
             <div className='border-3 p-18 rounded-lg border-dark bg-dark/70'>
 
             <div className="relative w-[450px] h-[450px] bg-radial from-gold via-wood1 to-dark ">
@@ -281,7 +271,6 @@ return(
                 {LINES.map(([start, end], index) => (
                     <div
                         key={index}
-                        ref={(el) => (lineRefs.current[index] = el)}
                         className="absolute h-1 bg-darkgold"
                         style={getLineStyle(start, end)}
                     />
@@ -291,7 +280,8 @@ return(
                 {POSITIONS.map((position, index) => (
                     <div
                         key={index}
-                        className="absolute size-4 z-10 rounded-full bg-darkgold -translate-x-1/2 -translate-y-1/2"
+                        ref = {(el) => (nodeRefs.current[index] = el)}
+                        className="absolute size-6 z-10 rounded-full bg-darkgold -translate-x-1/2 -translate-y-1/2"
                         style={position}
                     />
                 ))}
@@ -317,7 +307,10 @@ return(
         </div>
 </div>
         
+        
 
+        
+    
     </div>
 </PageWrapper>
 
@@ -325,4 +318,4 @@ return(
 )
 }
 
-export default AchiLesson1
+export default AchiLesson3

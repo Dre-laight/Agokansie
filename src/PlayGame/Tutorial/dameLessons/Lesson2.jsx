@@ -14,8 +14,6 @@ const thinking = "..."
 
 const navigate = useNavigate()
 
-
-
 const goBack = () => {
         navigate(-1)
         woodTap.current.currentTime = 0
@@ -34,22 +32,22 @@ const getBoardState = () => {
 
     const steps = [{
         step: '1',
-        text: "Handle all the beads with care throughout the game. Rough handling may cause the pieces to scatter or become misplaced, making it difficult for the game to continue smoothly.",
+        text: "Handle every game piece with care when placing, moving, or capturing. Keeping the pieces properly positioned helps the robot accurately recognise the board state.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '2',
-        text: "For your safety, never place your hand or any object in the robot's path while it is moving across the board. Wait until the robot has completely finished its move before interacting with the game.",
+        text: "Never place your hands inside the robot's working area while it is moving a piece. Wait until the robot has completed its turn before interacting with the board.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '3',
-        text: "Whenever you capture beads, place them neatly into your designated container pod. Keeping captured beads separate makes it easier to determine the winner at the end of the game.",
+        text: "Remove captured pieces only after the robot has finished its capture sequence, unless instructed otherwise by the game interface. Place captured pieces neatly in the designated container.",
         voice: 'Foolish boy Siaw'
 
     },{
         step: '4',
-        text: "Whenever you capture beads, place them neatly into your designated container pod. Keeping captured beads separate makes it easier to determine the winner at the end of the game.",
+        text: "Play one move at a time and avoid touching other pieces during a turn. Allow the robot to complete every action before making your next move to ensure fair and accurate gameplay.",
         voice: 'Foolish boy Siaw'
 
     } ]

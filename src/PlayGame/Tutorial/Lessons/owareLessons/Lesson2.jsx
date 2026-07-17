@@ -65,7 +65,7 @@ const getBoardState = () => {
 
     },{
         step: '4',
-        text: "Whenever you capture beads, place them neatly into your designated container pod. Keeping captured beads separate makes it easier to determine the winner at the end of the game.",
+        text: "Always wait for the robot or your opponent to complete their turn before touching the board. Never move pieces early or interfere with another player's turn, as this would be cheating and could affect the outcome of the game.",
         voice: 'Foolish boy Siaw'
 
     } ]
