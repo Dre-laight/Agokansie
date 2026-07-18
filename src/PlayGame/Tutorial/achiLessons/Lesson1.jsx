@@ -145,60 +145,67 @@ const LINES = [
 
 // tutorials movement section
 
-const lineRefs = useRef([])
+const animateWin = useRef([])
 
-useEffect(() => {
-    if(steps[currentStep].step === '3'){
-        highlightRedLine(12)
-    highlightRedLine(13)
+ useEffect (() =>{
+    resetWin(15)
+    resetWin(12)
+    resetWin(14)
+    resetWin(13)
+    resetWin(8)
+    resetWin(9)
+    resetWin(2)
+    resetWin(3)
 
-    highlightRedLine(14)
-    highlightRedLine(15)
 
-    highlightLine(8)
-    highlightLine(9)
 
-    highlightLine(2)
-    highlightLine(3)
-    }
-}, [currentStep])
-const highlightLine = (index) => {
+    if(steps[currentStep].step === '3'){ 
+    animateWinDemonstration(13)
+    animateWinDemonstration(14)
+    animateWinDemonstration(15)
+    animateWinDemonstration(8)
+    animateWinDemonstration(9)
+    animateWinDemonstration(2)
+    animateWinDemonstration(3)
+    animateWinDemonstration(12)
+
+
+    }},[ currentStep])
+
+
+
+   const animateWinDemonstration = (index) => { 
     gsap.fromTo(
-        lineRefs.current[index],
-        {
-            backgroundColor: "#8B5A2B",
-            scaleX: 1,
+        animateWin.current[index], {
+          backgroundColor: "#45e210",
+        boxShadow: "0 0 0px #45e210",
+        scaleX: 1,
+        opacity: 0.8
         },
-        {
-            backgroundColor: "#FFD700",
-            scaleX: 1, 
-            duration: 0.4,
-            repeat: -1,
-            yoyo: true,
-            ease: "power1.inOut",
-        }
-    );
-};
 
-const highlightRedLine = (index) => {
-    gsap.fromTo(
-        lineRefs.current[index],
-        {
-            backgroundColor: "#8B5A2B",
-            scaleX: 1,
-        },
-        {
-            backgroundColor: "green",
-            scaleX: 1, 
-            duration: 0.2,
-            repeat: -1,
-            yoyo: true,
-            ease: "power1.inOut",
-        }
-    );
-};
+        { 
+        backgroundColor: "#37c5c7",
+        boxShadow:
+            "0 0 20px #c1ad2e," +
+            "0 0 40px #c1ad2e," +
+            "0 0 80px #c1ad2e",
+        scaleX: 1,
+        opacity: 1,
 
-
+        duration: 0.9,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut"}
+    )
+   }
+                                                                    
+   const resetWin = (index) => { 
+    gsap.killTweensOf(animateWin.current[index], { 
+        scale: 1, 
+        boxShadow:'none', 
+        backgroundColor: ""
+    })
+   }
 
 
 
@@ -281,7 +288,7 @@ return(
                 {LINES.map(([start, end], index) => (
                     <div
                         key={index}
-                        ref={(el) => (lineRefs.current[index] = el)}
+                        ref={(el) => (animateWin.current[index] = el)}
                         className="absolute h-1 bg-darkgold"
                         style={getLineStyle(start, end)}
                     />

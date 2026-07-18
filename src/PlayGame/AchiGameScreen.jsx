@@ -205,7 +205,7 @@ function AchiGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://192.168.74.206:5000' 
+    const API = 'http://192.168.74.170:5000' 
 
     const navigate = useNavigate()
 
@@ -333,28 +333,28 @@ function AchiGame(){
 
         const [pit, setPit] = useState('')
 
-        const postPitNumber = async () => {
-            try {
-                const response = await fetch(`${API}/api/game/oware-play-human-move`, 
-                    {
-                        method: 'POST',
-                        headers: {
-                        'Content-Type': "application/json",
-                    },
-                    body: JSON.stringify(
-                            { pit: Number(pit)}
-                        )
-                    }
-                )
+        // const postPitNumber = async () => {
+        //     try {
+        //         const response = await fetch(`${API}/api/game/oware-play-human-move`, 
+        //             {
+        //                 method: 'POST',
+        //                 headers: {
+        //                 'Content-Type': "application/json",
+        //             },
+        //             body: JSON.stringify(
+        //                     { pit: Number(pit)}
+        //                 )
+        //             }
+        //         )
 
-            }
+        //     }
 
-            catch (error) {
-                console.log(error.message)
-            }
-            console.log(pit)
+        //     catch (error) {
+        //         console.log(error.message)
+        //     }
+        //     console.log(pit)
 
-        }
+        // }
 
         
         const [displayScreen, setDisplayScreen] = useState(false)
@@ -516,7 +516,7 @@ function AchiGame(){
         usePlayerWinsResponses();
     }
     else if (gameOver && victor === 'robot') {
-        setWinner('Robot wins!'); 
+        setWinner('Agokansie wins!'); 
         setAgokansieWins(true)
         useRobotWinsResponses();
     }
@@ -695,9 +695,7 @@ const LINES = [
                 
                 : null
 
-            }
-
-            
+            }  
 
             {displayScreen ?
                 <div className='absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-220 h-150 '>
@@ -886,9 +884,7 @@ const LINES = [
   
                 : null
         
-        
             }
-
 
             <div className='absolute top-15 right-1 flex flex-col gap-4'>
                 {/* <div>
@@ -930,7 +926,7 @@ const LINES = [
                 
             </div>
 
-        <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1'>
+        <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1 scale-90'>
             <div className='border-3 p-18 rounded-lg border-dark bg-dark/70'>
 
             <div className="relative w-[450px] h-[450px] bg-radial from-gold via-wood1 to-dark ">
@@ -948,7 +944,7 @@ const LINES = [
                 {POSITIONS.map((position, index) => (
                     <div
                         key={index}
-                        className="absolute size-4 z-10 rounded-full bg-darkgold -translate-x-1/2 -translate-y-1/2"
+                        className="absolute size-6 z-10 rounded-full bg-darkgold -translate-x-1/2 -translate-y-1/2"
                         style={position}
                     />
                 ))}
@@ -958,7 +954,7 @@ const LINES = [
                     square !== 0 && (
                         <div
                             key={index}
-                            className={`absolute z-20 size-14 rounded-full border-2 border-gold
+                            className={`absolute z-20 size-16 rounded-full border-2 border-gold
                                 -translate-x-1/2 -translate-y-1/2
                                 ${
                                     square === 1
@@ -977,9 +973,9 @@ const LINES = [
             </div>
 
              <button onClick={getBoardState} className={`absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-all duration-300
-                     ${status === 'robot_is_playing' ? 'text-darkgold' : ''}`}
+                     ${status === 'robot_playing' ? 'hidden' : ''}`}
                     disabled={
-                        status === 'robot_is_playing'? true : false
+                        status === 'robot_playing'? true : false
                     }>I've played</button>
             
         </PageWrapper>

@@ -165,27 +165,32 @@ const LINES = [
     const [board, setBoard] = useState(createBoard)
 
     // empty space tutotrial animation 
-    const nodeRefs = useRef([])
-
-
-useEffect (()=> {if(steps[currentStep].step === '1'){ 
-    for (let i = 0; i < 9; i++ ){
-        animateNode(i)
-    }
-   
     
-}}, [currentStep])
+const nodeRefs = useRef([])
+const animateWin = useRef([])
+useEffect (()=> {
+    for (let i = 0; i< 9; i++){
+        resetNode(i)
+    }
+    if(steps[currentStep].step === '1'){ 
+    for (let i = 0; i < 9; i++ ){
+        animateNode(i)} 
+    }
+
+}, [currentStep])
 
 
-   const animateNode = (index) => { 
-    console.log(index)
-    console.log(nodeRefs.current[index]);
+    const animateNode = (index) => { 
     gsap.killTweensOf(nodeRefs.current[index]);
     gsap.to(nodeRefs.current[index], { 
         boxShadow: 
-        `0 0 15px #c57c08,
-        0 0 15px #c57c08,
-        0 0 15px #c57c08`, 
+        `0 0 15px #fb6900,
+        0 0 18px #fb6900,
+        0 0 19px #fb6900,
+        0 0 21px #734b00,
+        0 0 30px #734b00
+        
+        `, 
         yoyo: true,
         repeat: -1,
         duration: 0.9,
@@ -193,6 +198,79 @@ useEffect (()=> {if(steps[currentStep].step === '1'){
         ease: 'power1.inOut'
     })
    }
+
+   const resetNode = (index) => {
+    gsap.killTweensOf(nodeRefs.current[index]);
+
+    gsap.set(nodeRefs.current[index], {
+        scale: 1, 
+        boxShadow:'none', 
+        backgroundColor: ""
+    })
+   }
+
+
+   useEffect (() =>{
+    resetWin(15)
+    resetWin(14)
+    resetWin(12)
+    resetWin(13)
+    resetWin(8)
+    resetWin(9)
+    resetWin(2)
+    resetWin(3)
+
+
+    if(steps[currentStep].step === '3'){ 
+    animateWinDemonstration(13)
+    animateWinDemonstration(14)
+    animateWinDemonstration(15)
+    animateWinDemonstration(8)
+    animateWinDemonstration(9)
+    animateWinDemonstration(2)
+    animateWinDemonstration(3)
+    animateWinDemonstration(12)
+
+
+    }},[ currentStep])
+
+
+
+   const animateWinDemonstration = (index) => { 
+    gsap.fromTo(
+        animateWin.current[index], {
+        backgroundColor: "#3b0599",
+        boxShadow: "0 0 0px #21109a",
+        scaleX: 1,
+        opacity: 0.8
+        },
+
+        { 
+        backgroundColor: "#7CFF7C",
+        boxShadow:
+            "0 0 20px #00FF66," +
+            "0 0 40px #00FF66," +
+            "0 0 80px #00FF66",
+        scaleX: 1,
+        opacity: 1,
+
+        duration: 0.8,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut"}
+    )
+   }
+                                                                    
+   const resetWin = (index) => { 
+    gsap.killTweensOf(animateWin.current[index]);
+    gsap.set(animateWin.current[index], {
+         scale: 1, 
+        boxShadow:'none', 
+        backgroundColor: ""
+    })
+   }
+
+  
 
 
 return(
@@ -271,6 +349,7 @@ return(
                 {LINES.map(([start, end], index) => (
                     <div
                         key={index}
+                        ref={(el) => (animateWin.current[index] = el)}
                         className="absolute h-1 bg-darkgold"
                         style={getLineStyle(start, end)}
                     />

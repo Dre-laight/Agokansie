@@ -203,7 +203,7 @@ function OwareGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://192.168.74.206:5000' 
+    const API = 'http://192.168.74.170:5000' 
 
     const navigate = useNavigate()
 
@@ -978,9 +978,9 @@ function OwareGame(){
                     </div>
 
                     <button onClick={getBoardState} className={`absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-all duration-300
-                     ${status === 'robot_is_playing' ? 'text-darkgold' : ''}`}
+                     ${status === 'robot_playing' ? 'hidden' : ''}`}
                     disabled={
-                        status === 'robot_is_playing'? true : false
+                        status === 'robot_playing'? true : false
                     }>I've played</button>
 
             </div>

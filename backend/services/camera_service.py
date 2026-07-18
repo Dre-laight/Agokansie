@@ -14,10 +14,6 @@ class CameraService:
             raise Exception(
                 f"Could not open camera at index {camera_index}"
             )
-
-    # =====================================
-    # CAPTURE FRAME
-    # =====================================
     def capture_frame(self):
 
         ret, frame = self.cap.read()
@@ -27,7 +23,7 @@ class CameraService:
 
         return frame
 
-    # =====================================
+    # ====================================c=
     # SCAN BOARD
     # =====================================
     def scan_board(self, game):

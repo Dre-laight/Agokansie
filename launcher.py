@@ -35,6 +35,7 @@ browser_cmd = [
     "chromium",
     "--kiosk",
     "--start-fullscreen",
+    "--force-device-scale-factor=1.25",
     "--start-maximized",
     "--window-position=0,0",
     "--window-size=1920,1080",  # replace with your actual resolution from xrandr
