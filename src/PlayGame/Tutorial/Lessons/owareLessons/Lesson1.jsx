@@ -5,6 +5,7 @@ import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
+import gsap from 'gsap'
 
 
 function OwareLesson1(){

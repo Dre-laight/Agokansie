@@ -115,7 +115,7 @@ const getBoardState = () => {
             const currentRow = [];
     
             for (let col = 0; col < 8; col++) {
-                currentRow.push(null);
+                currentRow.push(0);
             }
     
             board.push(currentRow);

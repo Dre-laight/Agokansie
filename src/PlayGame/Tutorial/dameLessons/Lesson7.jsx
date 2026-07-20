@@ -5,6 +5,7 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import gsap from 'gsap'
 
 
 function DameLesson7(){
@@ -117,7 +118,7 @@ const getBoardState = () => {
             const currentRow = [];
     
             for (let col = 0; col < 8; col++) {
-                currentRow.push(null);
+                currentRow.push(0);
             }
     
             board.push(currentRow);
@@ -128,6 +129,379 @@ const getBoardState = () => {
     
     const [board, setBoard] = useState(createBoard);
 
+const pieceRefs = useRef([])
+const idx = (row, col) => row * 8 + col
+const cellRefs = useRef([])
+
+
+const step1sequence = [
+
+    { type: "place", player: 1, row: 3, col: 3 }, // B1 — black's last two pieces
+    { type: "place", player: 1, row: 5, col: 3 }, // B2
+
+    { type: "place", player: 2, row: 2, col: 2 }, // user's piece, positioned to clear both in one turn
+
+    // 🏆 One chained capture removes every remaining black piece
+    {
+        type: "multiCapture",
+        player: 2,
+        from: { row: 2, col: 2 },
+        jumps: [
+            { captured: { row: 3, col: 3 }, to: { row: 4, col: 4 } },
+            { captured: { row: 5, col: 3 }, to: { row: 6, col: 2 } }
+        ]
+    },
+
+    // 🥇 Black has nothing left on the board — game over
+    {
+        type: "gameOver",
+        remaining: [{ row: 6, col: 2 }]
+    },
+
+];
+
+const step2sequence = [
+
+    { type: "place", player: 1, row: 4, col: 0 }, // black A — left edge, only (5,1) exists as a forward option
+    { type: "place", player: 2, row: 5, col: 1 }, // red — sits on that one option
+
+    { type: "place", player: 1, row: 3, col: 7 }, // black B — right edge, only (4,6) exists as a forward option
+    { type: "place", player: 2, row: 4, col: 6 }, // red — sits on that one too
+
+    // 🟠 Black A: edge removes one diagonal, this piece removes the other
+    {
+        type: "showTrapped",
+        position: { row: 4, col: 0 },
+        blockedBy: [{ row: 5, col: 1 }]
+    },
+
+    // 🟠 Black B: same story, other side of the board
+    {
+        type: "showTrapped",
+        position: { row: 3, col: 7 },
+        blockedBy: [{ row: 4, col: 6 }]
+    },
+
+    // 🥇 Every black piece on the board has zero legal moves — game over,
+    // no capture required
+    {
+        type: "gameOver",
+        remaining: [{ row: 5, col: 1 }, { row: 4, col: 6 }]
+    },
+
+];
+
+const step3sequence = [
+
+    { type: "place", player: 3, row: 2, col: 2 }, // last black piece — already a king
+    { type: "place", player: 4, row: 5, col: 5 }, // last red piece — already a king
+
+    // Neither approach changes anything — each step in is matched by
+    // a step back. No capture becomes possible, no piece gets trapped.
+    { type: "move", player: 3, from: { row: 2, col: 2 }, to: { row: 3, col: 3 } },
+    { type: "move", player: 4, from: { row: 5, col: 5 }, to: { row: 4, col: 4 } },
+    { type: "move", player: 3, from: { row: 3, col: 3 }, to: { row: 2, col: 2 } },
+    { type: "move", player: 4, from: { row: 4, col: 4 }, to: { row: 5, col: 5 } },
+
+    // ⚪ Neither side can force a capture or a block — the position
+    // repeats. Both players agree to stop here.
+    {
+        type: "declareDraw",
+        positions: [{ row: 2, col: 2 }, { row: 5, col: 5 }]
+    },
+
+];
+
+const stepSequences = {
+    '1': step1sequence,
+     '2': step2sequence,
+      '3': step3sequence,
+    '4': step3sequence
+}
+
+const runAction = (tl, action, boardState) => {
+
+    switch (action.type) {
+
+        case "place":
+            tl.call(() => {
+                boardState[action.row][action.col] = action.player;
+                setBoard(boardState.map(row => [...row]));
+            });
+
+            tl.to({}, { duration: 0.05 });
+
+            tl.call(() => {
+                const target = pieceRefs.current[idx(action.row, action.col)];
+                if (!target) return;
+                gsap.fromTo(target,
+                    { scale: 0, y: -30, opacity: 0 },
+                    { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }
+                );
+            });
+            break;
+
+        case "move":
+            tl.call(() => {
+                boardState[action.from.row][action.from.col] = 0;
+                boardState[action.to.row][action.to.col] = action.player;
+                setBoard(boardState.map(row => [...row]));
+            });
+
+            tl.to({}, { duration: 0.05 }); // let React mount the piece at its new cell
+
+            tl.call(() => {
+                // the old DOM node is gone — this is a fresh element at the
+                // new cell, so it "lands" rather than slides across the board
+                const target = pieceRefs.current[idx(action.to.row, action.to.col)];
+                if (!target) return;
+                gsap.fromTo(target,
+                    { scale: 0.6, y: -14, opacity: 0.4 },
+                    { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
+                );
+            });
+            break;
+
+case "showOptions":
+    tl.call(() => {
+        (action.options || []).forEach(({ row, col }) => {
+            const cell = cellRefs.current[idx(row, col)];
+            if (!cell) return; // safety guard
+
+            gsap.to(cell, {
+                boxShadow: "inset 0 0 0 4px rgba(124,255,124,0.9)",
+                duration: 0.3,
+                yoyo: true,
+                repeat: 3
+            });
+        });
+    });
+
+    tl.to({}, { duration: 1.6 });
+    break;
+
+    case "multiCapture":
+    tl.call(() => {
+        boardState[action.from.row][action.from.col] = 0;
+    });
+
+    let current = { row: action.from.row, col: action.from.col }; // tracks the piece's live position through the chain
+
+    action.jumps.forEach((jump, i) => {
+
+        tl.call(() => {
+            const captured = pieceRefs.current[idx(jump.captured.row, jump.captured.col)];
+            if (captured) {
+                gsap.to(captured, { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" });
+            }
+        });
+
+        tl.to({}, { duration: 0.35 });
+
+        tl.call(() => {
+            boardState[current.row][current.col] = 0; // clear wherever it currently sits
+            boardState[jump.captured.row][jump.captured.col] = 0;
+            boardState[jump.to.row][jump.to.col] = action.player;
+            setBoard(boardState.map(row => [...row]));
+            current = { row: jump.to.row, col: jump.to.col }; // update for the next leg
+        });
+
+        tl.to({}, { duration: 0.05 });
+
+        tl.call(() => {
+            const piece = pieceRefs.current[idx(jump.to.row, jump.to.col)];
+            if (!piece) return;
+            gsap.fromTo(piece,
+                { scale: 0.5, opacity: 0.3 },
+                { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
+            );
+        });
+
+        if (i < action.jumps.length - 1) {
+            tl.to({}, { duration: 0.6 }); // beat between legs so each capture reads separately
+        }
+    });
+
+    tl.to({}, { duration: 1 });
+    break;
+
+case "reset":
+    tl.call(() => {
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                if (boardState[r][c] === 0) continue;
+                const target = pieceRefs.current[idx(r, c)];
+                if (!target) continue;
+                gsap.to(target, { scale: 0, opacity: 0, duration: 0.35, ease: "back.in(2)" });
+            }
+        }
+    });
+
+    tl.to({}, { duration: 0.9 });
+
+    tl.call(() => {
+        for (let r = 0; r < 8; r++) boardState[r].fill(0);
+        setBoard(boardState.map(row => [...row]));
+    });
+
+    break;
+
+case "capture":
+    // fade the captured piece out FIRST, while its DOM node still exists —
+    // same lesson as the Oware reset: you can't animate a node that's
+    // already been removed by a state update
+    tl.call(() => {
+        const captured = pieceRefs.current[idx(action.captured.row, action.captured.col)];
+        if (captured) {
+            gsap.to(captured, { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" });
+        }
+    });
+
+    tl.to({}, { duration: 0.35 }); // let the fade finish before the board updates
+
+    tl.call(() => {
+        boardState[action.from.row][action.from.col] = 0;
+        boardState[action.captured.row][action.captured.col] = 0; // captured piece removed
+        boardState[action.to.row][action.to.col] = action.player;
+        setBoard(boardState.map(row => [...row]));
+    });
+
+    tl.to({}, { duration: 0.05 }); // let React mount the king at the landing square
+
+    tl.call(() => {
+        const king = pieceRefs.current[idx(action.to.row, action.to.col)];
+        if (!king) return;
+        gsap.fromTo(king,
+            { scale: 0.5, opacity: 0.3 },
+            { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.7)" }
+        );
+        gsap.to(king, {
+            boxShadow: "0 0 20px 6px rgba(255,215,0,0.9)", // gold flash — the flying capture landing
+            duration: 0.4,
+            yoyo: true,
+            repeat: 1
+        });
+    });
+
+    tl.to({}, { duration: 1 });
+    break;
+
+case "gameOver":
+    tl.call(() => {
+        (action.remaining || []).forEach(pos => {
+            const piece = pieceRefs.current[idx(pos.row, pos.col)];
+            if (!piece) return;
+            gsap.to(piece, {
+                scale: 1.3,
+                boxShadow: "0 0 25px 8px rgba(255,215,0,0.9)",
+                duration: 0.5,
+                yoyo: true,
+                repeat: 5 // finite — same leak lesson as every other highlight in this file
+            });
+        });
+    });
+
+    tl.to({}, { duration: 3 }); // hold well past everything else — this is where the sequence should rest
+    break;
+
+case "showTrapped":
+    tl.call(() => {
+        const piece = pieceRefs.current[idx(action.position.row, action.position.col)];
+        if (piece) {
+            gsap.timeline()
+                .to(piece, { scale: 1.1, duration: 0.15, yoyo: true, repeat: 3 })
+                .to(piece, { scale: 1, duration: 0.15 });
+        }
+
+        (action.blockedBy || []).forEach(pos => {
+            const blocker = pieceRefs.current[idx(pos.row, pos.col)];
+            if (!blocker) return;
+            gsap.to(blocker, {
+                boxShadow: "0 0 15px 4px rgba(255,180,0,0.8)", // amber — same meaning as Oware's "boxed in" highlight
+                duration: 0.3,
+                yoyo: true,
+                repeat: 3
+            });
+        });
+    });
+
+    tl.to({}, { duration: 1.8 });
+    break;
+
+case "declareDraw":
+    tl.call(() => {
+        (action.positions || []).forEach(pos => {
+            const piece = pieceRefs.current[idx(pos.row, pos.col)];
+            if (!piece) return;
+            gsap.to(piece, {
+                boxShadow: "0 0 20px 6px rgba(200,200,200,0.8)", // neutral gray — no winner
+                duration: 0.5,
+                yoyo: true,
+                repeat: 4
+            });
+        });
+    });
+
+    tl.to({}, { duration: 3 });
+    break;
+
+case "showSacrifice":
+    tl.call(() => {
+        const target = pieceRefs.current[idx(action.position.row, action.position.col)];
+        if (!target) return;
+        gsap.to(target, {
+            boxShadow: "0 0 20px 6px rgba(168,85,247,0.9)", // purple — distinct from danger/defended
+            duration: 0.35,
+            yoyo: true,
+            repeat: 3
+        });
+    });
+    tl.to({}, { duration: 1.6 });
+    break;
+
+
+}}
+
+
+
+useEffect(() => {
+    const currentSequence = stepSequences[steps[currentStep].step]
+    if (!currentSequence) return;
+
+    let boardState = createBoard();
+
+    const tl = gsap.timeline({
+        repeat: -1,
+        repeatDelay: 2,
+        onRepeat: () => {
+    for (let r = 0; r < 8; r++) {
+        boardState[r].fill(0); // clears the SAME array every closure is holding
+    }
+    setBoard(boardState.map(row => [...row]));
+    resetOptions(); // clear any still-highlighted showOptions cells too
+}
+    });
+
+    currentSequence.forEach(action => {
+        runAction(tl, action, boardState);
+        tl.to({}, { duration: 1 });
+    });
+
+    return () => {
+        tl.kill();
+        resetOptions()
+        setBoard(createBoard());
+    };
+
+}, [currentStep]);
+
+const resetOptions = () => {
+    cellRefs.current.forEach(cell => {
+        if (!cell) return;
+        gsap.killTweensOf(cell);
+        gsap.set(cell, { boxShadow: "none" });
+    });
+};
 
 return(
 <PageWrapper>
@@ -201,6 +575,7 @@ return(
                     {board.map((row, rowIndex) =>
                         row.map((square, colIndex) => (
                     <div
+                        ref={(el) => (cellRefs.current[idx(rowIndex, colIndex)] = el)}
                         key={`${rowIndex}-${colIndex}`}
                         className={`${
                         (rowIndex + colIndex) % 2 === 0
@@ -209,14 +584,16 @@ return(
                     } h-16 w-16 border flex items-center justify-center`}
         >
             {square !== 0 && (
-                <div
-                    className={`size-9 rounded-full ${
-                        square === 1
-                            ? "bg-black"
-                            : "bg-red-600"
-                    }`}
-                />
-            )}
+    <div
+        ref={(el) => (pieceRefs.current[idx(rowIndex, colIndex)] = el)}
+        className={`size-9 rounded-full ${
+            square === 1 ? "bg-black" :
+            square === 2 ? "bg-red-600" :
+            square === 3 ? "bg-black border-4 border-yellow-400" : // black king
+            "bg-red-600 border-4 border-yellow-400"                 // red king (4)
+        }`}
+    />
+)}
         </div>
     ))
 )}

@@ -5,6 +5,7 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import gsap from 'gsap'
 
 
 function DameLesson5(){
@@ -117,7 +118,7 @@ const getBoardState = () => {
             const currentRow = [];
     
             for (let col = 0; col < 8; col++) {
-                currentRow.push(null);
+                currentRow.push(0);
             }
     
             board.push(currentRow);
@@ -126,7 +127,496 @@ const getBoardState = () => {
         return board;
     };
     
-    const [board, setBoard] = useState(createBoard);
+const [board, setBoard] = useState(createBoard);
+
+const pieceRefs = useRef([])
+const idx = (row, col) => row * 8 + col
+const cellRefs = useRef([])
+
+const step1sequence = [
+
+    // Place normal piece
+    {
+        type:"place",
+        player:2,
+        row:1,
+        col:5
+    },
+
+
+    // Show promotion square
+    {
+        type:"showOptions",
+        options:[
+            {
+                row:0,
+                col:6
+            }
+        ]
+    },
+
+
+    // Move into king row
+    {
+        type:"move",
+
+        player:2,
+
+        from:{
+            row:1,
+            col:5
+        },
+
+        to:{
+            row:0,
+            col:6
+        }
+    },
+
+
+    // Promote
+    {
+        type:"promote",
+
+        row:0,
+        col:6,
+
+        player:2
+    }
+
+];
+
+const step2sequence = [
+
+    // Place king
+    {
+        type:"place",
+        player:4,
+        row:5,
+        col:3
+    },
+
+
+    // Highlight all king directions
+    {
+        type:"showOptions",
+        options:[
+            {
+                row:4,
+                col:2
+            },
+            {
+                row:4,
+                col:4
+            },
+            {
+                row:6,
+                col:2
+            },
+            {
+                row:6,
+                col:4
+            }
+        ]
+    },
+
+
+    // Demonstrate backward movement
+    {
+        type:"move",
+
+        player:2,
+
+        from:{
+            row:5,
+            col:3
+        },
+
+        to:{
+            row:6,
+            col:4
+        }
+    }
+
+];
+
+const step3sequence = [
+
+    // King on the centre gold square
+    { type: "place", player: 4, row: 3, col: 3 },
+
+    // Opponent regular piece, far down the same diagonal —
+    // well outside a normal piece's one-step reach
+    { type: "place", player: 1, row: 6, col: 6 },
+
+    // 🔍 Full flying-king reach in all four diagonal directions.
+    // Down-right stops at (5,5) — the square just before the opponent
+    // piece — since a normal move can't land on an occupied square.
+    {
+        type: "showOptions",
+        options: [
+            { row: 2, col: 2 }, { row: 1, col: 1 }, { row: 0, col: 0 }, // up-left
+            { row: 2, col: 4 }, { row: 1, col: 5 }, { row: 0, col: 6 }, // up-right
+            { row: 4, col: 2 }, { row: 5, col: 1 }, { row: 6, col: 0 }, // down-left
+            { row: 4, col: 4 }, { row: 5, col: 5 }                      // down-right (blocked)
+        ]
+    },
+
+    // 🔶 The vulnerable piece, and the empty square just past it —
+    // this is what turns a blocked ray into a capture opportunity
+    {
+        type: "showCapture",
+        capture: { row: 6, col: 6 },
+        landing: { row: 7, col: 7 }
+    },
+
+    // 🏆 King flies the whole diagonal, captures at (6,6), lands on (7,7)
+    {
+        type: "capture",
+        player: 4,
+        from: { row: 3, col: 3 },
+        captured: { row: 6, col: 6 },
+        to: { row: 7, col: 7 }
+    },
+
+];
+
+const step4sequence = [
+
+    // ==================
+    // PART A — Unprotected king
+    // ==================
+
+    { type: "place", player: 4, row: 2, col: 2 }, // red king, exposed
+    { type: "place", player: 1, row: 1, col: 1 }, // black piece, one diagonal step away
+
+    // 🔶 (3,3) is empty — the king has nothing standing behind it
+    {
+        type: "showCapture",
+        capture: { row: 2, col: 2 },
+        landing: { row: 3, col: 3 }
+    },
+
+    // 🏆 (for the opponent) — capture goes through, king is gone
+    {
+        type: "capture",
+        player: 1,
+        from: { row: 1, col: 1 },
+        captured: { row: 2, col: 2 },
+        to: { row: 3, col: 3 }
+    },
+
+    { type: "reset" },
+
+
+    // ==================
+    // PART B — Same king, protected
+    // ==================
+
+    { type: "place", player: 4, row: 2, col: 2 }, // same king, same exposed position
+    { type: "place", player: 1, row: 1, col: 1 }, // same attacker, same angle
+    { type: "place", player: 2, row: 3, col: 3 }, // friendly piece now guards the landing square
+
+    // 🔶 Same threat highlighted — but this time the landing square isn't empty
+    {
+        type: "showCapture",
+        capture: { row: 2, col: 2 },
+        landing: { row: 3, col: 3 }
+    },
+
+    // ❌ Capture rejected — nowhere to land
+    {
+        type: "invalidMove",
+        player: 1,
+        from: { row: 1, col: 1 },
+        to: { row: 3, col: 3 },
+        reason: "occupied"
+    },
+
+    // 🛡 King survives — the whole point
+    {
+        type: "showBlock",
+        position: { row: 2, col: 2 }
+    },
+
+];
+
+
+const stepSequences = {
+    '1': step1sequence,
+      '2': step2sequence,
+     '3': step3sequence,
+      '4': step4sequence
+}
+
+const runAction = (tl, action, boardState) => {
+
+    switch (action.type) {
+
+        case "place":
+            tl.call(() => {
+                boardState[action.row][action.col] = action.player;
+                setBoard(boardState.map(row => [...row]));
+            });
+
+            tl.to({}, { duration: 0.05 });
+
+            tl.call(() => {
+                const target = pieceRefs.current[idx(action.row, action.col)];
+                if (!target) return;
+                gsap.fromTo(target,
+                    { scale: 0, y: -30, opacity: 0 },
+                    { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }
+                );
+            });
+            break;
+
+        case "move":
+            tl.call(() => {
+                boardState[action.from.row][action.from.col] = 0;
+                boardState[action.to.row][action.to.col] = action.player;
+                setBoard(boardState.map(row => [...row]));
+            });
+
+            tl.to({}, { duration: 0.05 }); // let React mount the piece at its new cell
+
+            tl.call(() => {
+                // the old DOM node is gone — this is a fresh element at the
+                // new cell, so it "lands" rather than slides across the board
+                const target = pieceRefs.current[idx(action.to.row, action.to.col)];
+                if (!target) return;
+                gsap.fromTo(target,
+                    { scale: 0.6, y: -14, opacity: 0.4 },
+                    { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
+                );
+            });
+            break;
+
+        case "invalidMove":
+            tl.call(() => {
+                const target = pieceRefs.current[idx(action.from.row, action.from.col)];
+                if (!target) return;
+
+                const nudgeY = action.to.row < action.from.row ? -8 : 8; // reach toward the attempted direction
+
+                gsap.timeline()
+                    .to(target, { y: nudgeY, duration: 0.1 })
+                    .to(target, { y: 0, duration: 0.1 })
+                    .to(target, {
+                        boxShadow: "0 0 15px 4px rgba(255,40,40,0.85)",
+                        duration: 0.15
+                    }, 0)
+                    .to(target, { boxShadow: "none", duration: 0.3 });
+            });
+
+            tl.to({}, { duration: 1.2 });
+            break;
+
+case "showOptions":
+    tl.call(() => {
+        (action.options || []).forEach(({ row, col }) => {
+            const cell = cellRefs.current[idx(row, col)];
+            if (!cell) return; // safety guard
+
+            gsap.to(cell, {
+                boxShadow: "inset 0 0 0 4px rgba(124,255,124,0.9)",
+                duration: 0.3,
+                yoyo: true,
+                repeat: 3
+            });
+        });
+    });
+
+    tl.to({}, { duration: 1.6 });
+    break;
+
+case "promote":
+
+tl.call(() => {
+
+    const newBoard = boardState.map(row => [...row]);
+
+    newBoard[action.row][action.col] = 4;
+
+    setBoard(newBoard);
+
+});
+
+
+tl.to({}, {
+    duration:0.5   // give React time
+});
+
+
+tl.call(() => {
+
+    const piece =
+    pieceRefs.current[idx(action.row, action.col)];
+
+
+    if(!piece) return;
+
+
+    gsap.timeline()
+    .to(piece,{
+        scale:1.4,
+        duration:0.3,
+        ease:"back.out(2)"
+    })
+    .to(piece,{
+        boxShadow:"0 0 25px 8px rgba(255,215,0,0.9)",
+        duration:0.5
+    })
+    .to(piece,{
+        scale:1,
+        duration:0.3
+    });
+
+});
+
+break;
+
+case "reset":
+    tl.call(() => {
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                if (boardState[r][c] === 0) continue;
+                const target = pieceRefs.current[idx(r, c)];
+                if (!target) continue;
+                gsap.to(target, { scale: 0, opacity: 0, duration: 0.35, ease: "back.in(2)" });
+            }
+        }
+    });
+
+    tl.to({}, { duration: 0.9 });
+
+    tl.call(() => {
+        for (let r = 0; r < 8; r++) boardState[r].fill(0);
+        setBoard(boardState.map(row => [...row]));
+    });
+
+    break;
+
+case "showCapture":
+    tl.call(() => {
+        const target = pieceRefs.current[idx(action.capture.row, action.capture.col)];
+        if (target) {
+            gsap.to(target, {
+                boxShadow: "0 0 20px 6px rgba(255,40,40,0.9)", // red = "this is what's at risk"
+                duration: 0.35,
+                yoyo: true,
+                repeat: 3
+            });
+        }
+
+        const landing = cellRefs.current[idx(action.landing.row, action.landing.col)];
+        if (landing) {
+            gsap.to(landing, {
+                boxShadow: "inset 0 0 0 4px rgba(56,189,248,0.9)", // blue = "this is where it'll land"
+                duration: 0.35,
+                yoyo: true,
+                repeat: 3
+            });
+        }
+    });
+
+    tl.to({}, { duration: 1.8 });
+    break;
+
+case "capture":
+    // fade the captured piece out FIRST, while its DOM node still exists —
+    // same lesson as the Oware reset: you can't animate a node that's
+    // already been removed by a state update
+    tl.call(() => {
+        const captured = pieceRefs.current[idx(action.captured.row, action.captured.col)];
+        if (captured) {
+            gsap.to(captured, { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" });
+        }
+    });
+
+    tl.to({}, { duration: 0.35 }); // let the fade finish before the board updates
+
+    tl.call(() => {
+        boardState[action.from.row][action.from.col] = 0;
+        boardState[action.captured.row][action.captured.col] = 0; // captured piece removed
+        boardState[action.to.row][action.to.col] = action.player;
+        setBoard(boardState.map(row => [...row]));
+    });
+
+    tl.to({}, { duration: 0.05 }); // let React mount the king at the landing square
+
+    tl.call(() => {
+        const king = pieceRefs.current[idx(action.to.row, action.to.col)];
+        if (!king) return;
+        gsap.fromTo(king,
+            { scale: 0.5, opacity: 0.3 },
+            { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.7)" }
+        );
+        gsap.to(king, {
+            boxShadow: "0 0 20px 6px rgba(255,215,0,0.9)", // gold flash — the flying capture landing
+            duration: 0.4,
+            yoyo: true,
+            repeat: 1
+        });
+    });
+
+    tl.to({}, { duration: 1 });
+    break;
+
+    case "showBlock":
+    tl.call(() => {
+        const target = pieceRefs.current[idx(action.position.row, action.position.col)];
+        if (!target) return;
+        gsap.to(target, {
+            boxShadow: "0 0 20px 6px rgba(56,189,248,0.9)",
+            duration: 0.3,
+            yoyo: true,
+            repeat: 3
+        });
+    });
+
+    tl.to({}, { duration: 1.4 });
+    break;
+}}
+
+useEffect(() => {
+    const currentSequence = stepSequences[steps[currentStep].step]
+    if (!currentSequence) return;
+
+    let boardState = createBoard();
+
+    const tl = gsap.timeline({
+        repeat: -1,
+        repeatDelay: 2,
+        onRepeat: () => {
+    for (let r = 0; r < 8; r++) {
+        boardState[r].fill(0); // clears the SAME array every closure is holding
+    }
+    setBoard(boardState.map(row => [...row]));
+    resetOptions(); // clear any still-highlighted showOptions cells too
+}
+    });
+
+    currentSequence.forEach(action => {
+        runAction(tl, action, boardState);
+        tl.to({}, { duration: 1 });
+    });
+
+    return () => {
+        tl.kill();
+        resetOptions()
+        setBoard(createBoard());
+    };
+
+}, [currentStep]);
+
+const resetOptions = () => {
+    cellRefs.current.forEach(cell => {
+        if (!cell) return;
+        gsap.killTweensOf(cell);
+        gsap.set(cell, { boxShadow: "none" });
+    });
+};
 
 
 return(
@@ -201,22 +691,24 @@ return(
                     {board.map((row, rowIndex) =>
                         row.map((square, colIndex) => (
                     <div
+                        ref={(el) => (cellRefs.current[idx(rowIndex, colIndex)] = el)}
                         key={`${rowIndex}-${colIndex}`}
                         className={`${
                         (rowIndex + colIndex) % 2 === 0
                     ? "bg-gold"
                     : "bg-dark"
                     } h-16 w-16 border flex items-center justify-center`}
-        >
-            {square !== 0 && (
-                <div
-                    className={`size-9 rounded-full ${
-                        square === 1
-                            ? "bg-black"
-                            : "bg-red-600"
-                    }`}
-                />
-            )}
+        >{square !== 0 && (
+    <div
+        ref={(el) => (pieceRefs.current[idx(rowIndex, colIndex)] = el)}
+        className={`size-9 rounded-full ${
+            square === 1 ? "bg-black" :
+            square === 2 ? "bg-red-600" :
+            square === 3 ? "bg-black border-4 border-yellow-400" : // black king
+            "bg-red-600 border-4 border-yellow-400"                 // red king (4)
+        }`}
+    />
+)}
         </div>
     ))
 )}

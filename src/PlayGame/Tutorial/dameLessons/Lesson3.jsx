@@ -5,6 +5,7 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import gsap from 'gsap'
 
 
 function DameLesson3(){
@@ -117,7 +118,7 @@ const getBoardState = () => {
             const currentRow = [];
     
             for (let col = 0; col < 8; col++) {
-                currentRow.push(null);
+                currentRow.push(0);
             }
     
             board.push(currentRow);
@@ -127,6 +128,374 @@ const getBoardState = () => {
     };
     
     const [board, setBoard] = useState(createBoard);
+
+const pieceRefs = useRef([])
+const idx = (row, col) => row * 8 + col
+const cellRefs = useRef([])
+
+const step1sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    { type: "place", player: 2, row: 5, col: 5 },
+    { type: "place", player: 1, row: 2, col: 2 },
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // ❌ Backward move for Player 2
+    {
+        type: "invalidMove",
+        player: 2,
+        from: { row: 5, col: 5 },
+        to: { row: 6, col: 6 },
+        reason: "backward"
+    },
+
+    // ✅ One square diagonally forward
+    {
+        type: "move",
+        player: 2,
+        from: { row: 5, col: 5 },
+        to: { row: 4, col: 4 }
+    },
+
+];
+
+const step2sequence = [
+
+    { type: "place", player: 2, row: 5, col: 5 },
+
+    {
+        type: "showOptions",
+        options: [
+            { row: 4, col: 6 }, // forward-left
+            { row: 4, col: 4 }  // forward-right
+        ]
+    },
+
+    // Commit left
+    {
+        type: "move",
+        player: 2,
+        from: { row: 5, col: 5 },
+        to: { row: 4, col: 6 }
+    },
+
+    { type: "reset" },
+
+    { type: "place", player: 2, row: 5, col: 5 },
+
+    {
+        type: "showOptions",
+        options: [
+            { row: 4, col: 6 },
+            { row: 4, col: 4 }
+        ]
+    },
+
+    // Commit right
+    {
+        type: "move",
+        player: 2,
+        from: { row: 5, col: 5 },
+        to: { row: 4, col: 4 }
+    },
+
+];
+
+const step3sequence = [
+
+    // ==================
+    // LEFT EDGE
+    // ==================
+
+    { type: "place", player: 2, row: 4, col: 0 },
+
+    {
+        type: "showOptions",
+        options: [
+            { row: 3, col: 1 }
+        ]
+    },
+
+    {
+        type: "move",
+        player: 2,
+        from: { row: 4, col: 0 },
+        to: { row: 3, col: 1 }
+    },
+
+    { type: "reset" },
+
+    // ==================
+    // RIGHT EDGE
+    // ==================
+
+    { type: "place", player: 2, row: 5, col: 7 },
+
+    {
+        type: "showOptions",
+        options: [
+            { row: 4, col: 6 }
+        ]
+    },
+
+    {
+        type: "move",
+        player: 2,
+        from: { row: 5, col: 7 },
+        to: { row: 4, col: 6 }
+    }
+
+];
+
+const step4sequence = [
+
+    // User's piece
+    { type: "place", player: 2, row: 5, col: 3 },
+
+    // Both forward diagonals occupied
+    { type: "place", player: 2, row: 4, col: 2 }, // own piece
+    { type: "place", player: 1, row: 4, col: 4 }, // opponent piece
+
+    {
+        type: "blocked",
+        piece: { row: 5, col: 3 },
+        blockers: [
+            { row: 4, col: 2 },
+            { row: 4, col: 4 }
+        ]
+    }
+
+];
+
+const stepSequences = {
+    '1': step1sequence,
+    '2': step2sequence,
+    '3': step3sequence,
+    '4': step4sequence
+}
+
+
+const runAction = (tl, action, boardState) => {
+
+    switch (action.type) {
+
+        case "place":
+            tl.call(() => {
+                boardState[action.row][action.col] = action.player;
+                setBoard(boardState.map(row => [...row]));
+            });
+
+            tl.to({}, { duration: 0.05 });
+
+            tl.call(() => {
+                const target = pieceRefs.current[idx(action.row, action.col)];
+                if (!target) return;
+                gsap.fromTo(target,
+                    { scale: 0, y: -30, opacity: 0 },
+                    { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }
+                );
+            });
+            break;
+
+        case "move":
+            tl.call(() => {
+                boardState[action.from.row][action.from.col] = 0;
+                boardState[action.to.row][action.to.col] = action.player;
+                setBoard(boardState.map(row => [...row]));
+            });
+
+            tl.to({}, { duration: 0.05 }); // let React mount the piece at its new cell
+
+            tl.call(() => {
+                // the old DOM node is gone — this is a fresh element at the
+                // new cell, so it "lands" rather than slides across the board
+                const target = pieceRefs.current[idx(action.to.row, action.to.col)];
+                if (!target) return;
+                gsap.fromTo(target,
+                    { scale: 0.6, y: -14, opacity: 0.4 },
+                    { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
+                );
+            });
+            break;
+
+        case "invalidMove":
+            tl.call(() => {
+                const target = pieceRefs.current[idx(action.from.row, action.from.col)];
+                if (!target) return;
+
+                const nudgeY = action.to.row < action.from.row ? -8 : 8; // reach toward the attempted direction
+
+                gsap.timeline()
+                    .to(target, { y: nudgeY, duration: 0.1 })
+                    .to(target, { y: 0, duration: 0.1 })
+                    .to(target, {
+                        boxShadow: "0 0 15px 4px rgba(255,40,40,0.85)",
+                        duration: 0.15
+                    }, 0)
+                    .to(target, { boxShadow: "none", duration: 0.3 });
+            });
+
+            tl.to({}, { duration: 1.2 });
+            break;
+
+case "showOptions":
+    tl.call(() => {
+        (action.options || []).forEach(({ row, col }) => {
+            const cell = cellRefs.current[idx(row, col)];
+            if (!cell) return; // safety guard
+
+            gsap.to(cell, {
+                boxShadow: "inset 0 0 0 4px rgba(124,255,124,0.9)",
+                duration: 0.3,
+                yoyo: true,
+                repeat: 3
+            });
+        });
+    });
+
+    tl.to({}, { duration: 1.6 });
+    break;
+
+case "reset":
+    tl.call(() => {
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                if (boardState[r][c] === 0) continue;
+                const target = pieceRefs.current[idx(r, c)];
+                if (!target) continue;
+                gsap.to(target, { scale: 0, opacity: 0, duration: 0.35, ease: "back.in(2)" });
+            }
+        }
+    });
+
+    tl.to({}, { duration: 0.9 });
+
+    tl.call(() => {
+        for (let r = 0; r < 8; r++) boardState[r].fill(0);
+        setBoard(boardState.map(row => [...row]));
+    });
+
+    break;
+
+case "showEdgeRestriction":
+    tl.call(() => {
+        // Show valid move(s)
+        action.valid.forEach(({ row, col }) => {
+            const cell = cellRefs.current[idx(row, col)];
+            if (!cell) return;
+
+            gsap.to(cell, {
+                boxShadow: "inset 0 0 0 4px rgba(124,255,124,0.9)",
+                duration: 0.3,
+                repeat: 3,
+                yoyo: true
+            });
+        });
+
+        // Flash the current edge piece red to indicate
+        // movement is restricted by the board boundary.
+        const piece = pieceRefs.current[idx(action.edge.row, action.edge.col)];
+        if (piece) {
+            gsap.fromTo(
+                piece,
+                { boxShadow: "0 0 0 rgba(255,0,0,0)" },
+                {
+                    boxShadow: "0 0 16px rgba(255,60,60,0.9)",
+                    duration: 0.3,
+                    repeat: 3,
+                    yoyo: true
+                }
+            );
+        }
+    });
+
+    tl.to({}, { duration: 1.6 });
+    break;
+
+case "blocked":
+    tl.call(() => {
+
+        const piece = pieceRefs.current[idx(action.piece.row, action.piece.col)];
+
+        // Shake the blocked piece
+        if (piece) {
+            gsap.timeline()
+                .to(piece, { x: -8, duration: 0.08 })
+                .to(piece, { x: 8, duration: 0.08 })
+                .to(piece, { x: -5, duration: 0.08 })
+                .to(piece, { x: 5, duration: 0.08 })
+                .to(piece, { x: 0, duration: 0.08 });
+        }
+
+        // Highlight both blocking pieces
+        action.blockers.forEach(({ row, col }) => {
+            const blocker = pieceRefs.current[idx(row, col)];
+            if (!blocker) return;
+
+            gsap.fromTo(
+                blocker,
+                {
+                    boxShadow: "0 0 0 rgba(255,120,0,0)"
+                },
+                {
+                    boxShadow: "0 0 18px rgba(255,120,0,0.9)",
+                    duration: 0.3,
+                    repeat: 3,
+                    yoyo: true
+                }
+            );
+        });
+
+    });
+
+    tl.to({}, { duration: 1.8 });
+    break;
+
+}
+
+};
+
+useEffect(() => {
+    const currentSequence = stepSequences[steps[currentStep].step]
+    if (!currentSequence) return;
+
+    let boardState = createBoard();
+
+    const tl = gsap.timeline({
+        repeat: -1,
+        repeatDelay: 2,
+        onRepeat: () => {
+            boardState = createBoard();
+            setBoard(createBoard());
+        }
+    });
+
+    currentSequence.forEach(action => {
+        runAction(tl, action, boardState);
+        tl.to({}, { duration: 1 });
+    });
+
+    return () => {
+        tl.kill();
+        resetOptions()
+        setBoard(createBoard());
+    };
+
+}, [currentStep]);
+
+const resetOptions = () => {
+    cellRefs.current.forEach(cell => {
+        if (!cell) return;
+        gsap.killTweensOf(cell);
+        gsap.set(cell, { boxShadow: "none" });
+    });
+};
 
 
 return(
@@ -201,6 +570,7 @@ return(
                     {board.map((row, rowIndex) =>
                         row.map((square, colIndex) => (
                     <div
+                        ref={(el) => (cellRefs.current[idx(rowIndex, colIndex)] = el)}
                         key={`${rowIndex}-${colIndex}`}
                         className={`${
                         (rowIndex + colIndex) % 2 === 0
@@ -210,6 +580,8 @@ return(
         >
             {square !== 0 && (
                 <div
+
+                    ref={(el) => (pieceRefs.current[idx(rowIndex, colIndex)] = el)}
                     className={`size-9 rounded-full ${
                         square === 1
                             ? "bg-black"
