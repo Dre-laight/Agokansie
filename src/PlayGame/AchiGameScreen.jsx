@@ -205,7 +205,7 @@ function AchiGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://192.168.74.170:5000' 
+    const API = 'http://192.168.72.206:5000' 
 
     const navigate = useNavigate()
 
@@ -295,6 +295,29 @@ function AchiGame(){
             }
 
         }
+
+        const claimReward = async () => {
+            if (victor !== 'robot') return
+            
+            try {
+                const response = await fetch(`${API}/api/game/dispense`,
+                    {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': "application/json",
+                    },
+                    }
+                )
+                
+            }
+
+            catch (error) { 
+                console.log(error.message)
+            }
+        
+
+        }
+
 
         useEffect(() => {
             getStatus()
@@ -490,7 +513,7 @@ function AchiGame(){
         setGameOver(boardState?.state?.game_over)
         console.log(gameOver)   
 
-        if(status === 'error'){
+        if(status === 'error' || status === 'invalid_move'){
             useInvalidMoveResponses()
         }
 
@@ -507,7 +530,7 @@ function AchiGame(){
 
         setVictor(boardState?.state?.winner)
 
-    },[boardState])
+    },[boardState, status])
 
     useEffect (()=>{
     if (gameOver && victor === 'player' ){ 
@@ -543,15 +566,8 @@ function AchiGame(){
     }
 
 
-
     const BackToHome = () => {
-        navigate('/selectionScreen')
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
-    }
-
-    const restartGame = () => {
-        window.location.reload()
+        navigate('/')
         woodTap.current.currentTime = 0
         woodTap.current.play()
     }
@@ -610,6 +626,15 @@ const LINES = [
     const createBoard = () => Array(9).fill(0)
     const [board, setBoard] = useState(createBoard)
 
+    const [proverb, setProverb] = useState()
+
+    const proverbData = ['One finger cannot pick up a stone', 'Rain does not fall on one roof alone', 'A child who asks questions never loses the way', "A crab doesn't give birth to a bird"]
+    
+    useEffect(() => {
+        const randomIndex = Math.floor(Math.random() * proverbData.length)
+        setProverb(proverbData[randomIndex])
+        console.log(proverb)
+    }, [])
     
     return(
         <PageWrapper >
@@ -637,13 +662,13 @@ const LINES = [
                 <div className='absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-220 h-150 z-100'>
                     <div className='flex flex-col justify-center items-center rounded-3xl border-4 border-[#b98b56] bg-[#efe0c2] shadow-2xl overflow-hidden bg-dark p-5 gap-10'>
 
-                        <p className='font-elite text-7xl font-bold text-darkgold'>GAME OVER</p>
+                        <p className='font-elite text-6xl font-bold text-darkgold'>GAME OVER</p>
 
-                        <div className='rounded-lg border-1 w-3/4 h-90 shadow-darkgold shadow-lg flex flex-col'>
+                        <div className='rounded-lg border-1 w-3/4 h-90 shadow-darkgold shadow-sm flex flex-col'>
 
                             
                             <div className='flex items-center justify-center '>
-                                <p className='border-1 border-t-0 text-[16px] font-bold p-2 rounded-bl rounded-br text-midGold'>{winner}</p>
+                                <p className='border-1 border-t-0 text-[16px] font-bold p-2 rounded-bl rounded-br text-midGold text-2xl '>{winner}</p>
                             </div>
                             
                             <div className='flex w-full size-65'>
@@ -651,7 +676,7 @@ const LINES = [
                                 <div className='w-3/7 flex flex-col items-center justify-center gap-3'>
                                      <img src={player} className={`border-1 size-35 rounded-[50%] ${playerWins ? ' border-2 border-darkgold shadow-darkgold': ''}  shadow-sm `}/>
                                     <p className={`font-elite text-xl font-bold ${playerWins ? 'text-darkgold' : 'text-midGold'} `}>You</p>
-                                    <p className={`text-6xl font-bold ${playerWins == 'You Win' ? 'text-darkgold' : 'text-midGold'}`}></p>
+                                    <p className={`text-6xl font-bold ${playerWins  ? 'text-darkgold' : 'text-midGold'}`}></p>
                                 </div>
 
                                 <div className='w-1/7 flex items-center justify-center'>
@@ -666,22 +691,22 @@ const LINES = [
                             </div>
 
                             <div className='flex items-center justify-center '>
-                                <p className='border-1 text-[16px] font-bold p-2 rounded-lg text-midGold'>A crab cannot give birth to a bird</p>
+                                <p className='border-1 text-[16px] font-bold p-2 rounded-lg text-midGold'>{proverb}</p>
                             </div>
 
                         </div>
 
-                        <div className='flex items-center justify-between w-9/10'>
-                            <button className='flex items-center justify-center p-3 gap-2 border-1 rounded-lg cursor-pointer font-bold text-xl text-midGold hover:scale-95 duration-300' onClick={restartGame}>
+                        <div className='flex items-center justify-center gap-10 w-9/10'>
+                            <button className='flex items-center justify-center p-3 gap-2 border-1 rounded-lg cursor-pointer font-bold text-xl text-midGold hover:scale-95 duration-300' onClick={() => navigate('/selectionScreen')}>
                                 <RotateCcw/>
                                 <p>PLAY AGAIN </p>  
                             </button>
-
-                             <button className='flex items-center justify-center p-3 gap-2 border-1 rounded-lg cursor-pointer font-bold text-xl animate-float text-midGold hover:scale-95 duration-300  '>
+                            { agokansieWins ? <button className='flex items-center justify-center p-3 gap-2 border-1 rounded-lg cursor-pointer font-bold text-xl animate-float text-midGold hover:scale-95 duration-300' onClick={claimReward}>
                                 <Trophy />
                                 <p>CLAIM YOUR REWARD</p>
-                            </button>
-
+                            </button> : null
+                            }
+                            
                              <button className='flex items-center justify-center p-3 gap-2 border-1 rounded-lg cursor-pointer font-bold text-xl text-midGold hover:scale-95 duration-300' onClick={BackToHome}>
                                 <House />
                                 <p>BACK TO HOME</p>
@@ -973,7 +998,7 @@ const LINES = [
             </div>
 
              <button onClick={getBoardState} className={`absolute bottom-5 right-5 border-none p-3 w-40 text-xl rounded-lg cursor-pointer bg-gradient-to-br from-[#A47551] to-[#6B4226] text-[#F7E7CE] uppercase font-bold hover:scale-95 transition-all duration-300
-                     ${status === 'robot_playing' ? 'hidden' : ''}`}
+                     ${status === 'robot_playing' || status === 'robot_thinking' ? 'hidden' : ''}`}
                     disabled={
                         status === 'robot_playing'? true : false
                     }>I've played</button>

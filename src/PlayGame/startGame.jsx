@@ -203,7 +203,7 @@ function OwareGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://192.168.74.170:5000' 
+    const API = 'http://192.168.72.206:5000' 
 
     const navigate = useNavigate()
 
@@ -552,7 +552,7 @@ function OwareGame(){
         setPlayerScore(boardState?.state?.scores?.player)
         console.log(playerScore)
 
-        if(status === 'error'){
+        if(status === 'error' || status === 'invalid_move'){
             useInvalidMoveResponses()
         }
    

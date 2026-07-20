@@ -5,6 +5,7 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import gsap from 'gsap'
 
 
 function AchiLesson6(){
@@ -164,6 +165,444 @@ const LINES = [
     const [board, setBoard] = useState(createBoard)
 
 
+
+const nodeRefs = useRef([])
+const animateWin = useRef([])
+const pieceRefs = useRef([])
+
+const step1sequence = [
+
+    // ==================
+    // CORNER PLACEMENT
+    // ==================
+
+    { type: "place", player: 1, position: 0 },
+
+    // 🔍 From a corner, this piece only connects to 3 points
+    {
+        type: "showOptions",
+        position: 0,
+        options: [1, 3, 4]
+    },
+
+    { type: "reset" },
+
+
+    // ==================
+    // CENTRE PLACEMENT
+    // ==================
+
+    { type: "place", player: 1, position: 4 },
+
+    // 🔍 From the centre, this piece connects to all 8 other points —
+    // maximum possible flexibility
+    {
+        type: "showOptions",
+        position: 4,
+        options: [0, 1, 2, 3, 5, 6, 7, 8]
+    },
+
+    { type: "reset" },
+
+];
+
+const step2sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    { type: "place", player: 1, position: 0 },
+    { type: "place", player: 2, position: 2 },
+    { type: "place", player: 1, position: 4 },
+    { type: "place", player: 2, position: 3 },
+    { type: "place", player: 1, position: 6 },
+    { type: "place", player: 2, position: 5 },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // Player 1 moves 6 -> 7. This one move creates TWO threats:
+    // - 0 & 4 already share the diagonal 0-4-8 (needs 8)
+    // - 4 & 7 now share the column 1-4-7 (needs 1)
+    {
+        type: "move",
+        player: 1,
+        from: 6,
+        to: 7
+    },
+
+    // 🔶 Both winning lines are live at once — this is the fork
+    {
+        type: "showThreats",
+        lines: [12, 13, 8, 9] // 0-4-8 and 1-4-7
+    },
+
+    // Player 2 can only defend one — they block 8, stopping 0-4-8
+    {
+        type: "move",
+        player: 2,
+        from: 5,
+        to: 8
+    },
+
+    // 🏆 The other threat was never covered — player 1 slides into 1
+    // and wins on 1-4-7 instead
+    {
+        type: "move",
+        player: 1,
+        from: 0,
+        to: 1
+    },
+
+    {
+        type: "win",
+        player: 1,
+        lines: [8, 9] // 1-4-7
+    },
+
+];
+
+const step3sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    // 1 and 5 form the V's two arms — different lines (column 1-4-7,
+    // row 3-4-5), both open toward the empty centre. Opponent can't
+    // yet tell which line you're building.
+    { type: "place", player: 1, position: 1 },
+    { type: "place", player: 2, position: 0 },
+    { type: "place", player: 1, position: 5 },
+    { type: "place", player: 2, position: 2 },
+    { type: "place", player: 1, position: 6 }, // spare — not part of the V yet
+    { type: "place", player: 2, position: 8 },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // Player 1 commits: the spare slides into 3, completing the row's
+    // arms (3, 5). The V has resolved into a straight one-move threat
+    // on 3-4-5 — missing only the centre.
+    {
+        type: "move",
+        player: 1,
+        from: 6,
+        to: 3
+    },
+
+    // 🔶 The threat is live now — one open cell (4) wins the row
+    {
+        type: "showThreats",
+        lines: [2, 3] // 3-4 and 4-5
+    },
+
+    // Player 2 doesn't spot it and plays elsewhere instead of blocking 4
+    {
+        type: "move",
+        player: 2,
+        from: 8,
+        to: 7
+    },
+
+    // Player 1's "decoy" piece — sitting on the abandoned column line —
+    // was adjacent to the centre the whole time. It slides in.
+    {
+        type: "move",
+        player: 1,
+        from: 1,
+        to: 4
+    },
+
+    // 🏆 3-4-5 complete
+    {
+        type: "win",
+        player: 1,
+        lines: [2, 3]
+    },
+
+];
+
+const step4sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    { type: "place", player: 1, position: 3 },
+    { type: "place", player: 2, position: 0 },
+    { type: "place", player: 1, position: 4 },
+    { type: "place", player: 2, position: 1 },
+    { type: "place", player: 1, position: 8 },
+    { type: "place", player: 2, position: 5 },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // 🔶 Player 2 already holds 0 and 1 — row 0-1-2 needs only point 2,
+    // and their piece at 5 is adjacent to it. One move (5 -> 2) wins.
+    {
+        type: "showThreats",
+        lines: [0, 1] // 0-1 and 1-2
+    },
+
+    // Player 1 sees it coming and gets there first: 4 -> 2 is legal
+    // (centre connects to everything) and denies the line completely.
+    {
+        type: "move",
+        player: 1,
+        from: 4,
+        to: 2
+    },
+
+    // 🛡 Blocked — 0-1-2 is dead. Defence was the whole move here,
+    // not a step toward one of player 1's own lines.
+    {
+        type: "showBlock",
+        position: 2
+    },
+
+];
+
+const stepSequences = {
+    '1': step1sequence,
+    '2': step2sequence,
+    '3': step3sequence,
+    '4': step4sequence
+}
+
+
+const runAction = (tl, action, boardState)=>{
+
+switch(action.type){
+
+case "place":
+    tl.call(() => {
+        boardState[action.position] = action.player;
+        setBoard([...boardState]);
+    });
+
+    tl.to({}, { duration: 0.05 }); // give React a tick to render the new node
+
+    tl.call(() => {
+        const target = pieceRefs.current[action.position];
+        if (!target) return; // safety guard
+        gsap.fromTo(target,
+            { scale:0, y:-40, opacity:0 },
+            { scale:1, y:0, opacity:1, duration:0.4, ease:"back.out(2)" }
+        );
+    });
+    break;                                                                      
+
+case "move":
+
+    tl.call(()=>{
+
+
+        boardState[action.from]=0;
+
+        boardState[action.to]
+        =
+        action.player;
+
+
+        setBoard([...boardState]);
+
+
+    });
+
+break; 
+
+case "showOptions":
+
+    tl.call(() => {
+        (action.options || []).forEach(pos => {
+            const node = nodeRefs.current[pos];
+            if (!node) return; // safety guard
+
+            gsap.to(node, {
+                scale: 1.8,
+                backgroundColor: "#7CFF7C",
+                boxShadow: "0 0 15px 4px rgba(124,255,124,0.9)",
+                duration: 0.3,
+                delay: pos * 0.03, // lights up left-to-right, feels like a sweep rather than a blink
+                yoyo: true,
+                repeat: 3
+            });
+        });
+    });
+
+    tl.to({}, { duration: 1.6 }); // hold so the contrast in count actually registers
+
+    break;
+
+case "showThreats":
+
+    tl.call(() => {
+        (action.lines || []).forEach(index => {
+            const line = animateWin.current[index];
+            if (!line) return; // safety guard
+
+            gsap.to(line, {
+                backgroundColor: "#FFB020",
+                boxShadow: "0 0 15px 4px rgba(255,176,32,0.8)",
+                duration: 0.4,
+                yoyo: true,
+                repeat: 3 // finite — cleans itself up, no leaked tween
+            });
+        });
+    });
+
+    tl.to({}, { duration: 1.8 }); // hold so both threats read together
+
+    break;
+
+case "win":
+
+    tl.call(() => {
+        winAnimation(action.lines);
+    });
+
+    tl.to({}, { duration: 2 });
+
+    break;
+
+case "showBlock":
+
+    tl.call(() => {
+        const target = pieceRefs.current[action.position];
+        if (!target) return; // safety guard
+
+        gsap.to(target, {
+            boxShadow: "0 0 20px 6px rgba(56,189,248,0.9)",
+            duration: 0.3,
+            yoyo: true,
+            repeat: 3
+        });
+    });
+
+    tl.to({}, { duration: 1.4 });
+
+    break;
+}}
+
+const winAnimation=(lines)=>{
+
+
+lines.forEach(index=>{
+
+
+gsap.to(
+animateWin.current[index],
+
+{
+
+backgroundColor:"#7CFF7C",
+
+boxShadow:
+`
+0 0 20px #00FF66,
+0 0 40px #00FF66
+`,
+
+repeat:-1,
+
+yoyo:true,
+
+duration:0.5
+
+}
+
+);
+
+
+});
+
+
+};
+
+useEffect(()=>{
+const currentSequence = stepSequences[steps[currentStep].step]
+
+if (!currentSequence) return;
+
+    let boardState=createBoard();
+
+        const tl = gsap.timeline({
+
+        repeat:-1,
+
+        repeatDelay:2,
+
+
+        onRepeat:()=>{
+
+        const fresh = createBoard();
+        boardState.splice(0, boardState.length, ...fresh); // mutate in place
+        setBoard([...boardState]);
+         resetWin();
+
+
+        }
+
+        });
+
+
+        currentSequence.forEach(action=>{
+
+
+        runAction(
+            tl,
+            action,
+            boardState
+        );
+
+
+        tl.to({},{
+        duration:1
+        });
+
+
+        });
+
+
+        return ()=>{
+
+        tl.kill();
+        resetWin()
+        setBoard(createBoard());
+
+        };
+
+
+},[currentStep]);
+
+const resetWin = () => {
+
+    animateWin.current.forEach(line => {
+
+        if (!line) return;
+
+        gsap.killTweensOf(line);
+
+        gsap.set(line, {
+            backgroundColor: "",
+            boxShadow: "none",
+            opacity: 1,
+            scaleX: 1
+        });
+
+    });
+
+};
+
 return(
 <PageWrapper>
     <div className='absolute inset-0 bg-linear-to-r from-[#d4a017]/80 via-[#8b5a2b]/70 to-[#3b1f0f]/80 -z-1 min-h-screen flex flex-col items-center justify-center'>
@@ -231,7 +670,7 @@ return(
             
         </div>
 
-          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1'>
+          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1 scale-80'>
             <div className='border-3 p-18 rounded-lg border-dark bg-dark/70'>
 
             <div className="relative w-[450px] h-[450px] bg-radial from-gold via-wood1 to-dark ">
@@ -240,6 +679,7 @@ return(
                 {LINES.map(([start, end], index) => (
                     <div
                         key={index}
+                        ref={(el) => (animateWin.current[index] = el)}
                         className="absolute h-1 bg-darkgold"
                         style={getLineStyle(start, end)}
                     />
@@ -249,6 +689,7 @@ return(
                 {POSITIONS.map((position, index) => (
                     <div
                         key={index}
+                        ref = {(el) => (nodeRefs.current[index] = el)}
                         className="absolute size-4 z-10 rounded-full bg-darkgold -translate-x-1/2 -translate-y-1/2"
                         style={position}
                     />
@@ -259,6 +700,7 @@ return(
                     square !== 0 && (
                         <div
                             key={index}
+                            ref = {(el) => (pieceRefs.current[index] = el)}
                             className={`absolute z-20 size-14 rounded-full border-2 border-gold
                                 -translate-x-1/2 -translate-y-1/2
                                 ${

@@ -231,7 +231,7 @@ return(
             
         </div>
 
-          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1'>
+          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1 scale-80'>
             <div className='border-3 p-18 rounded-lg border-dark bg-dark/70'>
 
             <div className="relative w-[450px] h-[450px] bg-radial from-gold via-wood1 to-dark ">

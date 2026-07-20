@@ -5,6 +5,7 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import gsap from 'gsap'
 
 
 function AchiLesson5(){
@@ -43,11 +44,6 @@ const getBoardState = () => {
 
     },{
         step: '3',
-        text: "If neither player can make a legal move because all movable pieces are blocked, the game is declared a draw.",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '4',
         text: "After the game ends, reset the board by removing all six pieces so a new game can begin.",
         voice: 'Foolish boy Siaw'
 
@@ -106,6 +102,7 @@ const getBoardState = () => {
     useEffect(() => {
         LessonState()
         PreviousLesson()
+        resetWin()
     }, [currentStep])
 
 
@@ -164,6 +161,339 @@ const LINES = [
     const createBoard = () => Array(9).fill(0)
     const [board, setBoard] = useState(createBoard)
 
+    const animateWin = useRef([])
+    const pieceRefs = useRef([])
+
+
+    const step1sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    { type: "place", player: 1, position: 0 },
+    { type: "place", player: 2, position: 1 },
+    { type: "place", player: 1, position: 2 },
+    { type: "place", player: 2, position: 3 },
+    { type: "place", player: 1, position: 5 },
+    { type: "place", player: 2, position: 7 },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // Player 1 starts angling a piece toward the center
+    { type: "move", player: 1, from: 5, to: 4 },
+
+    // Player 2 plays elsewhere — doesn't interfere with the diagonal
+    { type: "move", player: 2, from: 7, to: 6 },
+
+    // Player 1 repositions again, freeing up point 5 for later
+    { type: "move", player: 1, from: 2, to: 5 },
+
+    // Player 2 plays elsewhere again
+    { type: "move", player: 2, from: 1, to: 2 },
+
+    // Player 1 completes the diagonal: 0, 4, 8
+    { type: "move", player: 1, from: 5, to: 8 },
+
+    // 🏆 The instant that move lands, three-in-a-row exists — win fires
+    // immediately, no separate "check" step, no delay before it.
+    {
+        type: "win",
+        player: 1,
+        lines: [12, 13] // 0–4 and 4–8, per your LINES array
+    },
+
+];
+
+
+const step2sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    { type: "place", player: 1, position: 0 },
+    { type: "place", player: 2, position: 1 },
+    { type: "place", player: 1, position: 6 },
+    { type: "place", player: 2, position: 7 },
+    { type: "place", player: 1, position: 4 },
+    { type: "place", player: 2, position: 2 },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // Player 1 moves the center piece down to complete the left
+    // column: 0, 3, 6
+    {
+        type: "move",
+        player: 1,
+        from: 4,
+        to: 3
+    },
+
+    // 🏆 The line completes the instant that move lands — game over,
+    // right here.
+    {
+        type: "win",
+        player: 1,
+        lines: [7] // 3–6, completing the 0–3–6 column
+    },
+
+    // ⚠️ NOTE: player 2 was one move from winning too — moving 2 → 4
+    // would have completed their own column, 1–4–7 — and point 4 had
+    // JUST been vacated by player 1's own winning move. But player 2
+    // never gets a turn. That's the whole point of this lesson: the
+    // sequence stops dead here. No "2 → 4" action exists below this
+    // line, on purpose.
+
+];
+
+const step3sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    { type: "place", player: 1, position: 0 },
+    { type: "place", player: 2, position: 1 },
+    { type: "place", player: 1, position: 3 },
+    { type: "place", player: 2, position: 2 },
+    { type: "place", player: 1, position: 5 },
+    { type: "place", player: 2, position: 8 },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // Player 1 completes the left column: 0, 3, 6
+    { type: "move", player: 1, from: 5, to: 6 },
+
+    // 🏆 Game over
+    {
+        type: "win",
+        player: 1,
+        lines: [7] // 3–6, completing the 0–3–6 column
+    },
+
+    // 🧹 Board clears completely — all six pieces removed —
+    // so the next game can start clean
+    { type: "reset" },
+
+];
+
+const stepSequences = {
+    
+    '1': step1sequence,
+    '2': step2sequence,
+    '3': step3sequence,
+    // '4': step4sequence
+}
+
+const runAction = (tl, action, boardState)=>{
+
+
+switch(action.type){
+
+
+
+case "place":
+    tl.call(() => {
+        boardState[action.position] = action.player;
+        setBoard([...boardState]);
+    });
+
+    tl.to({}, { duration: 0.05 }); // give React a tick to render the new node
+
+    tl.call(() => {
+        const target = pieceRefs.current[action.position];
+        if (!target) return; // safety guard
+        gsap.fromTo(target,
+            { scale:0, y:-40, opacity:0 },
+            { scale:1, y:0, opacity:1, duration:0.4, ease:"back.out(2)" }
+        );
+    });
+    break;
+
+    
+
+                                                                            
+
+case "move":
+
+    tl.call(()=>{
+
+
+        boardState[action.from]=0;
+
+        boardState[action.to]
+        =
+        action.player;
+
+
+        setBoard([...boardState]);
+
+
+    });
+break;
+
+
+case "win":
+
+    tl.call(() => {
+        winAnimation(action.lines);
+    });
+
+    tl.to({}, { duration: 2 });
+
+    break;
+
+
+case "reset":
+
+    tl.call(() => {
+        boardState.forEach((piece, index) => {
+            if (piece === 0) return; // nothing to remove here
+
+            const target = pieceRefs.current[index];
+            if (!target) return; // safety guard
+
+            gsap.to(target, {
+                scale: 0,
+                opacity: 0,
+                duration: 0.35,
+                delay: index * 0.06, // pieces clear out one after another, not all at once
+                ease: "back.in(2)"
+            });
+        });
+    });
+
+    tl.to({}, { duration: 0.9 }); // let the fade-out finish before the state actually clears
+
+    tl.call(() => {
+        boardState.fill(0);
+        setBoard([...boardState]);
+        resetWin(); // also clear any lingering win-line highlight
+    });
+
+    break;
+}}
+
+const winAnimation=(lines)=>{
+
+
+lines.forEach(index=>{
+
+
+gsap.to(
+animateWin.current[index],
+
+{
+
+backgroundColor:"#7CFF7C",
+
+boxShadow:
+`
+0 0 20px #00FF66,
+0 0 40px #00FF66
+`,
+
+repeat:-1,
+
+yoyo:true,
+
+duration:0.5
+
+}
+
+);
+
+
+});
+
+
+};
+
+
+useEffect(()=>{
+const currentSequence = stepSequences[steps[currentStep].step]
+
+if (!currentSequence) return;
+
+    let boardState=createBoard();
+
+        const tl = gsap.timeline({
+
+        repeat:-1,
+
+        repeatDelay:2,
+
+
+        onRepeat:()=>{
+
+        const fresh = createBoard();
+        boardState.splice(0, boardState.length, ...fresh); // mutate in place
+        setBoard([...boardState]);
+         resetWin();
+
+
+        }
+
+        });
+
+
+        currentSequence.forEach(action=>{
+
+
+        runAction(
+            tl,
+            action,
+            boardState
+        );
+
+
+        tl.to({},{
+        duration:1
+        });
+
+
+        });
+
+
+        return ()=>{
+
+        tl.kill();
+        resetWin
+        setBoard(createBoard());
+
+        };
+
+
+},[currentStep]);
+
+const resetWin = () => {
+
+    animateWin.current.forEach(line => {
+
+        if (!line) return;
+
+        gsap.killTweensOf(line);
+
+        gsap.set(line, {
+            backgroundColor: "",
+            boxShadow: "none",
+            opacity: 1,
+            scaleX: 1
+        });
+
+    });
+
+};
 
 return(
 <PageWrapper>
@@ -232,7 +562,7 @@ return(
             
         </div>
 
-          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1'>
+          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1 scale-80'>
             <div className='border-3 p-18 rounded-lg border-dark bg-dark/70'>
 
             <div className="relative w-[450px] h-[450px] bg-radial from-gold via-wood1 to-dark ">
@@ -241,6 +571,7 @@ return(
                 {LINES.map(([start, end], index) => (
                     <div
                         key={index}
+                        ref={(el) => (animateWin.current[index] = el)}
                         className="absolute h-1 bg-darkgold"
                         style={getLineStyle(start, end)}
                     />
@@ -260,6 +591,7 @@ return(
                     square !== 0 && (
                         <div
                             key={index}
+                            ref = {(el) => (pieceRefs.current[index] = el)}
                             className={`absolute z-20 size-14 rounded-full border-2 border-gold
                                 -translate-x-1/2 -translate-y-1/2
                                 ${

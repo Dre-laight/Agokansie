@@ -106,6 +106,7 @@ const getBoardState = () => {
     useEffect(() => {
         LessonState()
         PreviousLesson()
+        resetWin()
     }, [currentStep])
 
 
@@ -168,6 +169,9 @@ const LINES = [
     
 const nodeRefs = useRef([])
 const animateWin = useRef([])
+const pieceRefs = useRef([])
+
+
 useEffect (()=> {
     for (let i = 0; i< 9; i++){
         resetNode(i)
@@ -210,67 +214,339 @@ useEffect (()=> {
    }
 
 
-   useEffect (() =>{
-    resetWin(15)
-    resetWin(14)
-    resetWin(12)
-    resetWin(13)
-    resetWin(8)
-    resetWin(9)
-    resetWin(2)
-    resetWin(3)
-
-
-    if(steps[currentStep].step === '3'){ 
-    animateWinDemonstration(13)
-    animateWinDemonstration(14)
-    animateWinDemonstration(15)
-    animateWinDemonstration(8)
-    animateWinDemonstration(9)
-    animateWinDemonstration(2)
-    animateWinDemonstration(3)
-    animateWinDemonstration(12)
-
-
-    }},[ currentStep])
 
 
 
-   const animateWinDemonstration = (index) => { 
-    gsap.fromTo(
-        animateWin.current[index], {
-        backgroundColor: "#3b0599",
-        boxShadow: "0 0 0px #21109a",
-        scaleX: 1,
-        opacity: 0.8
-        },
+const step4sequence = [
 
-        { 
-        backgroundColor: "#7CFF7C",
-        boxShadow:
-            "0 0 20px #00FF66," +
-            "0 0 40px #00FF66," +
-            "0 0 80px #00FF66",
-        scaleX: 1,
-        opacity: 1,
+    // ==================
+    // PLACING PHASE
+    // ==================
 
-        duration: 0.8,
-        repeat: -1,
-        yoyo: true,
-        ease: "power1.inOut"}
-    )
-   }
-                                                                    
-   const resetWin = (index) => { 
-    gsap.killTweensOf(animateWin.current[index]);
-    gsap.set(animateWin.current[index], {
-         scale: 1, 
-        boxShadow:'none', 
-        backgroundColor: ""
-    })
-   }
+    {
+        type: "place",
+        player: 1,
+        position: 0
+    },
 
-  
+    {
+        type: "place",
+        player: 2,
+        position: 4
+    },
+
+    {
+        type: "place",
+        player: 1,
+        position: 2
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 6
+    },
+
+    {
+        type: "place",
+        player: 1,
+        position: 8
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 1
+    },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    {
+        type:"move",
+        player:2,
+        from:4,
+        to:5
+    },
+
+
+    {
+        type:"move",
+        player:1,
+        from:8,
+        to:7
+    },
+
+
+    {
+        type:"move",
+        player:1,
+        from:7,
+        to:4
+    },
+
+
+];
+
+const step2sequence = [{
+        type: "place",
+        player: 1,
+        position: 0
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 4
+    },
+
+    {
+        type: "place",
+        player: 1,
+        position: 2
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 6
+    },
+
+    {
+        type: "place",
+        player: 1,
+        position: 8
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 1
+    },]
+
+const step3sequence = [{
+        type: "place",
+        player: 1,
+        position: 0
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 4
+    },
+
+    {
+        type: "place",
+        player: 1,
+        position: 2
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 6
+    },
+
+    {
+        type: "place",
+        player: 1,
+        position: 1
+    },
+
+    // win
+
+    {
+        type: "win",
+        lines: [0, 1] // top horizontal, diagonal, etc.
+    }
+]
+
+// engine
+const runAction = (tl, action, boardState)=>{
+
+
+switch(action.type){
+
+
+
+case "place":
+    tl.call(() => {
+        boardState[action.position] = action.player;
+        setBoard([...boardState]);
+    });
+
+    tl.to({}, { duration: 0.05 }); // give React a tick to render the new node
+
+    tl.call(() => {
+        const target = pieceRefs.current[action.position];
+        if (!target) return; // safety guard
+        gsap.fromTo(target,
+            { scale:0, y:-40, opacity:0 },
+            { scale:1, y:0, opacity:1, duration:0.4, ease:"back.out(2)" }
+        );
+    });
+    break;
+
+                                                                                    
+
+
+
+case "move":
+
+    tl.call(()=>{
+
+
+        boardState[action.from]=0;
+
+        boardState[action.to]
+        =
+        action.player;
+
+
+        setBoard([...boardState]);
+
+
+    });
+
+
+
+break;
+
+case "win":
+
+    tl.call(() => {
+        winAnimation(action.lines);
+    });
+
+    tl.to({}, { duration: 2 });
+
+    break;
+
+}
+
+
+};
+
+
+const winAnimation=(lines)=>{
+
+
+lines.forEach(index=>{
+
+
+gsap.to(
+animateWin.current[index],
+
+{
+
+backgroundColor:"#7CFF7C",
+
+boxShadow:
+`
+0 0 20px #00FF66,
+0 0 40px #00FF66
+`,
+
+repeat:-1,
+
+yoyo:true,
+
+duration:0.5
+
+}
+
+);
+
+
+});
+
+
+};
+
+
+const stepSequences = {
+    '2': step2sequence,
+    '3': step3sequence,
+    '4': step4sequence  
+}
+
+useEffect(()=>{
+const currentSequence = stepSequences[steps[currentStep].step]
+
+if (!currentSequence) return;
+
+    let boardState=createBoard();
+
+        const tl = gsap.timeline({
+
+        repeat:-1,
+
+        repeatDelay:2,
+
+
+        onRepeat:()=>{
+
+        const fresh = createBoard();
+        boardState.splice(0, boardState.length, ...fresh); // mutate in place
+        setBoard([...boardState]);
+         resetWin();
+
+
+        }
+
+        });
+
+
+        currentSequence.forEach(action=>{
+
+
+        runAction(
+            tl,
+            action,
+            boardState
+        );
+
+
+        tl.to({},{
+        duration:1
+        });
+
+
+        });
+
+
+        return ()=>{
+
+        tl.kill();
+
+        setBoard(createBoard());
+
+        };
+
+
+},[currentStep]);
+
+const resetWin = () => {
+
+    animateWin.current.forEach(line => {
+
+        if (!line) return;
+
+        gsap.killTweensOf(line);
+
+        gsap.set(line, {
+            backgroundColor: "",
+            boxShadow: "none",
+            opacity: 1,
+            scaleX: 1
+        });
+
+    });
+
+};
 
 
 return(
@@ -340,7 +616,7 @@ return(
             
         </div>
 
-          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1'>
+          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1 scale-80'>
             <div className='border-3 p-18 rounded-lg border-dark bg-dark/70'>
 
             <div className="relative w-[450px] h-[450px] bg-radial from-gold via-wood1 to-dark ">
@@ -370,7 +646,8 @@ return(
                     square !== 0 && (
                         <div
                             key={index}
-                            className={`absolute z-20 size-14 rounded-full border-2 border-gold
+                            ref = {(el) => (pieceRefs.current[index] = el)}
+                            className={`piece-${index} absolute z-20 size-14 rounded-full border-2 border-gold
                                 -translate-x-1/2 -translate-y-1/2
                                 ${
                                     square === 1

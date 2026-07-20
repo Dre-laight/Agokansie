@@ -5,6 +5,7 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import { gsap } from 'gsap'
 
 
 function AchiLesson4(){
@@ -163,6 +164,482 @@ const LINES = [
     const createBoard = () => Array(9).fill(0)
     const [board, setBoard] = useState(createBoard)
 
+    const animateWin = useRef([])
+    const pieceRefs = useRef([])
+
+    const step1sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    {
+        type: "place",
+        player: 1,
+        position: 0
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 4
+    },
+
+    {
+        type: "place",
+        player: 1,
+        position: 2
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 6
+    },
+
+    {
+        type: "place",
+        player: 1,
+        position: 8
+    },
+
+    {
+        type: "place",
+        player: 2,
+        position: 1
+    },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    {
+        type:"move",
+        player:2,
+        from:4,
+        to:5
+    },
+
+
+    {
+        type:"move",
+        player:1,
+        from:8,
+        to:7
+    },
+
+
+    {
+        type:"move",
+        player:2,
+        from:6,
+        to:3
+    },
+
+
+];
+
+const step2sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    { type: "place", player: 1, position: 0 },
+    { type: "place", player: 2, position: 1 },
+    { type: "place", player: 1, position: 3 },
+    { type: "place", player: 2, position: 4 },
+    { type: "place", player: 1, position: 8 },
+    { type: "place", player: 2, position: 7 },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // ❌ 0 -> 2 isn't a direct connecting line — you'd have to pass
+    // through point 1, which is also occupied. Not adjacent = illegal.
+    {
+        type: "invalidMove",
+        player: 1,
+        from: 0,
+        to: 2,
+        reason: "notAdjacent"
+    },
+
+    // ❌ 3 -> 4 IS a valid line, but 4 is already occupied by player 2.
+    // Can't move into an occupied space.
+    {
+        type: "invalidMove",
+        player: 1,
+        from: 3,
+        to: 4,
+        reason: "occupied"
+    },
+
+    // ✅ 3 -> 6 is a direct line and 6 is empty. Legal move.
+    {
+        type: "move",
+        player: 1,
+        from: 3,
+        to: 6
+    },
+
+    // ❌ 7 -> 6 is a valid line, but player 1 just took point 6.
+    {
+        type: "invalidMove",
+        player: 2,
+        from: 7,
+        to: 6,
+        reason: "occupied"
+    },
+
+    // ✅ 1 -> 2 is a direct line and 2 is empty. Legal move.
+    {
+        type: "move",
+        player: 2,
+        from: 1,
+        to: 2
+    },
+
+];
+
+const step3sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    { type: "place", player: 1, position: 0 }, // this piece will end up trapped
+    { type: "place", player: 2, position: 1 },
+    { type: "place", player: 1, position: 5 },
+    { type: "place", player: 2, position: 3 },
+    { type: "place", player: 1, position: 8 },
+    { type: "place", player: 2, position: 4 },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // 🔒 Player 1 tries to move the piece at 0 — every point connected
+    // to it (1, 3, 4) is already occupied. No legal move exists.
+    {
+        type: "blocked",
+        player: 1,
+        position: 0,
+        blockedBy: [1, 3, 4]
+    },
+
+    // Meanwhile, play continues elsewhere — player 2 moves the piece
+    // off point 4, which happens to be one of point 0's neighbors.
+    {
+        type: "move",
+        player: 2,
+        from: 4,
+        to: 7
+    },
+
+    // ✅ Point 4 is empty now, so the piece that was stuck at 0
+    // finally has a legal move.
+    {
+        type: "move",
+        player: 1,
+        from: 0,
+        to: 4
+    },
+
+];
+
+const step4sequence = [
+
+    // ==================
+    // PLACING PHASE
+    // ==================
+
+    { type: "place", player: 1, position: 0 },
+    { type: "place", player: 2, position: 1 },
+    { type: "place", player: 1, position: 2 },
+    { type: "place", player: 2, position: 3 },
+    { type: "place", player: 1, position: 5 },
+    { type: "place", player: 2, position: 8 },
+
+
+    // ==================
+    // MOVEMENT PHASE
+    // ==================
+
+    // Player 2 shifts toward the bottom row
+    { type: "move", player: 2, from: 8, to: 7 },
+
+    // Player 1 repositions — not a winning move yet, just circling in
+    { type: "move", player: 1, from: 0, to: 4 },
+
+    // Player 2 keeps building
+    { type: "move", player: 2, from: 3, to: 6 },
+
+    // Player 1 completes the right-hand column: 2, 5, 8
+    { type: "move", player: 1, from: 4, to: 8 },
+
+    // 🏆 Player 1 now has a straight line of three — 2, 5, 8
+    {
+        type: "win",
+        player: 1,
+        lines: [10, 11]
+    },
+
+];
+
+const runAction = (tl, action, boardState)=>{
+
+
+switch(action.type){
+
+
+
+case "place":
+    tl.call(() => {
+        boardState[action.position] = action.player;
+        setBoard([...boardState]);
+    });
+
+    tl.to({}, { duration: 0.05 }); // give React a tick to render the new node
+
+    tl.call(() => {
+        const target = pieceRefs.current[action.position];
+        if (!target) return; // safety guard
+        gsap.fromTo(target,
+            { scale:0, y:-40, opacity:0 },
+            { scale:1, y:0, opacity:1, duration:0.4, ease:"back.out(2)" }
+        );
+    });
+    break;
+
+    
+
+                                                                                    
+
+
+
+case "move":
+
+    tl.call(()=>{
+
+
+        boardState[action.from]=0;
+
+        boardState[action.to]
+        =
+        action.player;
+
+
+        setBoard([...boardState]);
+
+
+    });
+
+
+
+break;
+
+case "invalidMove":
+
+    tl.call(() => {
+        const target = pieceRefs.current[action.from];
+        if (!target) return; // safety guard
+
+        gsap.timeline()
+            .to(target, {
+                boxShadow: "0 0 20px 6px rgba(255,40,40,0.85)",
+                borderColor: "#FF4040",
+                duration: 0.15
+            })
+            .to(target, {
+                scale: 1.15,
+                duration: 0.12,
+                yoyo: true,
+                repeat: 1
+            }, 0)
+            .to(target, {
+                boxShadow: "none",
+                borderColor: "",
+                scale: 1,
+                duration: 0.3
+            });
+    });
+
+    tl.to({}, { duration: 1.4 }); // hold so the rejection registers
+
+    break;
+
+    case "blocked":
+
+        tl.call(() => {
+            const target = pieceRefs.current[action.position];
+            if (!target) return; // safety guard
+
+            // the trapped piece pulses in place — it's straining, going nowhere
+            gsap.timeline()
+                .to(target, { scale: 1.1, duration: 0.15, yoyo: true, repeat: 3 })
+                .to(target, { scale: 1, duration: 0.15 });
+
+            // call out each occupied neighbor that's boxing it in
+            (action.blockedBy || []).forEach(pos => {
+                const neighbor = pieceRefs.current[pos];
+                if (!neighbor) return;
+
+                gsap.to(neighbor, {
+                    boxShadow: "0 0 15px 4px rgba(255,180,0,0.8)",
+                    duration: 0.3,
+                    yoyo: true,
+                    repeat: 3
+                });
+            });
+        });
+
+        tl.to({}, { duration: 1.8 }); // let it sit so "trapped" actually reads
+
+    break;  
+
+    case "win":
+
+        tl.call(() => {
+            winAnimation(action.lines);
+        });
+
+        tl.to({}, { duration: 2 });
+
+        break;
+
+    
+
+}
+
+
+
+
+};
+
+
+const winAnimation=(lines)=>{
+
+
+lines.forEach(index=>{
+
+
+gsap.to(
+animateWin.current[index],
+
+{
+
+backgroundColor:"#7CFF7C",
+
+boxShadow:
+`
+0 0 20px #00FF66,
+0 0 40px #00FF66
+`,
+
+repeat:-1,
+
+yoyo:true,
+
+duration:0.5
+
+}
+
+);
+
+
+});
+
+
+};
+
+
+const stepSequences = {
+    
+    '1': step1sequence,
+    '2': step2sequence,
+    '3': step3sequence,
+    '4': step4sequence
+}
+
+useEffect(()=>{
+const currentSequence = stepSequences[steps[currentStep].step]
+
+if (!currentSequence) return;
+
+    let boardState=createBoard();
+
+        const tl = gsap.timeline({
+
+        repeat:-1,
+
+        repeatDelay:2,
+
+
+        onRepeat:()=>{
+
+        const fresh = createBoard();
+        boardState.splice(0, boardState.length, ...fresh); // mutate in place
+        setBoard([...boardState]);
+         resetWin();
+
+
+        }
+
+        });
+
+
+        currentSequence.forEach(action=>{
+
+
+        runAction(
+            tl,
+            action,
+            boardState
+        );
+
+
+        tl.to({},{
+        duration:1
+        });
+
+
+        });
+
+
+        return ()=>{
+
+        tl.kill();
+
+        setBoard(createBoard());
+
+        };
+
+
+},[currentStep]);
+
+const resetWin = () => {
+
+    animateWin.current.forEach(line => {
+
+        if (!line) return;
+
+        gsap.killTweensOf(line);
+
+        gsap.set(line, {
+            backgroundColor: "",
+            boxShadow: "none",
+            opacity: 1,
+            scaleX: 1
+        });
+
+    });
+
+};
 
 return(
 <PageWrapper>
@@ -231,7 +708,7 @@ return(
             
         </div>
 
-          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1'>
+          <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1 scale-80'>
             <div className='border-3 p-18 rounded-lg border-dark bg-dark/70'>
 
             <div className="relative w-[450px] h-[450px] bg-radial from-gold via-wood1 to-dark ">
@@ -240,6 +717,7 @@ return(
                 {LINES.map(([start, end], index) => (
                     <div
                         key={index}
+                        ref={(el) => (animateWin.current[index] = el)}
                         className="absolute h-1 bg-darkgold"
                         style={getLineStyle(start, end)}
                     />
@@ -259,6 +737,7 @@ return(
                     square !== 0 && (
                         <div
                             key={index}
+                            ref = {(el) => (pieceRefs.current[index] = el)}
                             className={`absolute z-20 size-14 rounded-full border-2 border-gold
                                 -translate-x-1/2 -translate-y-1/2
                                 ${

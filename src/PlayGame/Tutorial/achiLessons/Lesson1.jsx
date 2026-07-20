@@ -210,8 +210,6 @@ const animateWin = useRef([])
 
 
 
-
-
 return(
 <PageWrapper>
     <div className='absolute inset-0 bg-linear-to-r from-[#d4a017]/80 via-[#8b5a2b]/70 to-[#3b1f0f]/80 -z-1 min-h-screen flex flex-col items-center justify-center'>
@@ -279,7 +277,7 @@ return(
             
         </div>
 
-        <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1 scale-90'>
+        <div className='absolute inset-0 flex items-center justify-center mt-35 -z-1 scale-80'>
             <div className='border-3 p-18 rounded-lg border-dark bg-dark/70'>
 
             <div className="relative w-[450px] h-[450px] bg-radial from-gold via-wood1 to-dark ">
