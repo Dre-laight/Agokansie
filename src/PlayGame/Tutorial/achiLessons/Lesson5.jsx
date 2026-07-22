@@ -6,7 +6,7 @@ import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lu
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
 import VictorySound from '../../../assets/sound/victory.mp3'
-import gsap from 'gsap'
+import { gsap } from 'gsap'
 
 
 function AchiLesson5(){

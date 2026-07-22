@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
 import ErrorSound from '../../../assets/sound/error.mp3'
 import showHint from '../../../assets/sound/blocked.mp3'
-import gsap from 'gsap'
+import { gsap } from 'gsap'
+
 
 
 function DameLesson3(){

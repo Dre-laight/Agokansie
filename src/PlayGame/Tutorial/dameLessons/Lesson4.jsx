@@ -9,7 +9,7 @@ import ErrorSound from '../../../assets/sound/error.mp3'
 import showHint from '../../../assets/sound/blocked.mp3'
 import Victory from '../../../assets/sound/victory.mp3'
 
-import gsap from 'gsap'
+import { gsap } from 'gsap'
 
 
 export default function DameLesson4(){

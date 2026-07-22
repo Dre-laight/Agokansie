@@ -1,5 +1,5 @@
 import { useContext, useState, useRef, useEffect, } from 'react'
-import gsap from 'gsap'
+import { gsap } from 'gsap'
 import PageWrapper from '../../../../WelcomeScreen/PageWrapper'
 import bg from '../../../../assets/background-collage.png'
 import thinking_image  from '../../../../assets/black_man_thinking.webp'
