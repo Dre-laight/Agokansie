@@ -63,7 +63,7 @@ import goodLuck from '../assets/sound/welcome/goodLuck.m4a'
 import shallWeBegin from '../assets/sound/welcome/shallWeBegin.m4a'
 import strategistWin from '../assets/sound/welcome/strategistWin.m4a'
 
-
+import { API } from './API'
 
 
 function AchiGame(){
@@ -205,7 +205,6 @@ function AchiGame(){
 
     const {games, currentGame} = useContext(GameContext)
 
-    const API = 'http://192.168.72.206:5000' 
 
     const navigate = useNavigate()
 

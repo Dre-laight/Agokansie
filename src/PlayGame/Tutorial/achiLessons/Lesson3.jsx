@@ -6,32 +6,17 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import victorySound from '../../../assets/sound/victory.mp3'
 
 
 function AchiLesson3(){
 
+//Contents
 const woodTap = useRef(new Audio(woodTapSound))
+const victory = useRef(new Audio(victorySound))
 const thinking = "..."
 
-const navigate = useNavigate()
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
-    }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
-}
-
-const getBoardState = () => {
-    console.log('i have played')    
-}
-
-    const steps = [{
+const steps = [{
         step: '1',
         text: "At the beginning of the game, players take turns placing one of their pieces onto any empty point on the board.",
         voice: 'Foolish boy Siaw'
@@ -53,120 +38,140 @@ const getBoardState = () => {
 
     } ]
 
-    const [currentStep, setCurrentStep] = useState(0)
-    const [nextLesson, setNextLesson] = useState(false)
-    const [previousLesson, setPreviousLesson] = useState(false)
-    const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
+//Navigate
+const navigate = useNavigate()
 
-    const previousStep = () => {
-        setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
-        console.log(steps[currentStep].step)
-        
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
     }
 
-    const nextStep = () => {
-        setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
-        console.log(steps[currentStep].step)
-    }
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
 
-    const LessonState = () => {
-        if(currentStep === steps.length - 1){
-            setNextLesson(true)
-        } else {
-            setNextLesson(false)
-        }
-    }
+const [currentStep, setCurrentStep] = useState(0)
+const [nextLesson, setNextLesson] = useState(false)
+const [previousLesson, setPreviousLesson] = useState(false)
+const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
 
-    const nextLessonNavigation = () => {
-        if (nextLesson){
-            navigate('/achilesson4')
-        } else {
-            nextStep()
-        }
-    }
-
-
-    const PreviousLesson = () => {
-        if(currentStep === 0){
-            setPreviousLessonVariable(true)
-        } else {
-            setPreviousLessonVariable(false)
-        }
-    }
-
-    const PreviousLessonNavigation = () => {
-        if (previousLessonVariable){
-             navigate('/achilesson2')
-        } else {
-            previousStep()
-        }
-    }
+const previousStep = () => {
+    setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
+    console.log(steps[currentStep].step)
     
+}
 
-    useEffect(() => {
-        LessonState()
-        PreviousLesson()
-        resetWin()
-    }, [currentStep])
+const nextStep = () => {
+    setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
+    console.log(steps[currentStep].step)
+}
+
+const LessonState = () => {
+    if(currentStep === steps.length - 1){
+        setNextLesson(true)
+    } else {
+        setNextLesson(false)
+    }
+}
+
+const nextLessonNavigation = () => {
+    if (nextLesson){
+        navigate('/achilesson4')
+    } else {
+        nextStep()
+    }
+}
 
 
+const PreviousLesson = () => {
+    if(currentStep === 0){
+        setPreviousLessonVariable(true)
+    } else {
+        setPreviousLessonVariable(false)
+    }
+}
 
-    const getLineStyle = (start, end) => {
-    const x1 = parseFloat(POSITIONS[start].left);
-    const y1 = parseFloat(POSITIONS[start].top);
+const PreviousLessonNavigation = () => {
+    if (previousLessonVariable){
+            navigate('/achilesson2')
+    } else {
+        previousStep()
+    }
+}
 
-    const x2 = parseFloat(POSITIONS[end].left);
-    const y2 = parseFloat(POSITIONS[end].top);
 
-    const length = Math.sqrt(
-        Math.pow(x2 - x1, 2) +
-        Math.pow(y2 - y1, 2)
-    );
+useEffect(() => {
+    LessonState()
+    PreviousLesson()
+    resetWin()
+}, [currentStep])
 
-    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+//Board state
 
-    return {
-        width: `${length}%`,
-        left: `${x1}%`,
-        top: `${y1}%`,
-        transform: `rotate(${angle}deg)`,
-        transformOrigin: "0 50%",
-    };
+const getBoardState = () => {
+    console.log('i have played')    
+}
+
+
+const getLineStyle = (start, end) => {
+const x1 = parseFloat(POSITIONS[start].left);
+const y1 = parseFloat(POSITIONS[start].top);
+
+const x2 = parseFloat(POSITIONS[end].left);
+const y2 = parseFloat(POSITIONS[end].top);
+
+const length = Math.sqrt(
+    Math.pow(x2 - x1, 2) +
+    Math.pow(y2 - y1, 2)
+);
+
+const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+
+return {
+    width: `${length}%`,
+    left: `${x1}%`,
+    top: `${y1}%`,
+    transform: `rotate(${angle}deg)`,
+    transformOrigin: "0 50%",
+};
 };
 
-    const POSITIONS = [
-    { top: "0%", left: "0%" },      // 0
-    { top: "0%", left: "50%" },     // 1
-    { top: "0%", left: "100%" },    // 2
+const POSITIONS = [
+{ top: "0%", left: "0%" },      // 0
+{ top: "0%", left: "50%" },     // 1
+{ top: "0%", left: "100%" },    // 2
 
-    { top: "50%", left: "0%" },     // 3
-    { top: "50%", left: "50%" },    // 4
-    { top: "50%", left: "100%" },   // 5
+{ top: "50%", left: "0%" },     // 3
+{ top: "50%", left: "50%" },    // 4
+{ top: "50%", left: "100%" },   // 5
 
-    { top: "100%", left: "0%" },    // 6
-    { top: "100%", left: "50%" },   // 7
-    { top: "100%", left: "100%" },  // 8
+{ top: "100%", left: "0%" },    // 6
+{ top: "100%", left: "50%" },   // 7
+{ top: "100%", left: "100%" },  // 8
 ];
 
 const LINES = [
-    [0,1],[1,2],
-    [3,4],[4,5],
-    [6,7],[7,8],
+[0,1],[1,2],
+[3,4],[4,5],
+[6,7],[7,8],
 
-    [0,3],[0,6],
-    [1,4],[4,7],
-    [2,5],[5,8],
+[0,3],[0,6],
+[1,4],[4,7],
+[2,5],[5,8],
 
-    [0,4],[4,8],
-    [2,4],[4,6],
+[0,4],[4,8],
+[2,4],[4,6],
 
 ];
-    
-    const createBoard = () => Array(9).fill(0)
-    const [board, setBoard] = useState(createBoard)
+const createBoard = () => Array(9).fill(0)
+const [board, setBoard] = useState(createBoard)
 
-    // empty space tutotrial animation 
-    
+
+//Animation
+
 const nodeRefs = useRef([])
 const animateWin = useRef([])
 const pieceRefs = useRef([])
@@ -201,6 +206,8 @@ useEffect (()=> {
  
         ease: 'power1.inOut'
     })
+    woodTap.current.currentTime = 0;
+    woodTap.current.play();
    }
 
    const resetNode = (index) => {
@@ -218,10 +225,6 @@ useEffect (()=> {
 
 
 const step4sequence = [
-
-    // ==================
-    // PLACING PHASE
-    // ==================
 
     {
         type: "place",
@@ -364,19 +367,23 @@ const step3sequence = [{
     }
 ]
 
+
 // engine
 const runAction = (tl, action, boardState)=>{
 
-
 switch(action.type){
-
-
 
 case "place":
     tl.call(() => {
         boardState[action.position] = action.player;
         setBoard([...boardState]);
     });
+    tl.call (()=> {
+        if (woodTap.current){ 
+            woodTap.current.currentTime = 0; 
+            woodTap.current.play();
+        }   
+    })
 
     tl.to({}, { duration: 0.05 }); // give React a tick to render the new node
 
@@ -401,8 +408,7 @@ case "move":
 
         boardState[action.from]=0;
 
-        boardState[action.to]
-        =
+        boardState[action.to]=
         action.player;
 
 
@@ -420,10 +426,15 @@ case "win":
     tl.call(() => {
         winAnimation(action.lines);
     });
-
-    tl.to({}, { duration: 2 });
-
-    break;
+    tl.to({}, { duration: 0.3 });
+    
+    tl.call(() => {
+        if(victory.current){
+            victory.current.currentTime = 0; 
+            victory.current.play()
+        }
+    })
+    
 
 }
 

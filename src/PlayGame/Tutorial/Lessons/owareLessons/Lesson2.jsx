@@ -7,48 +7,12 @@ import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 
 
-function OwareLesson2(){
+export default function OwareLesson2(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
-const navigate = useNavigate()
-
-
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
-    }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
-}
-
-const getBoardState = () => {
-    console.log('i have played')    
-}
-
- const Pit = ({beadCount}) => {
-        return(
-            <>
-                 <div className="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-4">
-                    <div className='grid grid-cols gap-1 justify-items-center items-center'></div>                        
-                    {Array.from( {length: beadCount }).map((_, index) =>(
-                        <div key={index}
-                        className='rounded-full bg-gradient-to-br from-grey-600 to-green-300 size-4'></div>
-
-                    ))}
-                </div>
-            </>
-
-        )
-    }
-
-    const steps = [{
+const steps = [{
         step: '1',
         text: "Handle all the beads with care throughout the game. Rough handling may cause the pieces to scatter or become misplaced, making it difficult for the game to continue smoothly.",
         voice: 'Foolish boy Siaw'
@@ -70,6 +34,21 @@ const getBoardState = () => {
 
     } ]
 
+
+//Navigation
+const navigate = useNavigate()
+
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
+    }
+
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
     const [currentStep, setCurrentStep] = useState(0)
     const [nextLesson, setNextLesson] = useState(false)
     const [previousLesson, setPreviousLesson] = useState(false)
@@ -126,6 +105,28 @@ const getBoardState = () => {
     }, [currentStep])
 
 
+
+
+//Board state
+const getBoardState = () => {
+    console.log('i have played')    
+}
+
+ const Pit = ({beadCount}) => {
+        return(
+            <>
+                 <div className="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-4">
+                    <div className='grid grid-cols gap-1 justify-items-center items-center'></div>                        
+                    {Array.from( {length: beadCount }).map((_, index) =>(
+                        <div key={index}
+                        className='rounded-full bg-gradient-to-br from-grey-600 to-green-300 size-4'></div>
+
+                    ))}
+                </div>
+            </>
+
+        )
+    }
 
 return(
 <PageWrapper>
@@ -248,4 +249,3 @@ return(
 )
 }
 
-export default OwareLesson2 

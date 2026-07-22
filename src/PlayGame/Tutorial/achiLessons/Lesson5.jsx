@@ -5,33 +5,33 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import VictorySound from '../../../assets/sound/victory.mp3'
 import gsap from 'gsap'
 
 
 function AchiLesson5(){
 
 const woodTap = useRef(new Audio(woodTapSound))
+const victory = useRef(new Audio(VictorySound))
 const thinking = "..."
 
-const navigate = useNavigate()
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
+const playWoodTap = () => {
+    if (woodTap.current) { 
+        woodTap.current.currentTime = 0; 
         woodTap.current.play()
     }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
 }
 
-const getBoardState = () => {
-    console.log('i have played')    
+
+const playVictory = () => { 
+    if (victory.current) { 
+        victory.current.currentTime = 0; 
+        victory.current.play();
+    }
 }
 
-    const steps = [{
+
+ const steps = [{
         step: '1',
         text: "A player wins immediately by forming a straight line with all three of their pieces. The line may be horizontal, vertical, or diagonal.",
         voice: 'Foolish boy Siaw'
@@ -49,7 +49,22 @@ const getBoardState = () => {
 
     } ]
 
-    const [currentStep, setCurrentStep] = useState(0)
+//Navigate
+const navigate = useNavigate()
+
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
+    }
+
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
+
+  const [currentStep, setCurrentStep] = useState(0)
     const [nextLesson, setNextLesson] = useState(false)
     const [previousLesson, setPreviousLesson] = useState(false)
     const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
@@ -107,6 +122,12 @@ const getBoardState = () => {
 
 
 
+//Board state
+
+const getBoardState = () => {
+    console.log('i have played')    
+}
+
     const getLineStyle = (start, end) => {
     const x1 = parseFloat(POSITIONS[start].left);
     const y1 = parseFloat(POSITIONS[start].top);
@@ -131,17 +152,17 @@ const getBoardState = () => {
 };
 
     const POSITIONS = [
-    { top: "0%", left: "0%" },      // 0
-    { top: "0%", left: "50%" },     // 1
-    { top: "0%", left: "100%" },    // 2
+    { top: "0%", left: "0%" },      
+    { top: "0%", left: "50%" },    
+    { top: "0%", left: "100%" },    
 
-    { top: "50%", left: "0%" },     // 3
-    { top: "50%", left: "50%" },    // 4
-    { top: "50%", left: "100%" },   // 5
+    { top: "50%", left: "0%" },   
+    { top: "50%", left: "50%" },    
+    { top: "50%", left: "100%" },   
 
-    { top: "100%", left: "0%" },    // 6
-    { top: "100%", left: "50%" },   // 7
-    { top: "100%", left: "100%" },  // 8
+    { top: "100%", left: "0%" },   
+    { top: "100%", left: "50%" }, 
+    { top: "100%", left: "100%" }, 
 ];
 
 const LINES = [
@@ -161,15 +182,15 @@ const LINES = [
     const createBoard = () => Array(9).fill(0)
     const [board, setBoard] = useState(createBoard)
 
+
+//Animation
     const animateWin = useRef([])
     const pieceRefs = useRef([])
 
 
     const step1sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
+   
 
     { type: "place", player: 1, position: 0 },
     { type: "place", player: 2, position: 1 },
@@ -179,31 +200,21 @@ const LINES = [
     { type: "place", player: 2, position: 7 },
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
 
-    // Player 1 starts angling a piece toward the center
     { type: "move", player: 1, from: 5, to: 4 },
 
-    // Player 2 plays elsewhere — doesn't interfere with the diagonal
     { type: "move", player: 2, from: 7, to: 6 },
 
-    // Player 1 repositions again, freeing up point 5 for later
     { type: "move", player: 1, from: 2, to: 5 },
 
-    // Player 2 plays elsewhere again
     { type: "move", player: 2, from: 1, to: 2 },
 
-    // Player 1 completes the diagonal: 0, 4, 8
     { type: "move", player: 1, from: 5, to: 8 },
 
-    // 🏆 The instant that move lands, three-in-a-row exists — win fires
-    // immediately, no separate "check" step, no delay before it.
     {
         type: "win",
         player: 1,
-        lines: [12, 13] // 0–4 and 4–8, per your LINES array
+        lines: [12, 13]
     },
 
 ];
@@ -211,9 +222,6 @@ const LINES = [
 
 const step2sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
 
     { type: "place", player: 1, position: 0 },
     { type: "place", player: 2, position: 1 },
@@ -223,12 +231,8 @@ const step2sequence = [
     { type: "place", player: 2, position: 2 },
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
 
-    // Player 1 moves the center piece down to complete the left
-    // column: 0, 3, 6
+
     {
         type: "move",
         player: 1,
@@ -236,28 +240,20 @@ const step2sequence = [
         to: 3
     },
 
-    // 🏆 The line completes the instant that move lands — game over,
-    // right here.
+   
     {
         type: "win",
         player: 1,
-        lines: [7] // 3–6, completing the 0–3–6 column
+        lines: [7] 
     },
 
-    // ⚠️ NOTE: player 2 was one move from winning too — moving 2 → 4
-    // would have completed their own column, 1–4–7 — and point 4 had
-    // JUST been vacated by player 1's own winning move. But player 2
-    // never gets a turn. That's the whole point of this lesson: the
-    // sequence stops dead here. No "2 → 4" action exists below this
-    // line, on purpose.
+   
 
 ];
 
 const step3sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
+  
 
     { type: "place", player: 1, position: 0 },
     { type: "place", player: 2, position: 1 },
@@ -267,22 +263,15 @@ const step3sequence = [
     { type: "place", player: 2, position: 8 },
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
 
-    // Player 1 completes the left column: 0, 3, 6
     { type: "move", player: 1, from: 5, to: 6 },
 
-    // 🏆 Game over
     {
         type: "win",
         player: 1,
-        lines: [7] // 3–6, completing the 0–3–6 column
+        lines: [7] 
     },
 
-    // 🧹 Board clears completely — all six pieces removed —
-    // so the next game can start clean
     { type: "reset" },
 
 ];
@@ -292,7 +281,6 @@ const stepSequences = {
     '1': step1sequence,
     '2': step2sequence,
     '3': step3sequence,
-    // '4': step4sequence
 }
 
 const runAction = (tl, action, boardState)=>{
@@ -318,6 +306,10 @@ case "place":
             { scale:1, y:0, opacity:1, duration:0.4, ease:"back.out(2)" }
         );
     });
+    tl.call(playWoodTap)
+   
+
+
     break;
 
     
@@ -337,6 +329,7 @@ case "move":
 
 
         setBoard([...boardState]);
+        tl.call(playWoodTap)
 
 
     });
@@ -349,7 +342,9 @@ case "win":
         winAnimation(action.lines);
     });
 
-    tl.to({}, { duration: 2 });
+    tl.to({}, { duration: 0.3});
+
+    tl.call(playVictory)
 
     break;
 
@@ -358,27 +353,26 @@ case "reset":
 
     tl.call(() => {
         boardState.forEach((piece, index) => {
-            if (piece === 0) return; // nothing to remove here
-
+            if (piece === 0) return;
             const target = pieceRefs.current[index];
-            if (!target) return; // safety guard
+            if (!target) return; 
 
             gsap.to(target, {
                 scale: 0,
                 opacity: 0,
                 duration: 0.35,
-                delay: index * 0.06, // pieces clear out one after another, not all at once
+                delay: index * 0.06,
                 ease: "back.in(2)"
             });
         });
     });
 
-    tl.to({}, { duration: 0.9 }); // let the fade-out finish before the state actually clears
+    tl.to({}, { duration: 0.9 });
 
     tl.call(() => {
         boardState.fill(0);
         setBoard([...boardState]);
-        resetWin(); // also clear any lingering win-line highlight
+        resetWin(); 
     });
 
     break;
@@ -494,6 +488,7 @@ const resetWin = () => {
     });
 
 };
+
 
 return(
 <PageWrapper>

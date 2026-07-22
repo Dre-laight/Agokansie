@@ -12,10 +12,12 @@ import { useNavigate } from "react-router-dom";
 
 import { motion } from 'framer-motion'
 
+import { API } from "../PlayGame/API";
+
 
     function SelectionScreen() {
 
-        const API = 'http://192.168.72.206:5000/api/game/select'
+        const APIKEY = `${API}/api/game/select`
        
         const {games, currentGame, setCurrentGame} = useContext(GameContext)
         const [isLoading, setIsLoading] = useState(false)
@@ -52,7 +54,7 @@ import { motion } from 'framer-motion'
         
         async function sendPostRequest(){
             try {
-                const response = await fetch(API, {
+                const response = await fetch(APIKEY, {
                 method: 'POST',
                 headers: {
                     'Content-Type': "application/json",

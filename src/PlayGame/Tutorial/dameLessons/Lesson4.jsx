@@ -5,35 +5,49 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import ErrorSound from '../../../assets/sound/error.mp3'
+import showHint from '../../../assets/sound/blocked.mp3'
+import Victory from '../../../assets/sound/victory.mp3'
+
 import gsap from 'gsap'
 
 
-function DameLesson4(){
+export default function DameLesson4(){
 
 const woodTap = useRef(new Audio(woodTapSound))
+const error = useRef(new  Audio(ErrorSound))
+const hint = useRef (new Audio(showHint))
+const victory = useRef(new Audio(Victory))
 const thinking = "..."
 
-const navigate = useNavigate()
-
-
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
+const playWoodTap = () => { 
+    if (woodTap.current) { 
+        woodTap.current.currentTime = 0; 
+        woodTap.current.play();
     }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
 }
 
-const getBoardState = () => {
-    console.log('i have played')    
+const playError = () => { 
+    if (error.current) { 
+        error.current.currentTime = 0; 
+        error.current.play();
+    }
+}
+const playHint = () => {
+    if (hint.current) { 
+        hint.current.currentTime =  0; 
+        hint.current.play();
+    }
 }
 
-    const steps = [{
+const playVictory = ()  => {
+    if (victory.current) { 
+        victory.current.currentTime = 0; 
+        victory.current.play()
+    }
+}
+
+ const steps = [{
         step: '1',
         text: "A capture is made by jumping diagonally over an adjacent opponent's piece into the empty square immediately behind it. The jumped piece is then removed from the board.",
         voice: 'Foolish boy Siaw'
@@ -55,94 +69,115 @@ const getBoardState = () => {
 
     } ]
 
-    const [currentStep, setCurrentStep] = useState(0)
-    const [nextLesson, setNextLesson] = useState(false)
-    const [previousLesson, setPreviousLesson] = useState(false)
-    const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
 
-    const previousStep = () => {
-        setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
-        console.log(steps[currentStep].step)
-        
+//Navigation
+const navigate = useNavigate()
+
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
     }
 
-    const nextStep = () => {
-        setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
-        console.log(steps[currentStep].step)
-    }
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
 
-    const LessonState = () => {
-        if(currentStep === steps.length - 1){
-            setNextLesson(true)
-        } else {
-            setNextLesson(false)
+const [currentStep, setCurrentStep] = useState(0)
+const [nextLesson, setNextLesson] = useState(false)
+const [previousLesson, setPreviousLesson] = useState(false)
+const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
+
+const previousStep = () => {
+    setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
+    console.log(steps[currentStep].step)
+    
+}
+
+const nextStep = () => {
+    setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
+    console.log(steps[currentStep].step)
+}
+
+const LessonState = () => {
+    if(currentStep === steps.length - 1){
+        setNextLesson(true)
+    } else {
+        setNextLesson(false)
+    }
+}
+
+const nextLessonNavigation = () => {
+    if (nextLesson){
+        navigate('/damelesson5')
+    } else {
+        nextStep()
+    }
+}
+
+
+const PreviousLesson = () => {
+    if(currentStep === 0){
+        setPreviousLessonVariable(true)
+    } else {
+        setPreviousLessonVariable(false)
+    }
+}
+
+const PreviousLessonNavigation = () => {
+    if (previousLessonVariable){
+        navigate('/damelesson3')
+    } else {
+        previousStep()
+    }
+}
+
+
+useEffect(() => {
+    LessonState()
+    PreviousLesson()
+}, [currentStep])
+
+
+//Board state
+const getBoardState = () => {
+    console.log('i have played')    
+}
+
+
+const createBoard = () => {
+    const board = [];
+
+    for (let row = 0; row < 8; row++) {
+        const currentRow = [];
+
+        for (let col = 0; col < 8; col++) {
+            currentRow.push(0);
         }
+
+        board.push(currentRow);
     }
 
-    const nextLessonNavigation = () => {
-        if (nextLesson){
-            navigate('/damelesson5')
-        } else {
-            nextStep()
-        }
-    }
+    return board;
+};
+
+const [board, setBoard] = useState(createBoard);
 
 
-    const PreviousLesson = () => {
-        if(currentStep === 0){
-            setPreviousLessonVariable(true)
-        } else {
-            setPreviousLessonVariable(false)
-        }
-    }
 
-    const PreviousLessonNavigation = () => {
-        if (previousLessonVariable){
-            navigate('/damelesson3')
-        } else {
-            previousStep()
-        }
-    }
-    
-
-    useEffect(() => {
-        LessonState()
-        PreviousLesson()
-    }, [currentStep])
-
-
-    const createBoard = () => {
-        const board = [];
-    
-        for (let row = 0; row < 8; row++) {
-            const currentRow = [];
-    
-            for (let col = 0; col < 8; col++) {
-                currentRow.push(0);
-            }
-    
-            board.push(currentRow);
-        }
-    
-        return board;
-    };
-    
-    const [board, setBoard] = useState(createBoard);
-
-
+//Animation
 const pieceRefs = useRef([])
 const idx = (row, col) => row * 8 + col
 const cellRefs = useRef([])
 
 const step1sequence = [
 
-    // User's piece
     { type: "place", player: 2, row: 5, col: 1 },
 
-    // Opponent's piece to capture
     { type: "place", player: 1, row: 4, col: 2 },
 
-    // Show landing square
     {
         type: "showOptions",
         options: [
@@ -150,7 +185,6 @@ const step1sequence = [
         ]
     },
 
-    // Perform the capture
     {
         type: "capture",
         player: 2,
@@ -160,12 +194,13 @@ const step1sequence = [
         over: { row: 4, col: 2 },
 
         to: { row: 3, col: 3 }
-    }
+    },
+
+    {type : "reset"}
 
 ];
 const step2sequence = [
 
-    // Place player's piece
     {
         type:"place",
         player:2,
@@ -173,7 +208,6 @@ const step2sequence = [
         col:1
     },
 
-    // Place opponent piece creating capture
     {
         type:"place",
         player:1,
@@ -182,7 +216,6 @@ const step2sequence = [
     },
 
 
-    // Demonstrate available normal move
     {
         type:"showOptions",
         options:[
@@ -194,7 +227,6 @@ const step2sequence = [
     },
 
 
-    // Player attempts normal move
     {
         type:"invalidMove",
         from:{
@@ -208,7 +240,6 @@ const step2sequence = [
     },
 
 
-    // Explain capture is compulsory
     {
         type:"showOptions",
         options:[
@@ -220,7 +251,6 @@ const step2sequence = [
     },
 
 
-    // Perform forced capture
     {
         type:"capture",
         player:2,
@@ -239,7 +269,9 @@ const step2sequence = [
             row:3,
             col:3
         }
-    }
+    },
+
+    {type : "reset"}
 ];
 
 
@@ -254,7 +286,6 @@ const step3sequence = [
     },
 
 
-    // Player 1 piece behind-right
     {
         type: "place",
         player: 1,
@@ -263,7 +294,6 @@ const step3sequence = [
     },
 
 
-    // Show illegal backward move
     {
         type: "showOptions",
         options:[
@@ -275,7 +305,6 @@ const step3sequence = [
     },
 
 
-    // Attempt backward movement
     {
         type:"invalidMove",
 
@@ -291,7 +320,6 @@ const step3sequence = [
     },
 
 
-    // Show legal backward capture
     {
         type:"showOptions",
         options:[
@@ -303,7 +331,6 @@ const step3sequence = [
     },
 
 
-    // Perform backward capture
     {
         type:"capture",
 
@@ -323,7 +350,9 @@ const step3sequence = [
             row:7,
             col:5
         }
-    }
+    },
+
+    {type : "reset"}
 
 ];
 
@@ -410,7 +439,10 @@ const step4sequence = [
             row:2,
             col:6
         }
-    }
+    },{type : "reset"},
+    
+
+
 
 ];
 const stepSequences = {
@@ -437,9 +469,10 @@ const runAction = (tl, action, boardState) => {
                 if (!target) return;
                 gsap.fromTo(target,
                     { scale: 0, y: -30, opacity: 0 },
-                    { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }
+                    { scale: 1, y: 0, opacity: 1, duration: 0.1, ease: "back.out(2)" }
                 );
             });
+            tl.call (playWoodTap)
             break;
 
         case "move":
@@ -451,6 +484,14 @@ const runAction = (tl, action, boardState) => {
 
             tl.to({}, { duration: 0.05 }); // let React mount the piece at its new cell
 
+            tl.call(() =>{ 
+                if (woodTap.current){
+                    woodTap.current.currentTime = 0; 
+                    woodTap.current.play()
+                }
+            });
+            tl.to({}, {duration: 0.5});
+
             tl.call(() => {
                 // the old DOM node is gone — this is a fresh element at the
                 // new cell, so it "lands" rather than slides across the board
@@ -460,7 +501,9 @@ const runAction = (tl, action, boardState) => {
                     { scale: 0.6, y: -14, opacity: 0.4 },
                     { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
                 );
+           
             });
+            tl.call(playWoodTap)
             break;
 
         case "invalidMove":
@@ -480,7 +523,8 @@ const runAction = (tl, action, boardState) => {
                     .to(target, { boxShadow: "none", duration: 0.3 });
             });
 
-            tl.to({}, { duration: 1.2 });
+            tl.to({}, { duration: 0.1});
+            tl.call (playError)
             break;
 
 case "showOptions":
@@ -498,7 +542,8 @@ case "showOptions":
         });
     });
 
-    tl.to({}, { duration: 1.6 });
+    tl.to({}, { duration: 0.1 });
+    tl.call (playHint)
     break;
 
 case "reset":
@@ -579,144 +624,6 @@ tl.call(()=>{
 
     break;
 
-case "compulsoryCapture":
-
-tl.call(()=>{
-
-    const piece =
-    pieceRefs.current[idx(action.piece.row, action.piece.col)];
-
-    if(!piece) return;
-
-
-    gsap.timeline()
-    .to(piece,{
-        scale:1.15,
-        duration:0.2
-    })
-    .to(piece,{
-        scale:1,
-        duration:0.2
-    });
-
-
-    action.captureSquares.forEach(({row,col})=>{
-
-        const cell =
-        cellRefs.current[idx(row,col)];
-
-        if(!cell) return;
-
-
-        gsap.to(cell,{
-            boxShadow:
-            "inset 0 0 0 5px rgba(255,215,0,0.9)",
-            duration:0.4,
-            repeat:3,
-            yoyo:true
-        });
-
-    });
-
-});
-
-
-tl.to({},{
-    duration:1.8
-});
-
-break;
-
-case "blocked":
-    tl.call(() => {
-
-        const piece = pieceRefs.current[idx(action.piece.row, action.piece.col)];
-
-        // Shake the blocked piece
-        if (piece) {
-            gsap.timeline()
-                .to(piece, { x: -8, duration: 0.08 })
-                .to(piece, { x: 8, duration: 0.08 })
-                .to(piece, { x: -5, duration: 0.08 })
-                .to(piece, { x: 5, duration: 0.08 })
-                .to(piece, { x: 0, duration: 0.08 });
-        }
-
-        // Highlight both blocking pieces
-        action.blockers.forEach(({ row, col }) => {
-            const blocker = pieceRefs.current[idx(row, col)];
-            if (!blocker) return;
-
-            gsap.fromTo(
-                blocker,
-                {
-                    boxShadow: "0 0 0 rgba(255,120,0,0)"
-                },
-                {
-                    boxShadow: "0 0 18px rgba(255,120,0,0.9)",
-                    duration: 0.3,
-                    repeat: 3,
-                    yoyo: true
-                }
-            );
-        });
-
-    });
-
-    tl.to({}, { duration: 1.8 });
-    break;
-
-    case "backwardCaptureNotice":
-
-tl.call(()=>{
-
-    const piece =
-    pieceRefs.current[idx(action.piece.row, action.piece.col)];
-
-
-    if(piece){
-
-        gsap.timeline()
-        .to(piece,{
-            scale:1.15,
-            duration:0.2,
-            ease:"power2.out"
-        })
-        .to(piece,{
-            scale:1,
-            duration:0.2
-        });
-
-    }
-
-
-    action.captureSquares.forEach(({row,col})=>{
-
-        const cell =
-        cellRefs.current[idx(row,col)];
-
-
-        if(!cell) return;
-
-
-        gsap.to(cell,{
-            boxShadow:
-            "inset 0 0 0 5px rgba(0,255,100,0.9)",
-            duration:0.4,
-            repeat:3,
-            yoyo:true
-        });
-
-    });
-
-});
-
-
-tl.to({},{
-    duration:1.5
-});
-
-break;
 
 }
 
@@ -868,4 +775,3 @@ return(
 )
 }
 
-export default DameLesson4

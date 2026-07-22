@@ -5,35 +5,49 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import ErrorSound from '../../../assets/sound/error.mp3'
+import showHint from '../../../assets/sound/blocked.mp3'
+import Victory from '../../../assets/sound/victory.mp3'
+
 import gsap from 'gsap'
 
 
-function DameLesson7(){
+export default  function DameLesson7(){
 
 const woodTap = useRef(new Audio(woodTapSound))
-const thinking = "..."
+const error = useRef(new  Audio(ErrorSound))
+const hint = useRef (new Audio(showHint))
+const victory = useRef(new Audio(Victory))
 
-const navigate = useNavigate()
-
-
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
+const playWoodTap = () => { 
+    if (woodTap.current) { 
+        woodTap.current.currentTime = 0; 
+        woodTap.current.play();
     }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
 }
 
-const getBoardState = () => {
-    console.log('i have played')    
+const playError = () => { 
+    if (error.current) { 
+        error.current.currentTime = 0; 
+        error.current.play();
+    }
+}
+const playHint = () => {
+    if (hint.current) { 
+        hint.current.currentTime =  0; 
+        hint.current.play();
+    }
 }
 
-    const steps = [{
+const playVictory = ()  => {
+    if (victory.current) { 
+        victory.current.currentTime = 0; 
+        victory.current.play()
+    }
+}
+
+const thinking = "..."
+ const steps = [{
         step: '1',
         text: "The game ends when one player captures all of their opponent's pieces.",
         voice: 'Foolish boy Siaw'
@@ -55,6 +69,27 @@ const getBoardState = () => {
 
     } ]
 
+//Navigate
+
+const navigate = useNavigate()
+
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
+    }
+
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
+
+const getBoardState = () => {
+    console.log('i have played')    
+}
+
+   
     const [currentStep, setCurrentStep] = useState(0)
     const [nextLesson, setNextLesson] = useState(false)
     const [previousLesson, setPreviousLesson] = useState(false)
@@ -111,6 +146,8 @@ const getBoardState = () => {
     }, [currentStep])
 
 
+//Board state
+
     const createBoard = () => {
         const board = [];
     
@@ -129,6 +166,8 @@ const getBoardState = () => {
     
     const [board, setBoard] = useState(createBoard);
 
+
+//Animation
 const pieceRefs = useRef([])
 const idx = (row, col) => row * 8 + col
 const cellRefs = useRef([])
@@ -136,12 +175,11 @@ const cellRefs = useRef([])
 
 const step1sequence = [
 
-    { type: "place", player: 1, row: 3, col: 3 }, // B1 — black's last two pieces
-    { type: "place", player: 1, row: 5, col: 3 }, // B2
+    { type: "place", player: 1, row: 3, col: 3 },
+    { type: "place", player: 1, row: 5, col: 3 }, 
 
-    { type: "place", player: 2, row: 2, col: 2 }, // user's piece, positioned to clear both in one turn
+    { type: "place", player: 2, row: 2, col: 2 }, 
 
-    // 🏆 One chained capture removes every remaining black piece
     {
         type: "multiCapture",
         player: 2,
@@ -152,7 +190,6 @@ const step1sequence = [
         ]
     },
 
-    // 🥇 Black has nothing left on the board — game over
     {
         type: "gameOver",
         remaining: [{ row: 6, col: 2 }]
@@ -162,28 +199,24 @@ const step1sequence = [
 
 const step2sequence = [
 
-    { type: "place", player: 1, row: 4, col: 0 }, // black A — left edge, only (5,1) exists as a forward option
-    { type: "place", player: 2, row: 5, col: 1 }, // red — sits on that one option
+    { type: "place", player: 1, row: 4, col: 0 }, 
+    { type: "place", player: 2, row: 5, col: 1 }, 
 
-    { type: "place", player: 1, row: 3, col: 7 }, // black B — right edge, only (4,6) exists as a forward option
-    { type: "place", player: 2, row: 4, col: 6 }, // red — sits on that one too
+    { type: "place", player: 1, row: 3, col: 7 },
+    { type: "place", player: 2, row: 4, col: 6 },
 
-    // 🟠 Black A: edge removes one diagonal, this piece removes the other
     {
         type: "showTrapped",
         position: { row: 4, col: 0 },
         blockedBy: [{ row: 5, col: 1 }]
     },
 
-    // 🟠 Black B: same story, other side of the board
     {
         type: "showTrapped",
         position: { row: 3, col: 7 },
         blockedBy: [{ row: 4, col: 6 }]
     },
 
-    // 🥇 Every black piece on the board has zero legal moves — game over,
-    // no capture required
     {
         type: "gameOver",
         remaining: [{ row: 5, col: 1 }, { row: 4, col: 6 }]
@@ -193,18 +226,16 @@ const step2sequence = [
 
 const step3sequence = [
 
-    { type: "place", player: 3, row: 2, col: 2 }, // last black piece — already a king
-    { type: "place", player: 4, row: 5, col: 5 }, // last red piece — already a king
+    { type: "place", player: 3, row: 2, col: 2 }, 
+    { type: "place", player: 4, row: 5, col: 5 },
 
-    // Neither approach changes anything — each step in is matched by
-    // a step back. No capture becomes possible, no piece gets trapped.
+    
     { type: "move", player: 3, from: { row: 2, col: 2 }, to: { row: 3, col: 3 } },
     { type: "move", player: 4, from: { row: 5, col: 5 }, to: { row: 4, col: 4 } },
     { type: "move", player: 3, from: { row: 3, col: 3 }, to: { row: 2, col: 2 } },
     { type: "move", player: 4, from: { row: 4, col: 4 }, to: { row: 5, col: 5 } },
 
-    // ⚪ Neither side can force a capture or a block — the position
-    // repeats. Both players agree to stop here.
+   
     {
         type: "declareDraw",
         positions: [{ row: 2, col: 2 }, { row: 5, col: 5 }]
@@ -239,6 +270,8 @@ const runAction = (tl, action, boardState) => {
                     { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }
                 );
             });
+
+            tl.call(playWoodTap)
             break;
 
         case "move":
@@ -260,6 +293,7 @@ const runAction = (tl, action, boardState) => {
                     { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
                 );
             });
+            tl.call(playWoodTap)
             break;
 
 case "showOptions":
@@ -277,53 +311,12 @@ case "showOptions":
         });
     });
 
-    tl.to({}, { duration: 1.6 });
+    tl.to({}, { duration: 0.1 });
+
+    tl.call(playHint)
     break;
 
-    case "multiCapture":
-    tl.call(() => {
-        boardState[action.from.row][action.from.col] = 0;
-    });
-
-    let current = { row: action.from.row, col: action.from.col }; // tracks the piece's live position through the chain
-
-    action.jumps.forEach((jump, i) => {
-
-        tl.call(() => {
-            const captured = pieceRefs.current[idx(jump.captured.row, jump.captured.col)];
-            if (captured) {
-                gsap.to(captured, { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" });
-            }
-        });
-
-        tl.to({}, { duration: 0.35 });
-
-        tl.call(() => {
-            boardState[current.row][current.col] = 0; // clear wherever it currently sits
-            boardState[jump.captured.row][jump.captured.col] = 0;
-            boardState[jump.to.row][jump.to.col] = action.player;
-            setBoard(boardState.map(row => [...row]));
-            current = { row: jump.to.row, col: jump.to.col }; // update for the next leg
-        });
-
-        tl.to({}, { duration: 0.05 });
-
-        tl.call(() => {
-            const piece = pieceRefs.current[idx(jump.to.row, jump.to.col)];
-            if (!piece) return;
-            gsap.fromTo(piece,
-                { scale: 0.5, opacity: 0.3 },
-                { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
-            );
-        });
-
-        if (i < action.jumps.length - 1) {
-            tl.to({}, { duration: 0.6 }); // beat between legs so each capture reads separately
-        }
-    });
-
-    tl.to({}, { duration: 1 });
-    break;
+  
 
 case "reset":
     tl.call(() => {
@@ -346,45 +339,7 @@ case "reset":
 
     break;
 
-case "capture":
-    // fade the captured piece out FIRST, while its DOM node still exists —
-    // same lesson as the Oware reset: you can't animate a node that's
-    // already been removed by a state update
-    tl.call(() => {
-        const captured = pieceRefs.current[idx(action.captured.row, action.captured.col)];
-        if (captured) {
-            gsap.to(captured, { scale: 0, opacity: 0, duration: 0.3, ease: "back.in(2)" });
-        }
-    });
 
-    tl.to({}, { duration: 0.35 }); // let the fade finish before the board updates
-
-    tl.call(() => {
-        boardState[action.from.row][action.from.col] = 0;
-        boardState[action.captured.row][action.captured.col] = 0; // captured piece removed
-        boardState[action.to.row][action.to.col] = action.player;
-        setBoard(boardState.map(row => [...row]));
-    });
-
-    tl.to({}, { duration: 0.05 }); // let React mount the king at the landing square
-
-    tl.call(() => {
-        const king = pieceRefs.current[idx(action.to.row, action.to.col)];
-        if (!king) return;
-        gsap.fromTo(king,
-            { scale: 0.5, opacity: 0.3 },
-            { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.7)" }
-        );
-        gsap.to(king, {
-            boxShadow: "0 0 20px 6px rgba(255,215,0,0.9)", // gold flash — the flying capture landing
-            duration: 0.4,
-            yoyo: true,
-            repeat: 1
-        });
-    });
-
-    tl.to({}, { duration: 1 });
-    break;
 
 case "gameOver":
     tl.call(() => {
@@ -425,7 +380,9 @@ case "showTrapped":
         });
     });
 
-    tl.to({}, { duration: 1.8 });
+    tl.to({}, { duration: 0.1 });
+
+    tl.call(playError)
     break;
 
 case "declareDraw":
@@ -442,7 +399,8 @@ case "declareDraw":
         });
     });
 
-    tl.to({}, { duration: 3 });
+    tl.to({}, { duration: 0.1 });
+    tl.call(playVictory)
     break;
 
 case "showSacrifice":
@@ -456,7 +414,9 @@ case "showSacrifice":
             repeat: 3
         });
     });
-    tl.to({}, { duration: 1.6 });
+    tl.to({}, { duration: 0.1 });
+
+    tl.call(playError)
     break;
 
 
@@ -611,4 +571,3 @@ return(
 )
 }
 
-export default DameLesson7

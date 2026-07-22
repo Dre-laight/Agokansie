@@ -7,30 +7,12 @@ import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
 
 
-function DameLesson2(){
+export default function DameLesson2(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
-const navigate = useNavigate()
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
-    }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
-}
-
-const getBoardState = () => {
-    console.log('i have played')    
-}
-
-    const steps = [{
+const steps = [{
         step: '1',
         text: "Handle every game piece with care when placing, moving, or capturing. Keeping the pieces properly positioned helps the robot accurately recognise the board state.",
         voice: 'Foolish boy Siaw'
@@ -52,6 +34,27 @@ const getBoardState = () => {
 
     } ]
 
+
+//Navigation
+const navigate = useNavigate()
+
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
+    }
+
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
+
+const getBoardState = () => {
+    console.log('i have played')    
+}
+
+    
     const [currentStep, setCurrentStep] = useState(0)
     const [nextLesson, setNextLesson] = useState(false)
     const [previousLesson, setPreviousLesson] = useState(false)
@@ -108,6 +111,8 @@ const getBoardState = () => {
     }, [currentStep])
 
 
+//Board state 
+
     const createBoard = () => {
         const board = [];
     
@@ -125,6 +130,7 @@ const getBoardState = () => {
     };
     
     const [board, setBoard] = useState(createBoard);
+
 
 
 return(
@@ -231,5 +237,3 @@ return(
 
 )
 }
-
-export default DameLesson2 

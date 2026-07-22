@@ -113,7 +113,7 @@ return(
 
                 <div className='flex flex-col items-center justify-center p-3 gap-2'>
                     <img src={lesson5} className='size-30 rounded-full' />
-                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'>  seeds</p>
+                    <p className='uppercase text-[18px] font-bold text-center text-midGold h-13'> capturing seeds</p>
                     <button className='border-1 p-2 rounded-lg w-20 text-[18px] font-semibold text-gold ' onClick={() => {navigate('/owarelesson5')}}>Begin</button>
                 </div>
                 

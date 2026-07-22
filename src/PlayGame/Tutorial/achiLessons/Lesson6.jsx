@@ -5,14 +5,63 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import victorySound from '../../../assets/sound/victory.mp3'
+import HightLight from '../../../assets/sound/blocked.mp3'
+
 import gsap from 'gsap'
 
 
 function AchiLesson6(){
 
 const woodTap = useRef(new Audio(woodTapSound))
+const victory = useRef(new Audio(victorySound))
+const highlight = useRef( new Audio (HightLight))
 const thinking = "..."
 
+const PlayWoodTap = () => { 
+    if (woodTap.current) { 
+        woodTap.current.currentTime = 0; 
+        woodTap.current.play()
+    }
+}
+
+const playHighlight = () => { 
+    if (highlight.current) {
+        highlight.current.currentTime = 0; 
+        highlight.current.play()
+    }
+}
+
+const playVictory = () => {
+    if(victory.current) { 
+        victory.current.currentTime = 0; 
+        victory.current.play()
+    }
+ }
+
+const steps = [{
+    step: '1',
+    text: "Try to control the centre position whenever possible. A piece placed in the centre has the greatest number of movement options and offers more flexibility.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '2',
+    text: "Look for opportunities to create multiple winning threats at the same time. This forces your opponent to defend against more than one possible line.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '3',
+    text: "Building a V-shaped formation with an empty centre can often create an unavoidable winning opportunity if your opponent is not careful.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '4',
+    text: "Always pay attention to your opponent's next move. Blocking a potential winning line is often just as important as creating one of your own.",
+    voice: 'Foolish boy Siaw'
+
+} ]
+
+//Navigate
 const navigate = useNavigate()
 
 const goBack = () => {
@@ -27,33 +76,7 @@ const goForward = () => {
     woodTap.current.play()
 }
 
-const getBoardState = () => {
-    console.log('i have played')    
-}
-
-    const steps = [{
-        step: '1',
-        text: "Try to control the centre position whenever possible. A piece placed in the centre has the greatest number of movement options and offers more flexibility.",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '2',
-        text: "Look for opportunities to create multiple winning threats at the same time. This forces your opponent to defend against more than one possible line.",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '3',
-        text: "Building a V-shaped formation with an empty centre can often create an unavoidable winning opportunity if your opponent is not careful.",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '4',
-        text: "Always pay attention to your opponent's next move. Blocking a potential winning line is often just as important as creating one of your own.",
-        voice: 'Foolish boy Siaw'
-
-    } ]
-
-    const [currentStep, setCurrentStep] = useState(0)
+ const [currentStep, setCurrentStep] = useState(0)
     const [nextLesson, setNextLesson] = useState(false)
     const [previousLesson, setPreviousLesson] = useState(false)
     const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
@@ -109,6 +132,10 @@ const getBoardState = () => {
     }, [currentStep])
 
 
+//Board setup
+const getBoardState = () => {
+    console.log('i have played')    
+}
 
     const getLineStyle = (start, end) => {
     const x1 = parseFloat(POSITIONS[start].left);
@@ -134,17 +161,17 @@ const getBoardState = () => {
 };
 
     const POSITIONS = [
-    { top: "0%", left: "0%" },      // 0
-    { top: "0%", left: "50%" },     // 1
-    { top: "0%", left: "100%" },    // 2
+    { top: "0%", left: "0%" },     
+    { top: "0%", left: "50%" },     
+    { top: "0%", left: "100%" },  
 
-    { top: "50%", left: "0%" },     // 3
-    { top: "50%", left: "50%" },    // 4
-    { top: "50%", left: "100%" },   // 5
+    { top: "50%", left: "0%" },     
+    { top: "50%", left: "50%" },  
+    { top: "50%", left: "100%" },   
 
-    { top: "100%", left: "0%" },    // 6
-    { top: "100%", left: "50%" },   // 7
-    { top: "100%", left: "100%" },  // 8
+    { top: "100%", left: "0%" },   
+    { top: "100%", left: "50%" },  
+    { top: "100%", left: "100%" }, 
 ];
 
 const LINES = [
@@ -172,13 +199,10 @@ const pieceRefs = useRef([])
 
 const step1sequence = [
 
-    // ==================
-    // CORNER PLACEMENT
-    // ==================
+  
 
     { type: "place", player: 1, position: 0 },
 
-    // 🔍 From a corner, this piece only connects to 3 points
     {
         type: "showOptions",
         position: 0,
@@ -188,14 +212,9 @@ const step1sequence = [
     { type: "reset" },
 
 
-    // ==================
-    // CENTRE PLACEMENT
-    // ==================
-
     { type: "place", player: 1, position: 4 },
 
-    // 🔍 From the centre, this piece connects to all 8 other points —
-    // maximum possible flexibility
+  
     {
         type: "showOptions",
         position: 4,
@@ -208,9 +227,7 @@ const step1sequence = [
 
 const step2sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
+   
 
     { type: "place", player: 1, position: 0 },
     { type: "place", player: 2, position: 2 },
@@ -220,13 +237,9 @@ const step2sequence = [
     { type: "place", player: 2, position: 5 },
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
+ 
 
-    // Player 1 moves 6 -> 7. This one move creates TWO threats:
-    // - 0 & 4 already share the diagonal 0-4-8 (needs 8)
-    // - 4 & 7 now share the column 1-4-7 (needs 1)
+  
     {
         type: "move",
         player: 1,
@@ -234,13 +247,11 @@ const step2sequence = [
         to: 7
     },
 
-    // 🔶 Both winning lines are live at once — this is the fork
     {
         type: "showThreats",
         lines: [12, 13, 8, 9] // 0-4-8 and 1-4-7
     },
 
-    // Player 2 can only defend one — they block 8, stopping 0-4-8
     {
         type: "move",
         player: 2,
@@ -248,8 +259,7 @@ const step2sequence = [
         to: 8
     },
 
-    // 🏆 The other threat was never covered — player 1 slides into 1
-    // and wins on 1-4-7 instead
+    
     {
         type: "move",
         player: 1,
@@ -260,20 +270,14 @@ const step2sequence = [
     {
         type: "win",
         player: 1,
-        lines: [8, 9] // 1-4-7
+        lines: [8, 9]
     },
 
 ];
 
 const step3sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
-
-    // 1 and 5 form the V's two arms — different lines (column 1-4-7,
-    // row 3-4-5), both open toward the empty centre. Opponent can't
-    // yet tell which line you're building.
+   
     { type: "place", player: 1, position: 1 },
     { type: "place", player: 2, position: 0 },
     { type: "place", player: 1, position: 5 },
@@ -282,13 +286,7 @@ const step3sequence = [
     { type: "place", player: 2, position: 8 },
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
-
-    // Player 1 commits: the spare slides into 3, completing the row's
-    // arms (3, 5). The V has resolved into a straight one-move threat
-    // on 3-4-5 — missing only the centre.
+   
     {
         type: "move",
         player: 1,
@@ -296,13 +294,11 @@ const step3sequence = [
         to: 3
     },
 
-    // 🔶 The threat is live now — one open cell (4) wins the row
     {
         type: "showThreats",
         lines: [2, 3] // 3-4 and 4-5
     },
 
-    // Player 2 doesn't spot it and plays elsewhere instead of blocking 4
     {
         type: "move",
         player: 2,
@@ -310,8 +306,7 @@ const step3sequence = [
         to: 7
     },
 
-    // Player 1's "decoy" piece — sitting on the abandoned column line —
-    // was adjacent to the centre the whole time. It slides in.
+   
     {
         type: "move",
         player: 1,
@@ -319,7 +314,7 @@ const step3sequence = [
         to: 4
     },
 
-    // 🏆 3-4-5 complete
+   
     {
         type: "win",
         player: 1,
@@ -330,9 +325,6 @@ const step3sequence = [
 
 const step4sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
 
     { type: "place", player: 1, position: 3 },
     { type: "place", player: 2, position: 0 },
@@ -342,19 +334,13 @@ const step4sequence = [
     { type: "place", player: 2, position: 5 },
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
-
-    // 🔶 Player 2 already holds 0 and 1 — row 0-1-2 needs only point 2,
-    // and their piece at 5 is adjacent to it. One move (5 -> 2) wins.
+   
     {
         type: "showThreats",
         lines: [0, 1] // 0-1 and 1-2
     },
 
-    // Player 1 sees it coming and gets there first: 4 -> 2 is legal
-    // (centre connects to everything) and denies the line completely.
+    
     {
         type: "move",
         player: 1,
@@ -362,8 +348,7 @@ const step4sequence = [
         to: 2
     },
 
-    // 🛡 Blocked — 0-1-2 is dead. Defence was the whole move here,
-    // not a step toward one of player 1's own lines.
+    
     {
         type: "showBlock",
         position: 2
@@ -389,7 +374,7 @@ case "place":
         setBoard([...boardState]);
     });
 
-    tl.to({}, { duration: 0.05 }); // give React a tick to render the new node
+    tl.to({}, { duration: 0.05 }); 
 
     tl.call(() => {
         const target = pieceRefs.current[action.position];
@@ -399,6 +384,8 @@ case "place":
             { scale:1, y:0, opacity:1, duration:0.4, ease:"back.out(2)" }
         );
     });
+
+    tl.call(PlayWoodTap)
     break;                                                                      
 
 case "move":
@@ -418,6 +405,8 @@ case "move":
 
     });
 
+    tl.call(PlayWoodTap)
+
 break; 
 
 case "showOptions":
@@ -425,21 +414,21 @@ case "showOptions":
     tl.call(() => {
         (action.options || []).forEach(pos => {
             const node = nodeRefs.current[pos];
-            if (!node) return; // safety guard
-
+            if (!node) return; 
             gsap.to(node, {
                 scale: 1.8,
                 backgroundColor: "#7CFF7C",
                 boxShadow: "0 0 15px 4px rgba(124,255,124,0.9)",
                 duration: 0.3,
-                delay: pos * 0.03, // lights up left-to-right, feels like a sweep rather than a blink
+                delay: pos * 0.03,
                 yoyo: true,
                 repeat: 3
             });
         });
     });
 
-    tl.to({}, { duration: 1.6 }); // hold so the contrast in count actually registers
+    tl.to({}, { duration: 0.4 }); 
+    tl.call(playHighlight)
 
     break;
 
@@ -448,19 +437,21 @@ case "showThreats":
     tl.call(() => {
         (action.lines || []).forEach(index => {
             const line = animateWin.current[index];
-            if (!line) return; // safety guard
+            if (!line) return;
 
             gsap.to(line, {
                 backgroundColor: "#FFB020",
                 boxShadow: "0 0 15px 4px rgba(255,176,32,0.8)",
                 duration: 0.4,
                 yoyo: true,
-                repeat: 3 // finite — cleans itself up, no leaked tween
+                repeat: 3
             });
         });
     });
 
-    tl.to({}, { duration: 1.8 }); // hold so both threats read together
+    tl.to({}, { duration: 0.8 }); 
+
+    tl.call( playHighlight)
 
     break;
 
@@ -470,7 +461,9 @@ case "win":
         winAnimation(action.lines);
     });
 
-    tl.to({}, { duration: 2 });
+    tl.to({}, { duration: 0.3 });
+
+    tl.call(playVictory)
 
     break;
 
@@ -488,7 +481,8 @@ case "showBlock":
         });
     });
 
-    tl.to({}, { duration: 1.4 });
+    tl.to({}, { duration: 0.4 });
+    tl.call(playHighlight)
 
     break;
 }}

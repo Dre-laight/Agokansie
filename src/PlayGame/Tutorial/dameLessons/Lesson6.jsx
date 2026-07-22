@@ -5,34 +5,49 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import ErrorSound from '../../../assets/sound/error.mp3'
+import showHint from '../../../assets/sound/blocked.mp3'
+import Victory from '../../../assets/sound/victory.mp3'
+
 import gsap from 'gsap'
 
-function DameLesson6(){
+
+export default  function DameLesson6(){
 
 const woodTap = useRef(new Audio(woodTapSound))
+const error = useRef(new  Audio(ErrorSound))
+const hint = useRef (new Audio(showHint))
+const victory = useRef(new Audio(Victory))
 const thinking = "..."
 
-const navigate = useNavigate()
-
-
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
+const playWoodTap = () => { 
+    if (woodTap.current) { 
+        woodTap.current.currentTime = 0; 
+        woodTap.current.play();
     }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
 }
 
-const getBoardState = () => {
-    console.log('i have played')    
+const playError = () => { 
+    if (error.current) { 
+        error.current.currentTime = 0; 
+        error.current.play();
+    }
+}
+const playHint = () => {
+    if (hint.current) { 
+        hint.current.currentTime =  0; 
+        hint.current.play();
+    }
 }
 
-    const steps = [{
+const playVictory = ()  => {
+    if (victory.current) { 
+        victory.current.currentTime = 0; 
+        victory.current.play()
+    }
+}
+
+ const steps = [{
         step: '1',
         text: "Try to control the centre of the board. Centre positions provide more movement options and make it easier to launch attacks or defend your pieces.",
         voice: 'Foolish boy Siaw'
@@ -54,62 +69,84 @@ const getBoardState = () => {
 
     } ]
 
-    const [currentStep, setCurrentStep] = useState(0)
-    const [nextLesson, setNextLesson] = useState(false)
-    const [previousLesson, setPreviousLesson] = useState(false)
-    const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
+//Navigate
+const navigate = useNavigate()
 
-    const previousStep = () => {
-        setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
-        console.log(steps[currentStep].step)
-        
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
     }
 
-    const nextStep = () => {
-        setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
-        console.log(steps[currentStep].step)
-    }
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
 
-    const LessonState = () => {
-        if(currentStep === steps.length - 1){
-            setNextLesson(true)
-        } else {
-            setNextLesson(false)
-        }
-    }
+const getBoardState = () => {
+    console.log('i have played')    
+}
 
-    const nextLessonNavigation = () => {
-        if (nextLesson){
-            navigate('/damelesson7')
-        } else {
-            nextStep()
-        }
-    }
+   
 
+const [currentStep, setCurrentStep] = useState(0)
+const [nextLesson, setNextLesson] = useState(false)
+const [previousLesson, setPreviousLesson] = useState(false)
+const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
 
-    const PreviousLesson = () => {
-        if(currentStep === 0){
-            setPreviousLessonVariable(true)
-        } else {
-            setPreviousLessonVariable(false)
-        }
-    }
-
-    const PreviousLessonNavigation = () => {
-        if (previousLessonVariable){
-            navigate('/damelesson5')
-        } else {
-            previousStep()
-        }
-    }
+const previousStep = () => {
+    setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
+    console.log(steps[currentStep].step)
     
+}
 
-    useEffect(() => {
-        LessonState()
-        PreviousLesson()
-    }, [currentStep])
+const nextStep = () => {
+    setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
+    console.log(steps[currentStep].step)
+}
+
+const LessonState = () => {
+    if(currentStep === steps.length - 1){
+        setNextLesson(true)
+    } else {
+        setNextLesson(false)
+    }
+}
+
+const nextLessonNavigation = () => {
+    if (nextLesson){
+        navigate('/damelesson7')
+    } else {
+        nextStep()
+    }
+}
 
 
+const PreviousLesson = () => {
+    if(currentStep === 0){
+        setPreviousLessonVariable(true)
+    } else {
+        setPreviousLessonVariable(false)
+    }
+}
+
+const PreviousLessonNavigation = () => {
+    if (previousLessonVariable){
+        navigate('/damelesson5')
+    } else {
+        previousStep()
+    }
+}
+
+
+useEffect(() => {
+    LessonState()
+    PreviousLesson()
+}, [currentStep])
+
+
+//Board state
     const createBoard = () => {
         const board = [];
     
@@ -134,14 +171,11 @@ const cellRefs = useRef([])
 
 const step1sequence = [
 
-    // ==================
-    // PART A — Edge position (restricted)
-    // ==================
+   
 
     { type: "place", player: 2, row: 4, col: 0 }, // hugging the left edge
 
-    // 🔍 col - 1 doesn't exist off the edge — only ONE forward
-    // diagonal option is even possible here
+  
     {
         type: "showOptions",
         options: [
@@ -152,14 +186,10 @@ const step1sequence = [
     { type: "reset" },
 
 
-    // ==================
-    // PART B — Centre position (flexible)
-    // ==================
 
     { type: "place", player: 2, row: 4, col: 4 }, // same row, pulled toward the centre
 
-    // 🔍 Both forward diagonals exist and are empty — TWO options,
-    // double the choices the edge piece had
+
     {
         type: "showOptions",
         options: [
@@ -172,32 +202,23 @@ const step1sequence = [
 
 const step2sequence = [
 
-    // Opponent's two pieces — B2 doesn't move all game; it's just sitting
-    // there waiting to get swept up once the chain reaches it
+   
     { type: "place", player: 1, row: 3, col: 3 }, // B1
     { type: "place", player: 1, row: 3, col: 5 }, // B2
 
-    // User's pieces
     { type: "place", player: 2, row: 6, col: 6 }, // U1 — will do the multi-capture
     { type: "place", player: 2, row: 5, col: 3 }, // S — about to be sacrificed
 
-    // 🟣 This is deliberate, not a blunder
     { type: "showSacrifice", position: { row: 5, col: 3 } },
 
-    // The sacrifice: one forward step, directly into B1's reach
     { type: "move", player: 2, from: { row: 5, col: 3 }, to: { row: 4, col: 4 } },
 
-    // 🔶 The free piece — locally, this just looks like a good trade for black
     { type: "showCapture", capture: { row: 4, col: 4 }, landing: { row: 5, col: 5 } },
 
-    // Opponent takes the bait
     { type: "capture", player: 1, from: { row: 3, col: 3 }, captured: { row: 4, col: 4 }, to: { row: 5, col: 5 } },
 
-    // 🔶 The trap closes — B1's landing square is exactly where U1 needed it
     { type: "showCapture", capture: { row: 5, col: 5 }, landing: { row: 4, col: 4 } },
 
-    // 🏆 One move, two pieces: capture B1 landing at (4,4), chain straight
-    // into capturing B2, landing at (2,6)
     {
         type: "multiCapture",
         player: 2,
@@ -212,35 +233,27 @@ const step2sequence = [
 
 const step3sequence = [
 
-    // ==================
-    // PART A — Unprotected back row
-    // ==================
+ 
 
     { type: "place", player: 1, row: 6, col: 0 }, // black, hugging the edge — only one forward option
 
-    // 🔍 Same idea as the earlier edge-vs-centre lesson — exactly one
-    // legal forward diagonal from here
+  
     { type: "showOptions", options: [{ row: 7, col: 1 }] },
 
-    // Nothing guarding the back row — black walks straight in
     { type: "move", player: 1, from: { row: 6, col: 0 }, to: { row: 7, col: 1 } },
 
-    // 🏆 (for the opponent) — unopposed promotion
     { type: "promote", row: 7, col: 1, player: 1 },
 
     { type: "reset" },
 
 
-    // ==================
-    // PART B — Protected back row
-    // ==================
+   
 
     { type: "place", player: 1, row: 6, col: 0 }, // same black piece, same starting square
     { type: "place", player: 2, row: 7, col: 1 }, // user keeps the back row occupied
 
     { type: "showOptions", options: [{ row: 7, col: 1 }] },
 
-    // ❌ The only square that would let this piece promote is occupied
     {
         type: "invalidMove",
         player: 1,
@@ -249,34 +262,27 @@ const step3sequence = [
         reason: "occupied"
     },
 
-    // 🛡 Back row holds — this piece has nowhere left to go
     { type: "showBlock", position: { row: 7, col: 1 } },
 
 ];
 
 const step4sequence = [
 
-    // 🟡 The plan, stated up front — this square means nothing yet
     { type: "showPlan", position: { row: 0, col: 0 } },
 
     { type: "place", player: 2, row: 6, col: 6 }, // R2 — the piece this whole plan is for
     { type: "place", player: 1, row: 3, col: 3 }, // opponent piece, currently guarding R2's diagonal
     { type: "place", player: 2, row: 5, col: 1 }, // R1 — decoy, unrelated-looking position
 
-    // 🟣 Not a blunder — R1 is being offered up on purpose
     { type: "showSacrifice", position: { row: 5, col: 1 } },
 
     { type: "move", player: 2, from: { row: 5, col: 1 }, to: { row: 4, col: 2 } },
 
-    // 🔶 Locally, this just looks like a free piece for black
     { type: "showCapture", capture: { row: 4, col: 2 }, landing: { row: 5, col: 1 } },
 
-    // Opponent takes it — and in doing so, abandons the square that
-    // was guarding R2's entire path
     { type: "capture", player: 1, from: { row: 3, col: 3 }, captured: { row: 4, col: 2 }, to: { row: 5, col: 1 } },
 
-    // The dash — none of this was improvised, the lane's been open
-    // since the capture above
+   
     { type: "move", player: 2, from: { row: 6, col: 6 }, to: { row: 5, col: 5 } },
     { type: "move", player: 2, from: { row: 5, col: 5 }, to: { row: 4, col: 4 } },
     { type: "move", player: 2, from: { row: 4, col: 4 }, to: { row: 3, col: 3 } },
@@ -284,7 +290,6 @@ const step4sequence = [
     { type: "move", player: 2, from: { row: 2, col: 2 }, to: { row: 1, col: 1 } },
     { type: "move", player: 2, from: { row: 1, col: 1 }, to: { row: 0, col: 0 } },
 
-    // 🏆 The square from the very first highlight
     { type: "promote", row: 0, col: 0, player: 2 },
 
 ];
@@ -316,6 +321,8 @@ const runAction = (tl, action, boardState) => {
                     { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }
                 );
             });
+
+            tl.call(playWoodTap)
             break;
 
         case "move":
@@ -337,28 +344,11 @@ const runAction = (tl, action, boardState) => {
                     { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
                 );
             });
+
+            tl.call(playWoodTap)
             break;
 
-        case "invalidMove":
-            tl.call(() => {
-                const target = pieceRefs.current[idx(action.from.row, action.from.col)];
-                if (!target) return;
-
-                const nudgeY = action.to.row < action.from.row ? -8 : 8; // reach toward the attempted direction
-
-                gsap.timeline()
-                    .to(target, { y: nudgeY, duration: 0.1 })
-                    .to(target, { y: 0, duration: 0.1 })
-                    .to(target, {
-                        boxShadow: "0 0 15px 4px rgba(255,40,40,0.85)",
-                        duration: 0.15
-                    }, 0)
-                    .to(target, { boxShadow: "none", duration: 0.3 });
-            });
-
-            tl.to({}, { duration: 1.2 });
-            break;
-
+       
 case "showOptions":
     tl.call(() => {
         (action.options || []).forEach(({ row, col }) => {
@@ -374,7 +364,9 @@ case "showOptions":
         });
     });
 
-    tl.to({}, { duration: 1.6 });
+    tl.to({}, { duration: 0.8});
+
+    tl.call(playHint)
     break;
 
 case "promote":
@@ -412,10 +404,10 @@ tl.call(() => {
     })
     .to(piece,{
         scale:1,
-        duration:0.3
+        duration:0.1
     });
-
 });
+tl.call (playVictory)
 
 break;
 
@@ -431,7 +423,8 @@ case "showPlan":
         });
     });
 
-    tl.to({}, { duration: 2 }); // deliberately longer than other highlights — this is the whole lesson
+    tl.to({}, { duration: 0.9 }); 
+    tl.call(playHint)
     break;
 
 case "reset":
@@ -478,13 +471,13 @@ case "showCapture":
         }
     });
 
-    tl.to({}, { duration: 1.8 });
+    tl.to({}, { duration: 0.1 });
+
+    tl.call (playError)
     break;
 
 case "capture":
-    // fade the captured piece out FIRST, while its DOM node still exists —
-    // same lesson as the Oware reset: you can't animate a node that's
-    // already been removed by a state update
+   
     tl.call(() => {
         const captured = pieceRefs.current[idx(action.captured.row, action.captured.col)];
         if (captured) {
@@ -518,7 +511,9 @@ case "capture":
         });
     });
 
-    tl.to({}, { duration: 1 });
+    tl.to({}, { duration: 0.1 });
+
+    tl.call(playError)
     break;
 
     case "showBlock":
@@ -533,7 +528,8 @@ case "capture":
         });
     });
 
-    tl.to({}, { duration: 1.4 });
+    tl.to({}, { duration: 0.2 });
+    tl.call(playHint)
     break;
 
 case "showSacrifice":
@@ -547,7 +543,9 @@ case "showSacrifice":
             repeat: 3
         });
     });
-    tl.to({}, { duration: 1.6 });
+    tl.to({}, { duration: 0.3 });
+
+    tl.call(playHint)
     break;
 
 case "multiCapture":
@@ -592,49 +590,50 @@ case "multiCapture":
         }
     });
 
-    tl.to({}, { duration: 1 });
+    tl.to({}, { duration: 0.1 });
+    tl.call(playVictory)
     break;
 }}
 
 
 
 useEffect(() => {
-    const currentSequence = stepSequences[steps[currentStep].step]
-    if (!currentSequence) return;
+const currentSequence = stepSequences[steps[currentStep].step]
+if (!currentSequence) return;
 
-    let boardState = createBoard();
+let boardState = createBoard();
 
-    const tl = gsap.timeline({
-        repeat: -1,
-        repeatDelay: 2,
-        onRepeat: () => {
-    for (let r = 0; r < 8; r++) {
-        boardState[r].fill(0); // clears the SAME array every closure is holding
-    }
-    setBoard(boardState.map(row => [...row]));
-    resetOptions(); // clear any still-highlighted showOptions cells too
+const tl = gsap.timeline({
+    repeat: -1,
+    repeatDelay: 2,
+    onRepeat: () => {
+for (let r = 0; r < 8; r++) {
+    boardState[r].fill(0); // clears the SAME array every closure is holding
 }
-    });
+setBoard(boardState.map(row => [...row]));
+resetOptions(); // clear any still-highlighted showOptions cells too
+}
+});
 
-    currentSequence.forEach(action => {
-        runAction(tl, action, boardState);
-        tl.to({}, { duration: 1 });
-    });
+currentSequence.forEach(action => {
+    runAction(tl, action, boardState);
+    tl.to({}, { duration: 1 });
+});
 
-    return () => {
-        tl.kill();
-        resetOptions()
-        setBoard(createBoard());
-    };
+return () => {
+    tl.kill();
+    resetOptions()
+    setBoard(createBoard());
+};
 
 }, [currentStep]);
 
 const resetOptions = () => {
-    cellRefs.current.forEach(cell => {
-        if (!cell) return;
-        gsap.killTweensOf(cell);
-        gsap.set(cell, { boxShadow: "none" });
-    });
+cellRefs.current.forEach(cell => {
+    if (!cell) return;
+    gsap.killTweensOf(cell);
+    gsap.set(cell, { boxShadow: "none" });
+});
 };
 
 return(
@@ -744,5 +743,3 @@ return(
 
 )
 }
-
-export default DameLesson6

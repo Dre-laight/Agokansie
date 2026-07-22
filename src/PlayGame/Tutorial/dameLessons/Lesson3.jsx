@@ -5,35 +5,38 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import ErrorSound from '../../../assets/sound/error.mp3'
+import showHint from '../../../assets/sound/blocked.mp3'
 import gsap from 'gsap'
 
 
 function DameLesson3(){
 
 const woodTap = useRef(new Audio(woodTapSound))
+const error = useRef(new  Audio(ErrorSound))
+const hint = useRef (new Audio(showHint))
 const thinking = "..."
 
-const navigate = useNavigate()
-
-
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
+const playWoodTap = () => { 
+    if (woodTap.current) { 
+        woodTap.current.currentTime = 0; 
+        woodTap.current.play();
     }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
 }
 
-const getBoardState = () => {
-    console.log('i have played')    
+const playError = () => { 
+    if (error.current) { 
+        error.current.currentTime = 0; 
+        error.current.play();
+    }
 }
-
-    const steps = [{
+const playHint = () => {
+    if (hint.current) { 
+        hint.current.currentTime =  0; 
+        hint.current.play();
+    }
+}
+  const steps = [{
         step: '1',
         text: "During a normal turn, a piece may move one square diagonally forward into an empty space. Regular pieces cannot move backwards unless making a capture.",
         voice: 'Foolish boy Siaw'
@@ -55,107 +58,128 @@ const getBoardState = () => {
 
     } ]
 
-    const [currentStep, setCurrentStep] = useState(0)
-    const [nextLesson, setNextLesson] = useState(false)
-    const [previousLesson, setPreviousLesson] = useState(false)
-    const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
+//Navigate 
+const navigate = useNavigate()
 
-    const previousStep = () => {
-        setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
-        console.log(steps[currentStep].step)
-        
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
     }
 
-    const nextStep = () => {
-        setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
-        console.log(steps[currentStep].step)
-    }
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
 
-    const LessonState = () => {
-        if(currentStep === steps.length - 1){
-            setNextLesson(true)
-        } else {
-            setNextLesson(false)
-        }
-    }
+const [currentStep, setCurrentStep] = useState(0)
+const [nextLesson, setNextLesson] = useState(false)
+const [previousLesson, setPreviousLesson] = useState(false)
+const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
 
-    const nextLessonNavigation = () => {
-        if (nextLesson){
-            navigate('/damelesson4')
-        } else {
-            nextStep()
-        }
-    }
-
-
-    const PreviousLesson = () => {
-        if(currentStep === 0){
-            setPreviousLessonVariable(true)
-        } else {
-            setPreviousLessonVariable(false)
-        }
-    }
-
-    const PreviousLessonNavigation = () => {
-        if (previousLessonVariable){
-            navigate('/damelesson2')
-        } else {
-            previousStep()
-        }
-    }
+const previousStep = () => {
+    setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
+    console.log(steps[currentStep].step)
     
+}
 
-    useEffect(() => {
+const nextStep = () => {
+    setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
+    console.log(steps[currentStep].step)
+}
+
+const LessonState = () => {
+    if(currentStep === steps.length - 1){
+        setNextLesson(true)
+    } else {
+        setNextLesson(false)
+    }
+}
+
+const nextLessonNavigation = () => {
+    if (nextLesson){
+        navigate('/damelesson4')
+    } else {
+        nextStep()
+    }
+}
+
+
+const PreviousLesson = () => {
+    if(currentStep === 0){
+        setPreviousLessonVariable(true)
+    } else {
+        setPreviousLessonVariable(false)
+    }
+}
+
+const PreviousLessonNavigation = () => {
+    if (previousLessonVariable){
+        navigate('/damelesson2')
+    } else {
+        previousStep()
+    }
+}
+
+  useEffect(() => {
         LessonState()
         PreviousLesson()
     }, [currentStep])
 
 
-    const createBoard = () => {
-        const board = [];
-    
-        for (let row = 0; row < 8; row++) {
-            const currentRow = [];
-    
-            for (let col = 0; col < 8; col++) {
-                currentRow.push(0);
-            }
-    
-            board.push(currentRow);
-        }
-    
-        return board;
-    };
-    
-    const [board, setBoard] = useState(createBoard);
 
+
+// Board State 
+const getBoardState = () => {
+    console.log('i have played')    
+}
+
+const createBoard = () => {
+    const board = [];
+
+    for (let row = 0; row < 8; row++) {
+        const currentRow = [];
+
+        for (let col = 0; col < 8; col++) {
+            currentRow.push(0);
+        }
+
+        board.push(currentRow);
+    }
+
+    return board;
+};
+
+const [board, setBoard] = useState(createBoard);
+
+
+//Animation
 const pieceRefs = useRef([])
 const idx = (row, col) => row * 8 + col
 const cellRefs = useRef([])
 
-const step1sequence = [
-
-    // ==================
-    // PLACING PHASE
-    // ==================
-
+const step1sequence = [ 
+    // Initial piece placements
     { type: "place", player: 2, row: 5, col: 5 },
     { type: "place", player: 1, row: 2, col: 2 },
-
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
-
-    // ❌ Backward move for Player 2
+    
     {
-        type: "invalidMove",
+        type: "invalidBackMove",
         player: 2,
         from: { row: 5, col: 5 },
         to: { row: 6, col: 6 },
         reason: "backward"
     },
 
-    // ✅ One square diagonally forward
+    {
+        type: "showOptions",
+        options: [
+            { row: 4, col: 6 },
+            { row: 4, col: 4 }
+        ]
+    },
+
     {
         type: "move",
         player: 2,
@@ -163,6 +187,7 @@ const step1sequence = [
         to: { row: 4, col: 4 }
     },
 
+    { type: "reset" },
 ];
 
 const step2sequence = [
@@ -177,7 +202,6 @@ const step2sequence = [
         ]
     },
 
-    // Commit left
     {
         type: "move",
         player: 2,
@@ -197,7 +221,6 @@ const step2sequence = [
         ]
     },
 
-    // Commit right
     {
         type: "move",
         player: 2,
@@ -209,9 +232,7 @@ const step2sequence = [
 
 const step3sequence = [
 
-    // ==================
-    // LEFT EDGE
-    // ==================
+   
 
     { type: "place", player: 2, row: 4, col: 0 },
 
@@ -231,9 +252,7 @@ const step3sequence = [
 
     { type: "reset" },
 
-    // ==================
-    // RIGHT EDGE
-    // ==================
+   
 
     { type: "place", player: 2, row: 5, col: 7 },
 
@@ -255,7 +274,6 @@ const step3sequence = [
 
 const step4sequence = [
 
-    // User's piece
     { type: "place", player: 2, row: 5, col: 3 },
 
     // Both forward diagonals occupied
@@ -269,7 +287,11 @@ const step4sequence = [
             { row: 4, col: 2 },
             { row: 4, col: 4 }
         ]
-    }
+    },
+
+    {type: 'reset'},
+
+
 
 ];
 
@@ -301,6 +323,8 @@ const runAction = (tl, action, boardState) => {
                     { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "back.out(2)" }
                 );
             });
+
+            tl.call (playWoodTap)
             break;
 
         case "move":
@@ -313,15 +337,16 @@ const runAction = (tl, action, boardState) => {
             tl.to({}, { duration: 0.05 }); // let React mount the piece at its new cell
 
             tl.call(() => {
-                // the old DOM node is gone — this is a fresh element at the
-                // new cell, so it "lands" rather than slides across the board
+                
                 const target = pieceRefs.current[idx(action.to.row, action.to.col)];
                 if (!target) return;
                 gsap.fromTo(target,
                     { scale: 0.6, y: -14, opacity: 0.4 },
-                    { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
+                    { scale: 1, y: 0, opacity: 1, duration: 0.1, ease: "back.out(1.7)" }
                 );
             });
+
+            tl.call(playWoodTap)
             break;
 
         case "invalidMove":
@@ -338,11 +363,45 @@ const runAction = (tl, action, boardState) => {
                         boxShadow: "0 0 15px 4px rgba(255,40,40,0.85)",
                         duration: 0.15
                     }, 0)
-                    .to(target, { boxShadow: "none", duration: 0.3 });
+                    .to(target, { boxShadow: "none", duration: 0.1 });
             });
 
-            tl.to({}, { duration: 1.2 });
+            tl.to({}, { duration: 0.1 });
+            tl.call(playError)
             break;
+
+
+            case "invalidBackMove": {
+    tl.call(() => {
+        const targetPiece = pieceRefs.current[idx(action.from.row, action.from.col)];
+        const targetCell = cellRefs.current[idx(action.to.row, action.to.col)];
+
+        // Nudge piece backward
+        if (targetPiece) {
+            const nudgeY = action.to.row < action.from.row ? -8 : 8;
+            gsap.timeline()
+                .to(targetPiece, { y: nudgeY, duration: 0.3 })
+                .to(targetPiece, { y: 0, duration: 0.3});
+        }
+
+        if (targetCell) {
+            gsap.fromTo(
+                targetCell,
+                { boxShadow: "inset 0 0 0 4px rgba(255, 40, 40, 0.9)" },
+                {
+                    boxShadow: "inset 0 0 0 0px rgba(255, 40, 40, 0)",
+                    duration: 0.5,
+                    repeat: 2,
+                    yoyo: true
+                }
+            );
+        }
+    });
+
+    tl.to({}, { duration: 0.1 });
+    tl.call (playError)
+    break;
+}
 
 case "showOptions":
     tl.call(() => {
@@ -359,8 +418,11 @@ case "showOptions":
         });
     });
 
-    tl.to({}, { duration: 1.6 });
+    tl.to({}, { duration: 0.1});
+    tl.call (playHint)
     break;
+
+    
 
 case "reset":
     tl.call(() => {
@@ -415,7 +477,8 @@ case "showEdgeRestriction":
         }
     });
 
-    tl.to({}, { duration: 1.6 });
+    tl.to({}, { duration:0.1 });
+    tl.call(playError)
     break;
 
 case "blocked":
@@ -454,7 +517,8 @@ case "blocked":
 
     });
 
-    tl.to({}, { duration: 1.8 });
+    tl.to({}, { duration: 0.8 });
+    tl.call(playError);
     break;
 
 }

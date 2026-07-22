@@ -13,28 +13,7 @@ function AchiLesson1(){
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
-const navigate = useNavigate()
-
-
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
-    }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
-}
-
-const getBoardState = () => {
-    console.log('i have played')    
-}
-
-
-    const steps = [{
+ const steps = [{
         step: '1',
         text: "Welcome! I'm Agokansie, your Achi companion. Whether this is your very first game or you're looking to sharpen your skills, I'll guide you every step of the way. By the end of this tutorial, you'll understand the rules of achi, learn how to move pieces, and tactical tricks to ensure victory. Let's begin!",
         voice: 'Foolish boy Siaw'
@@ -51,43 +30,66 @@ const getBoardState = () => {
 
     } ]
 
-    const [currentStep, setCurrentStep] = useState(0)
-    const [nextLesson, setNextLesson] = useState(false)
+//Navigation
 
-    const previousStep = () => {
-        setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
-        console.log(steps[currentStep].step)
+const navigate = useNavigate()
 
-        
+
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
     }
 
-    const nextStep = () => {
-        setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
-        console.log(steps[currentStep].step)
-    }
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
 
-    const LessonState = () => {
-        if(currentStep === steps.length - 1){
-            setNextLesson(true)
-        } else {
-            setNextLesson(false)
-        }
-    }
+const [currentStep, setCurrentStep] = useState(0)
+const [nextLesson, setNextLesson] = useState(false)
 
-    useEffect(() => {
-        LessonState()
-    }, [currentStep])
-
-    const nextLessonNavigation = () => {
-        if (nextLesson){
-            navigate('/achilesson2')
-        } 
-        else{
-            nextStep()
-        }
-    }
+const previousStep = () => {
+setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
+console.log(steps[currentStep].step)
 
 
+}
+
+const nextStep = () => {
+setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
+console.log(steps[currentStep].step)
+}
+
+const LessonState = () => {
+if(currentStep === steps.length - 1){
+    setNextLesson(true)
+} else {
+    setNextLesson(false)
+}
+}
+
+useEffect(() => {
+LessonState()
+}, [currentStep])
+
+const nextLessonNavigation = () => {
+if (nextLesson){
+    navigate('/achilesson2')
+} 
+else{
+    nextStep()
+}
+}
+
+//Board state
+const getBoardState = () => {
+    console.log('i have played')    
+}
+
+
+//Animation
 const getLineStyle = (start, end) => {
     const x1 = parseFloat(POSITIONS[start].left);
     const y1 = parseFloat(POSITIONS[start].top);
@@ -139,8 +141,8 @@ const LINES = [
 
 ];
     
-    const createBoard = () => Array(9).fill(0)
-    const [board, setBoard] = useState(createBoard) 
+const createBoard = () => Array(9).fill(0)
+const [board, setBoard] = useState(createBoard) 
 
 
 // tutorials movement section
@@ -197,7 +199,10 @@ const animateWin = useRef([])
         yoyo: true,
         ease: "power1.inOut"}
     )
+    woodTap.current.currentTime = 0;
+    woodTap.current.play();
    }
+   
                                                                     
    const resetWin = (index) => { 
     gsap.killTweensOf(animateWin.current[index], { 

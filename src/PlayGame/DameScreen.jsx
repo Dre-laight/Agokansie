@@ -63,6 +63,7 @@ import goodLuck from '../assets/sound/welcome/goodLuck.m4a'
 import shallWeBegin from '../assets/sound/welcome/shallWeBegin.m4a'
 import strategistWin from '../assets/sound/welcome/strategistWin.m4a'
 
+import { API } from './API'
 
 
 
@@ -204,8 +205,7 @@ function DameGame(){
 
 
     const {games, currentGame} = useContext(GameContext)
-
-    const API = 'http://192.168.74.170:5000' 
+    
 
     const navigate = useNavigate()
 
@@ -601,24 +601,10 @@ function DameGame(){
         woodTap.current.play()
     }
 
-const createBoard = () => {
-    const board = [];
-
-    for (let row = 0; row < 8; row++) {
-        const currentRow = [];
-
-        for (let col = 0; col < 8; col++) {
-            currentRow.push(null);
-        }
-
-        board.push(currentRow);
-    }
-
-    return board;
-};
+const createBoard = () => Array(32).fill(0);
+let playableIndex = 0;
 
 const [board, setBoard] = useState(createBoard);
-    
     
     return(
         <PageWrapper >
@@ -938,30 +924,38 @@ const [board, setBoard] = useState(createBoard);
             </div>
 
              <div className="absolute inset-0 flex items-center justify-center mt-35 -z-1">
-                     <div className="grid grid-cols-8 border-4 border-gray-900 ">
-                    {board.map((row, rowIndex) =>
-                        row.map((square, colIndex) => (
-                    <div
-            key={`${rowIndex}-${colIndex}`}
-            className={`${
-                (rowIndex + colIndex) % 2 === 0
-                    ? "bg-gold"
-                    : "bg-dark"
-            } h-16 w-16 border flex items-center justify-center`}
-        >
-            {square !== 0 && (
+              <div className='border-4 inline-block'>
+                    {Array.from({ length: 8 }).map((_, rowIndex) => (
+    <div key={rowIndex} className="flex">
+        {Array.from({ length: 8 }).map((_, colIndex) => {
+            const isDarkSquare = (rowIndex + colIndex) % 2 === 0;            
+
+            const square = isDarkSquare ? board[playableIndex++] : null;
+
+            return (
                 <div
-                    className={`size-9 rounded-full ${
-                        square === 1
-                            ? "bg-black"
-                            : "bg-red-600"
-                    }`}
-                />
-            )}
-        </div>
-    ))
-)}
-                </div>            
+                    key={`${rowIndex}-${colIndex}`}
+                    className={`${
+                        isDarkSquare ? "bg-dark" : "bg-gold"
+                    } h-16 w-16 border flex items-center justify-center`}
+                >
+                    {isDarkSquare && square !== 0 && (
+                        <div
+                            className={`size-9 rounded-full ${
+                                square === 1
+                                    ? "bg-orange-300"
+                                    : "bg-purple-600"  
+                            }`}
+                        />
+                    )}
+                </div>
+            );
+        })}
+    </div>
+))}
+                </div>              
+
+         
             </div>
             
             </div>

@@ -5,14 +5,45 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import ErrorSound from '../../../assets/sound/error.mp3'
+import blockedAudio from '../../../assets/sound/blocked.mp3'
+import VictorySound from '../../../assets/sound/victory.mp3'
 import { gsap } from 'gsap'
 
 
 function AchiLesson4(){
 
 const woodTap = useRef(new Audio(woodTapSound))
+const error = useRef(new Audio(ErrorSound))
+const blocked = useRef(new Audio(blockedAudio))
+const victory = useRef(new Audio(VictorySound))
 const thinking = "..."
 
+
+const steps = [{
+    step: '1',
+    text: "Once all pieces have been placed, players continue taking turns moving one piece at a time.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '2',
+    text: "A piece may only move along the connecting lines to an adjacent empty point. Pieces cannot jump over other pieces or move into occupied spaces.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '3',
+    text: "A piece that is completely surrounded by other pieces and has no adjacent empty spaces is blocked and cannot be moved until a space becomes available.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '4',
+    text: "Players continue moving their pieces until one player successfully forms a straight line of three pieces.",
+    voice: 'Foolish boy Siaw'
+
+} ]
+
+
+//Navigation
 const navigate = useNavigate()
 
 const goBack = () => {
@@ -27,88 +58,68 @@ const goForward = () => {
     woodTap.current.play()
 }
 
+const [currentStep, setCurrentStep] = useState(0)
+const [nextLesson, setNextLesson] = useState(false)
+const [previousLesson, setPreviousLesson] = useState(false)
+const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
+
+const previousStep = () => {
+    setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
+    console.log(steps[currentStep].step)
+    
+}
+
+const nextStep = () => {
+    setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
+    console.log(steps[currentStep].step)
+}
+
+const LessonState = () => {
+    if(currentStep === steps.length - 1){
+        setNextLesson(true)
+    } else {
+        setNextLesson(false)
+    }
+}
+
+const nextLessonNavigation = () => {
+    if (nextLesson){
+        navigate('/achilesson5')
+    } else {
+        nextStep()
+    }
+}
+
+
+const PreviousLesson = () => {
+    if(currentStep === 0){
+        setPreviousLessonVariable(true)
+    } else {
+        setPreviousLessonVariable(false)
+    }
+}
+
+const PreviousLessonNavigation = () => {
+    if (previousLessonVariable){
+        navigate('/achilesson3')
+    } else {
+        previousStep()
+    }
+}
+
+
+useEffect(() => {
+    LessonState()
+    PreviousLesson()
+}, [currentStep])
+
+
+//Board state
 const getBoardState = () => {
     console.log('i have played')    
 }
 
-    const steps = [{
-        step: '1',
-        text: "Once all pieces have been placed, players continue taking turns moving one piece at a time.",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '2',
-        text: "A piece may only move along the connecting lines to an adjacent empty point. Pieces cannot jump over other pieces or move into occupied spaces.",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '3',
-        text: "A piece that is completely surrounded by other pieces and has no adjacent empty spaces is blocked and cannot be moved until a space becomes available.",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '4',
-        text: "Players continue moving their pieces until one player successfully forms a straight line of three pieces.",
-        voice: 'Foolish boy Siaw'
-
-    } ]
-
-    const [currentStep, setCurrentStep] = useState(0)
-    const [nextLesson, setNextLesson] = useState(false)
-    const [previousLesson, setPreviousLesson] = useState(false)
-    const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
-
-    const previousStep = () => {
-        setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
-        console.log(steps[currentStep].step)
-        
-    }
-
-    const nextStep = () => {
-        setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
-        console.log(steps[currentStep].step)
-    }
-
-    const LessonState = () => {
-        if(currentStep === steps.length - 1){
-            setNextLesson(true)
-        } else {
-            setNextLesson(false)
-        }
-    }
-
-    const nextLessonNavigation = () => {
-        if (nextLesson){
-            navigate('/achilesson5')
-        } else {
-            nextStep()
-        }
-    }
-
-
-    const PreviousLesson = () => {
-        if(currentStep === 0){
-            setPreviousLessonVariable(true)
-        } else {
-            setPreviousLessonVariable(false)
-        }
-    }
-
-    const PreviousLessonNavigation = () => {
-        if (previousLessonVariable){
-            navigate('/achilesson3')
-        } else {
-            previousStep()
-        }
-    }
-    
-
-    useEffect(() => {
-        LessonState()
-        PreviousLesson()
-    }, [currentStep])
-
-
+   
 
     const getLineStyle = (start, end) => {
     const x1 = parseFloat(POSITIONS[start].left);
@@ -167,227 +178,182 @@ const LINES = [
     const animateWin = useRef([])
     const pieceRefs = useRef([])
 
-    const step1sequence = [
+const step1sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
+{
+    type: "place",
+    player: 1,
+    position: 0
+},
 
-    {
-        type: "place",
-        player: 1,
-        position: 0
-    },
+{
+    type: "place",
+    player: 2,
+    position: 4
+},
 
-    {
-        type: "place",
-        player: 2,
-        position: 4
-    },
+{
+    type: "place",
+    player: 1,
+    position: 2
+},
 
-    {
-        type: "place",
-        player: 1,
-        position: 2
-    },
+{
+    type: "place",
+    player: 2,
+    position: 6
+},
 
-    {
-        type: "place",
-        player: 2,
-        position: 6
-    },
+{
+    type: "place",
+    player: 1,
+    position: 8
+},
 
-    {
-        type: "place",
-        player: 1,
-        position: 8
-    },
-
-    {
-        type: "place",
-        player: 2,
-        position: 1
-    },
+{
+    type: "place",
+    player: 2,
+    position: 1
+},
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
-
-    {
-        type:"move",
-        player:2,
-        from:4,
-        to:5
-    },
+{
+    type:"move",
+    player:2,
+    from:4,
+    to:5
+},
 
 
-    {
-        type:"move",
-        player:1,
-        from:8,
-        to:7
-    },
+{
+    type:"move",
+    player:1,
+    from:8,
+    to:7
+},
 
 
-    {
-        type:"move",
-        player:2,
-        from:6,
-        to:3
-    },
+{
+    type:"move",
+    player:2,
+    from:6,
+    to:3
+},
 
 
 ];
 
 const step2sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
-
-    { type: "place", player: 1, position: 0 },
-    { type: "place", player: 2, position: 1 },
-    { type: "place", player: 1, position: 3 },
-    { type: "place", player: 2, position: 4 },
-    { type: "place", player: 1, position: 8 },
-    { type: "place", player: 2, position: 7 },
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
+{ type: "place", player: 1, position: 0 },
+{ type: "place", player: 2, position: 1 },
+{ type: "place", player: 1, position: 3 },
+{ type: "place", player: 2, position: 4 },
+{ type: "place", player: 1, position: 8 },
+{ type: "place", player: 2, position: 7 },
 
-    // ❌ 0 -> 2 isn't a direct connecting line — you'd have to pass
-    // through point 1, which is also occupied. Not adjacent = illegal.
-    {
-        type: "invalidMove",
-        player: 1,
-        from: 0,
-        to: 2,
-        reason: "notAdjacent"
-    },
 
-    // ❌ 3 -> 4 IS a valid line, but 4 is already occupied by player 2.
-    // Can't move into an occupied space.
-    {
-        type: "invalidMove",
-        player: 1,
-        from: 3,
-        to: 4,
-        reason: "occupied"
-    },
+{
+    type: "invalidMove",
+    player: 1,
+    from: 0,
+    to: 2,
+    reason: "notAdjacent"
+},
 
-    // ✅ 3 -> 6 is a direct line and 6 is empty. Legal move.
-    {
-        type: "move",
-        player: 1,
-        from: 3,
-        to: 6
-    },
 
-    // ❌ 7 -> 6 is a valid line, but player 1 just took point 6.
-    {
-        type: "invalidMove",
-        player: 2,
-        from: 7,
-        to: 6,
-        reason: "occupied"
-    },
+{
+    type: "invalidMove",
+    player: 1,
+    from: 3,
+    to: 4,
+    reason: "occupied"
+},
 
-    // ✅ 1 -> 2 is a direct line and 2 is empty. Legal move.
-    {
-        type: "move",
-        player: 2,
-        from: 1,
-        to: 2
-    },
+{
+    type: "move",
+    player: 1,
+    from: 3,
+    to: 6
+},
+
+{
+    type: "invalidMove",
+    player: 2,
+    from: 7,
+    to: 6,
+    reason: "occupied"
+},
+
+{
+    type: "move",
+    player: 2,
+    from: 1,
+    to: 2
+},
 
 ];
 
 const step3sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
 
-    { type: "place", player: 1, position: 0 }, // this piece will end up trapped
-    { type: "place", player: 2, position: 1 },
-    { type: "place", player: 1, position: 5 },
-    { type: "place", player: 2, position: 3 },
-    { type: "place", player: 1, position: 8 },
-    { type: "place", player: 2, position: 4 },
+{ type: "place", player: 1, position: 0 }, // this piece will end up trapped
+{ type: "place", player: 2, position: 1 },
+{ type: "place", player: 1, position: 5 },
+{ type: "place", player: 2, position: 3 },
+{ type: "place", player: 1, position: 8 },
+{ type: "place", player: 2, position: 4 },
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
+{
+    type: "blocked",
+    player: 1,
+    position: 0,
+    blockedBy: [1, 3, 4]
+},
 
-    // 🔒 Player 1 tries to move the piece at 0 — every point connected
-    // to it (1, 3, 4) is already occupied. No legal move exists.
-    {
-        type: "blocked",
-        player: 1,
-        position: 0,
-        blockedBy: [1, 3, 4]
-    },
 
-    // Meanwhile, play continues elsewhere — player 2 moves the piece
-    // off point 4, which happens to be one of point 0's neighbors.
-    {
-        type: "move",
-        player: 2,
-        from: 4,
-        to: 7
-    },
+{
+    type: "move",
+    player: 2,
+    from: 4,
+    to: 7
+},
 
-    // ✅ Point 4 is empty now, so the piece that was stuck at 0
-    // finally has a legal move.
-    {
-        type: "move",
-        player: 1,
-        from: 0,
-        to: 4
-    },
+{
+    type: "move",
+    player: 1,
+    from: 0,
+    to: 4
+},
 
 ];
 
 const step4sequence = [
 
-    // ==================
-    // PLACING PHASE
-    // ==================
-
-    { type: "place", player: 1, position: 0 },
-    { type: "place", player: 2, position: 1 },
-    { type: "place", player: 1, position: 2 },
-    { type: "place", player: 2, position: 3 },
-    { type: "place", player: 1, position: 5 },
-    { type: "place", player: 2, position: 8 },
+{ type: "place", player: 1, position: 0 },
+{ type: "place", player: 2, position: 1 },
+{ type: "place", player: 1, position: 2 },
+{ type: "place", player: 2, position: 3 },
+{ type: "place", player: 1, position: 5 },
+{ type: "place", player: 2, position: 8 },
 
 
-    // ==================
-    // MOVEMENT PHASE
-    // ==================
+{ type: "move", player: 2, from: 8, to: 7 },
 
-    // Player 2 shifts toward the bottom row
-    { type: "move", player: 2, from: 8, to: 7 },
+{ type: "move", player: 1, from: 0, to: 4 },
 
-    // Player 1 repositions — not a winning move yet, just circling in
-    { type: "move", player: 1, from: 0, to: 4 },
+{ type: "move", player: 2, from: 3, to: 6 },
 
-    // Player 2 keeps building
-    { type: "move", player: 2, from: 3, to: 6 },
+{ type: "move", player: 1, from: 4, to: 8 },
 
-    // Player 1 completes the right-hand column: 2, 5, 8
-    { type: "move", player: 1, from: 4, to: 8 },
-
-    // 🏆 Player 1 now has a straight line of three — 2, 5, 8
-    {
-        type: "win",
-        player: 1,
-        lines: [10, 11]
-    },
+{
+    type: "win",
+    player: 1,
+    lines: [10, 11]
+},
 
 ];
 
@@ -414,30 +380,36 @@ case "place":
             { scale:1, y:0, opacity:1, duration:0.4, ease:"back.out(2)" }
         );
     });
+    tl.call (() => { 
+        if (woodTap.current){ 
+            woodTap.current.currentTime = 0; 
+            woodTap.current.play()
+        }
+    })
+
+
     break;
-
-    
-
-                                                                                    
 
 
 
 case "move":
 
     tl.call(()=>{
-
-
         boardState[action.from]=0;
 
-        boardState[action.to]
-        =
+        boardState[action.to] =
         action.player;
-
-
         setBoard([...boardState]);
 
-
     });
+    tl.call (() => { 
+        if (woodTap.current){ 
+            woodTap.current.currentTime = 0; 
+            woodTap.current.play()
+        }
+    })
+
+    tl.to ({}, {duration: 0.2})
 
 
 
@@ -469,7 +441,15 @@ case "invalidMove":
             });
     });
 
-    tl.to({}, { duration: 1.4 }); // hold so the rejection registers
+    tl.to({}, { duration: 0.7 }); // hold so the rejection registers
+
+    tl.call (() =>{ 
+        if (error.current) { 
+            error.current.currentTime = 0; 
+            error.current.play();
+        }
+    })
+    tl.to ({}, {duration: 0.1})
 
     break;
 
@@ -498,8 +478,14 @@ case "invalidMove":
             });
         });
 
-        tl.to({}, { duration: 1.8 }); // let it sit so "trapped" actually reads
+        tl.to({}, { duration: 0.8 }); // let it sit so "trapped" actually reads
 
+        tl.call (() => {
+            if (blocked .current) { 
+                blocked.current.currentTime = 0 ;
+                blocked.current.play();
+            }
+        })
     break;  
 
     case "win":
@@ -508,7 +494,15 @@ case "invalidMove":
             winAnimation(action.lines);
         });
 
-        tl.to({}, { duration: 2 });
+        tl.to({}, { duration: 0.8});
+
+        tl.call(() => {
+        if(victory.current){
+            victory.current.currentTime = 0; 
+            victory.current.play()
+        }})
+
+        tl.to({}, {duration: 0.2});
 
         break;
 

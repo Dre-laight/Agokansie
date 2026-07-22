@@ -12,9 +12,46 @@ function DameLesson1(){
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
+
+
+const playWoodTap = () => { 
+    if (woodTap.current) { 
+        woodTap.current.currentTime = 0; 
+        woodTap.current.play()
+    }
+}
+
+const steps = [{
+    step: '1',
+    text: "Welcome! I'm Agokansie, your Dame companion. Whether this is your very first game or you're looking to sharpen your skills, I'll guide you every step of the way. By the end of this tutorial, you'll understand the rules, learn how to move pieces, capture opponenet pieces and useful strstegies to win the game . Let's begin!",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '2',
+    text: "Dame is a traditional Ghanaian strategy game, commonly known as Checkers. It is widely played across Ghana because it develops patience, tactical thinking, and careful planning.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '3',
+    text: "The objective of the game is to capture all of your opponent's pieces or leave them with no legal moves, making you the winner.",
+    voice: 'Foolish boy Siaw'
+
+} ]
+
+const [currentStep, setCurrentStep] = useState(0)
+const [nextLesson, setNextLesson] = useState(false)
+
+const previousStep = () => {
+    setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
+    console.log(steps[currentStep].step)
+
+    
+}
+
+
+//Navigate
+
 const navigate = useNavigate()
-
-
 
 const goBack = () => {
         navigate(-1)
@@ -33,32 +70,6 @@ const getBoardState = () => {
 }
 
 
-    const steps = [{
-        step: '1',
-        text: "Welcome! I'm Agokansie, your Dame companion. Whether this is your very first game or you're looking to sharpen your skills, I'll guide you every step of the way. By the end of this tutorial, you'll understand the rules, learn how to move pieces, capture opponenet pieces and useful strstegies to win the game . Let's begin!",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '2',
-        text: "Dame is a traditional Ghanaian strategy game, commonly known as Checkers. It is widely played across Ghana because it develops patience, tactical thinking, and careful planning.",
-        voice: 'Foolish boy Siaw'
-
-    },{
-        step: '3',
-        text: "The objective of the game is to capture all of your opponent's pieces or leave them with no legal moves, making you the winner.",
-        voice: 'Foolish boy Siaw'
-
-    } ]
-
-    const [currentStep, setCurrentStep] = useState(0)
-    const [nextLesson, setNextLesson] = useState(false)
-
-    const previousStep = () => {
-        setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
-        console.log(steps[currentStep].step)
-
-        
-    }
 
     const nextStep = () => {
         setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
@@ -87,7 +98,7 @@ const getBoardState = () => {
     }
 
 
-    
+//Board State
     const createBoard = () => {
         const board = [];
     

@@ -5,18 +5,76 @@ import thinking_image  from '../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../assets/sound/woodTap.mp3'
+import ErrorSound from '../../../assets/sound/error.mp3'
+import showHint from '../../../assets/sound/blocked.mp3'
+import Victory from '../../../assets/sound/victory.mp3'
+
 import gsap from 'gsap'
 
 
 function DameLesson5(){
 
 const woodTap = useRef(new Audio(woodTapSound))
+const error = useRef(new  Audio(ErrorSound))
+const hint = useRef (new Audio(showHint))
+const victory = useRef(new Audio(Victory))
 const thinking = "..."
 
+const playWoodTap = () => { 
+    if (woodTap.current) { 
+        woodTap.current.currentTime = 0; 
+        woodTap.current.play();
+    }
+}
+
+const playError = () => { 
+    if (error.current) { 
+        error.current.currentTime = 0; 
+        error.current.play();
+    }
+}
+const playHint = () => {
+    if (hint.current) { 
+        hint.current.currentTime =  0; 
+        hint.current.play();
+    }
+}
+
+const playVictory = ()  => {
+    if (victory.current) { 
+        victory.current.currentTime = 0; 
+        victory.current.play()
+    }
+}
+
+
+
+const steps = [{
+    step: '1',
+    text: "When one of your pieces reaches your opponent's back row, it is promoted to a King.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '2',
+    text: "A King can move diagonally both forwards and backwards, giving it much greater mobility than a regular piece.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '3',
+    text: "Kings can capture opponent pieces in any diagonal direction, making them powerful pieces during the game.",
+    voice: 'Foolish boy Siaw'
+
+},{
+    step: '4',
+    text: "Protect your Kings whenever possible, as they can control large areas of the board and greatly improve your chances of winning.",
+    voice: 'Foolish boy Siaw'
+
+} ]
+
+
+
+//Navigate
 const navigate = useNavigate()
-
-
-
 const goBack = () => {
         navigate(-1)
         woodTap.current.currentTime = 0
@@ -29,106 +87,93 @@ const goForward = () => {
     woodTap.current.play()
 }
 
+
+
+
+
+const [currentStep, setCurrentStep] = useState(0)
+const [nextLesson, setNextLesson] = useState(false)
+const [previousLesson, setPreviousLesson] = useState(false)
+const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
+
+const previousStep = () => {
+    setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
+    console.log(steps[currentStep].step)
+    
+}
+
+const nextStep = () => {
+    setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
+    console.log(steps[currentStep].step)
+}
+
+const LessonState = () => {
+    if(currentStep === steps.length - 1){
+        setNextLesson(true)
+    } else {
+        setNextLesson(false)
+    }
+}
+
+const nextLessonNavigation = () => {
+    if (nextLesson){
+        navigate('/damelesson6')
+    } else {
+        nextStep()
+    }
+}
+
+
+const PreviousLesson = () => {
+    if(currentStep === 0){
+        setPreviousLessonVariable(true)
+    } else {
+        setPreviousLessonVariable(false)
+    }
+}
+
+const PreviousLessonNavigation = () => {
+    if (previousLessonVariable){
+        navigate('/damelesson4')
+    } else {
+        previousStep()
+    }
+}
+
+
+useEffect(() => {
+    LessonState()
+    PreviousLesson()
+}, [currentStep])
+
+
+// Board State 
 const getBoardState = () => {
     console.log('i have played')    
 }
 
-    const steps = [{
-        step: '1',
-        text: "When one of your pieces reaches your opponent's back row, it is promoted to a King.",
-        voice: 'Foolish boy Siaw'
 
-    },{
-        step: '2',
-        text: "A King can move diagonally both forwards and backwards, giving it much greater mobility than a regular piece.",
-        voice: 'Foolish boy Siaw'
+const createBoard = () => {
+    const board = [];
 
-    },{
-        step: '3',
-        text: "Kings can capture opponent pieces in any diagonal direction, making them powerful pieces during the game.",
-        voice: 'Foolish boy Siaw'
+    for (let row = 0; row < 8; row++) {
+        const currentRow = [];
 
-    },{
-        step: '4',
-        text: "Protect your Kings whenever possible, as they can control large areas of the board and greatly improve your chances of winning.",
-        voice: 'Foolish boy Siaw'
-
-    } ]
-
-    const [currentStep, setCurrentStep] = useState(0)
-    const [nextLesson, setNextLesson] = useState(false)
-    const [previousLesson, setPreviousLesson] = useState(false)
-    const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
-
-    const previousStep = () => {
-        setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
-        console.log(steps[currentStep].step)
-        
-    }
-
-    const nextStep = () => {
-        setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
-        console.log(steps[currentStep].step)
-    }
-
-    const LessonState = () => {
-        if(currentStep === steps.length - 1){
-            setNextLesson(true)
-        } else {
-            setNextLesson(false)
+        for (let col = 0; col < 8; col++) {
+            currentRow.push(0);
         }
+
+        board.push(currentRow);
     }
 
-    const nextLessonNavigation = () => {
-        if (nextLesson){
-            navigate('/damelesson6')
-        } else {
-            nextStep()
-        }
-    }
+    return board;
+};
 
-
-    const PreviousLesson = () => {
-        if(currentStep === 0){
-            setPreviousLessonVariable(true)
-        } else {
-            setPreviousLessonVariable(false)
-        }
-    }
-
-    const PreviousLessonNavigation = () => {
-        if (previousLessonVariable){
-            navigate('/damelesson4')
-        } else {
-            previousStep()
-        }
-    }
-    
-
-    useEffect(() => {
-        LessonState()
-        PreviousLesson()
-    }, [currentStep])
-
-
-    const createBoard = () => {
-        const board = [];
-    
-        for (let row = 0; row < 8; row++) {
-            const currentRow = [];
-    
-            for (let col = 0; col < 8; col++) {
-                currentRow.push(0);
-            }
-    
-            board.push(currentRow);
-        }
-    
-        return board;
-    };
-    
 const [board, setBoard] = useState(createBoard);
 
+
+
+//Animation
 const pieceRefs = useRef([])
 const idx = (row, col) => row * 8 + col
 const cellRefs = useRef([])
@@ -144,7 +189,6 @@ const step1sequence = [
     },
 
 
-    // Show promotion square
     {
         type:"showOptions",
         options:[
@@ -156,7 +200,6 @@ const step1sequence = [
     },
 
 
-    // Move into king row
     {
         type:"move",
 
@@ -174,7 +217,6 @@ const step1sequence = [
     },
 
 
-    // Promote
     {
         type:"promote",
 
@@ -182,13 +224,13 @@ const step1sequence = [
         col:6,
 
         player:2
-    }
+    }, 
+     {type : "reset"}
 
 ];
 
 const step2sequence = [
 
-    // Place king
     {
         type:"place",
         player:4,
@@ -197,7 +239,6 @@ const step2sequence = [
     },
 
 
-    // Highlight all king directions
     {
         type:"showOptions",
         options:[
@@ -221,7 +262,6 @@ const step2sequence = [
     },
 
 
-    // Demonstrate backward movement
     {
         type:"move",
 
@@ -236,22 +276,19 @@ const step2sequence = [
             row:6,
             col:4
         }
-    }
+    }, 
+    {type : "reset"}
 
 ];
 
 const step3sequence = [
 
-    // King on the centre gold square
     { type: "place", player: 4, row: 3, col: 3 },
 
-    // Opponent regular piece, far down the same diagonal —
-    // well outside a normal piece's one-step reach
+  
     { type: "place", player: 1, row: 6, col: 6 },
 
-    // 🔍 Full flying-king reach in all four diagonal directions.
-    // Down-right stops at (5,5) — the square just before the opponent
-    // piece — since a normal move can't land on an occupied square.
+   
     {
         type: "showOptions",
         options: [
@@ -262,15 +299,12 @@ const step3sequence = [
         ]
     },
 
-    // 🔶 The vulnerable piece, and the empty square just past it —
-    // this is what turns a blocked ray into a capture opportunity
     {
         type: "showCapture",
         capture: { row: 6, col: 6 },
         landing: { row: 7, col: 7 }
     },
 
-    // 🏆 King flies the whole diagonal, captures at (6,6), lands on (7,7)
     {
         type: "capture",
         player: 4,
@@ -279,25 +313,22 @@ const step3sequence = [
         to: { row: 7, col: 7 }
     },
 
+    {type: 'reset'}
+
 ];
 
 const step4sequence = [
 
-    // ==================
-    // PART A — Unprotected king
-    // ==================
 
     { type: "place", player: 4, row: 2, col: 2 }, // red king, exposed
     { type: "place", player: 1, row: 1, col: 1 }, // black piece, one diagonal step away
 
-    // 🔶 (3,3) is empty — the king has nothing standing behind it
     {
         type: "showCapture",
         capture: { row: 2, col: 2 },
         landing: { row: 3, col: 3 }
     },
 
-    // 🏆 (for the opponent) — capture goes through, king is gone
     {
         type: "capture",
         player: 1,
@@ -309,22 +340,18 @@ const step4sequence = [
     { type: "reset" },
 
 
-    // ==================
-    // PART B — Same king, protected
-    // ==================
+    
 
     { type: "place", player: 4, row: 2, col: 2 }, // same king, same exposed position
     { type: "place", player: 1, row: 1, col: 1 }, // same attacker, same angle
     { type: "place", player: 2, row: 3, col: 3 }, // friendly piece now guards the landing square
 
-    // 🔶 Same threat highlighted — but this time the landing square isn't empty
     {
         type: "showCapture",
         capture: { row: 2, col: 2 },
         landing: { row: 3, col: 3 }
     },
 
-    // ❌ Capture rejected — nowhere to land
     {
         type: "invalidMove",
         player: 1,
@@ -333,7 +360,6 @@ const step4sequence = [
         reason: "occupied"
     },
 
-    // 🛡 King survives — the whole point
     {
         type: "showBlock",
         position: { row: 2, col: 2 }
@@ -390,27 +416,11 @@ const runAction = (tl, action, boardState) => {
                     { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
                 );
             });
+
+            tl.call(playWoodTap)
             break;
 
-        case "invalidMove":
-            tl.call(() => {
-                const target = pieceRefs.current[idx(action.from.row, action.from.col)];
-                if (!target) return;
-
-                const nudgeY = action.to.row < action.from.row ? -8 : 8; // reach toward the attempted direction
-
-                gsap.timeline()
-                    .to(target, { y: nudgeY, duration: 0.1 })
-                    .to(target, { y: 0, duration: 0.1 })
-                    .to(target, {
-                        boxShadow: "0 0 15px 4px rgba(255,40,40,0.85)",
-                        duration: 0.15
-                    }, 0)
-                    .to(target, { boxShadow: "none", duration: 0.3 });
-            });
-
-            tl.to({}, { duration: 1.2 });
-            break;
+       
 
 case "showOptions":
     tl.call(() => {
@@ -427,7 +437,9 @@ case "showOptions":
         });
     });
 
-    tl.to({}, { duration: 1.6 });
+    tl.to({}, { duration: 0.1 });
+
+    tl.call (playHint)
     break;
 
 case "promote":
@@ -444,7 +456,7 @@ tl.call(() => {
 
 
 tl.to({}, {
-    duration:0.5   // give React time
+    duration:0.5   
 });
 
 
@@ -473,7 +485,7 @@ tl.call(() => {
     });
 
 });
-
+    tl.call (playVictory)
 break;
 
 case "reset":
@@ -520,13 +532,13 @@ case "showCapture":
         }
     });
 
-    tl.to({}, { duration: 1.8 });
+    tl.to({}, { duration: 0.8 });
+
+    tl.call (playHint)
     break;
 
 case "capture":
-    // fade the captured piece out FIRST, while its DOM node still exists —
-    // same lesson as the Oware reset: you can't animate a node that's
-    // already been removed by a state update
+   
     tl.call(() => {
         const captured = pieceRefs.current[idx(action.captured.row, action.captured.col)];
         if (captured) {
@@ -560,7 +572,8 @@ case "capture":
         });
     });
 
-    tl.to({}, { duration: 1 });
+    tl.to({}, { duration: 0.2 });
+    tl.call (playError)
     break;
 
     case "showBlock":
@@ -575,7 +588,8 @@ case "capture":
         });
     });
 
-    tl.to({}, { duration: 1.4 });
+    tl.to({}, { duration: 0.1 });
+    tl.call (playError)
     break;
 }}
 
@@ -590,10 +604,10 @@ useEffect(() => {
         repeatDelay: 2,
         onRepeat: () => {
     for (let r = 0; r < 8; r++) {
-        boardState[r].fill(0); // clears the SAME array every closure is holding
+        boardState[r].fill(0); 
     }
     setBoard(boardState.map(row => [...row]));
-    resetOptions(); // clear any still-highlighted showOptions cells too
+    resetOptions();
 }
     });
 

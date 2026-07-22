@@ -12,25 +12,7 @@ function AchiLesson2(){
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
 
-const navigate = useNavigate()
-
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
-        woodTap.current.play()
-    }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()
-}
-
-const getBoardState = () => {
-    console.log('i have played')    
-}
-
-    const steps = [{
+const steps = [{
         step: '1',
         text: "Handle all playing pieces carefully when placing or moving them. Damaged or misplaced pieces may affect the robot's ability to detect and play the game correctly.",
         voice: 'Foolish boy Siaw'
@@ -52,61 +34,80 @@ const getBoardState = () => {
 
     } ]
 
-    const [currentStep, setCurrentStep] = useState(0)
-    const [nextLesson, setNextLesson] = useState(false)
-    const [previousLesson, setPreviousLesson] = useState(false)
-    const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
+//Navigation
+const navigate = useNavigate()
 
-    const previousStep = () => {
-        setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
-        console.log(steps[currentStep].step)
-        
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
     }
 
-    const nextStep = () => {
-        setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
-        console.log(steps[currentStep].step)
-    }
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()
+}
 
-    const LessonState = () => {
-        if(currentStep === steps.length - 1){
-            setNextLesson(true)
-        } else {
-            setNextLesson(false)
-        }
-    }
+const [currentStep, setCurrentStep] = useState(0)
+const [nextLesson, setNextLesson] = useState(false)
+const [previousLesson, setPreviousLesson] = useState(false)
+const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
 
-    const nextLessonNavigation = () => {
-        if (nextLesson){
-            navigate('/achilesson3')
-        } else {
-            nextStep()
-        }
-    }
-
-
-    const PreviousLesson = () => {
-        if(currentStep === 0){
-            setPreviousLessonVariable(true)
-        } else {
-            setPreviousLessonVariable(false)
-        }
-    }
-
-    const PreviousLessonNavigation = () => {
-        if (previousLessonVariable){
-            navigate('/achilesson1')
-        } else {
-            previousStep()
-        }
-    }
+const previousStep = () => {
+    setCurrentStep((previous) => previous === 0 ? previous :  previous - 1)
+    console.log(steps[currentStep].step)
     
+}
 
-    useEffect(() => {
-        LessonState()
-        PreviousLesson()
-    }, [currentStep])
+const nextStep = () => {
+    setCurrentStep((previous) => previous === steps.length - 1 ? previous : previous + 1)
+    console.log(steps[currentStep].step)
+}
 
+const LessonState = () => {
+    if(currentStep === steps.length - 1){
+        setNextLesson(true)
+    } else {
+        setNextLesson(false)
+    }
+}
+
+const nextLessonNavigation = () => {
+    if (nextLesson){
+        navigate('/achilesson3')
+    } else {
+        nextStep()
+    }
+}
+
+
+const PreviousLesson = () => {
+    if(currentStep === 0){
+        setPreviousLessonVariable(true)
+    } else {
+        setPreviousLessonVariable(false)
+    }
+}
+
+const PreviousLessonNavigation = () => {
+    if (previousLessonVariable){
+        navigate('/achilesson1')
+    } else {
+        previousStep()
+    }
+}
+
+
+useEffect(() => {
+    LessonState()
+    PreviousLesson()
+}, [currentStep])
+
+//Board state
+const getBoardState = () => {
+    console.log('i have played')    
+}
 
 
     const getLineStyle = (start, end) => {
@@ -160,8 +161,8 @@ const LINES = [
 
 ];
     
-    const createBoard = () => Array(9).fill(0)
-    const [board, setBoard] = useState(createBoard)
+const createBoard = () => Array(9).fill(0)
+const [board, setBoard] = useState(createBoard)
 
 
 return(
