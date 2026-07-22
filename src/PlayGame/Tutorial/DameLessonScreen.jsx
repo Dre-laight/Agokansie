@@ -5,14 +5,13 @@ import thinking_image  from '../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../assets/sound/woodTap.mp3'
-import lesson1 from '../../assets/damelesson1.png'
-import lesson2 from '../../assets/damelesson2.png'
-import lesson3 from '../../assets/damelesson3.png'
-import lesson4 from '../../assets/damelesson4.png'
-import lesson5 from '../../assets/damelesson5.png'
-import lesson6 from '../../assets/damelesson6.png'
-import lesson7 from '../../assets/damelesson7.png'
-import lesson8 from '../../assets/lesson8.png'
+import lesson1 from '../../assets/dameLesson1.png'
+import lesson2 from '../../assets/dameLesson2.png'
+import lesson3 from '../../assets/dameLesson3.png'
+import lesson4 from '../../assets/dameLesson4.png'
+import lesson5 from '../../assets/dameLesson5.png'
+import lesson6 from '../../assets/dameLesson6.png'
+import lesson7 from '../../assets/dameLesson7.png'
 
 
 
