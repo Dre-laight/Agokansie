@@ -98,7 +98,7 @@ const getBoardState = () => {
     }
 
 
-//Board State
+//Boardz
     const createBoard = () => {
         const board = [];
     
