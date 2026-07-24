@@ -6,6 +6,10 @@ import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
+import placePiece from '../../../../assets/sound/piecePlacement.mp3'
+import Hightlight from '../../../../assets/sound/blocked.mp3'
+import errorSound from '../../../../assets/sound/error.mp3'
+import victorySound from '../../../../assets/sound/victory.mp3'
 
 
 function OwareLesson7(){
@@ -13,97 +17,45 @@ function OwareLesson7(){
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
+const pieceSound = useRef(new Audio(placePiece))
+const hightlight  = useRef(new Audio(Hightlight))
+const error = useRef (new Audio(errorSound))
+const victory = useRef(new Audio(victorySound))
+const playPlacePiece = () => {
+    if (pieceSound.current){
+        pieceSound.current.currentTime = 0; 
+        pieceSound.current.play()
+    }
+}
 
-const navigate = useNavigate()
+const playHighLight = () => {
+    if (hightlight.current) {
+        hightlight.current.currentTime = 0;
+        hightlight.current.play();
+    }
+}
 
-const goBack = () => {
-        navigate(-1)
-        woodTap.current.currentTime = 0
+const playError = () => {
+    if (error.current) {
+        error.current.currentTime = 0; 
+        error.current.play()
+    }
+}
+
+const playVictory = () => {
+    if (victory.current){
+        victory.current.currentTime = 0;
+        victory.current.play()
+    }
+}
+const playWoodTap = () => {
+    if (woodTap.current){
+        woodTap.current.currentTime = 0;
         woodTap.current.play()
     }
-
-const goForward = () => {
-    navigate(1)
-    woodTap.current.currentTime = 0
-    woodTap.current.play()  
 }
 
-const getBoardState = () => {
-    console.log('i have played')    
-}
-
-
-// ==================
-// BOARD STATE
-// ==================
-
-const PIT_COUNT = 12
-const STARTING_SEEDS = 4
-
-const createEmptyBoard = () => Array(PIT_COUNT).fill(0)
-
-const [board, setBoard] = useState(createEmptyBoard)
-const seedRefs = useRef({}) // seedRefs.current[pitIndex] = array of seed DOM nodes
-const pitRefs = useRef({}) // pitRefs.current[pitIndex] = the pit container DOM node
-
-const registerSeedRef = (pitIndex, seedIndex, el) => {
-    if (!seedRefs.current[pitIndex]) seedRefs.current[pitIndex] = []
-    seedRefs.current[pitIndex][seedIndex] = el
-}
-
-const registerPitRef = (pitIndex, el) => {
-    pitRefs.current[pitIndex] = el
-}
-
-// ==================
-// STORE STATE (captured seeds)
-// ==================
-
-const [store1, setStore1] = useState(0) // user's captured seeds
-const [store2, setStore2] = useState(0) // opponent's captured seeds
-
-const storeSeedRefs = useRef({ 1: [], 2: [] })
-const storeGlowRefs = useRef({ 1: null, 2: null })
-
-const registerStoreSeedRef = (player, index, el) => {
-    if (!storeSeedRefs.current[player]) storeSeedRefs.current[player] = []
-    storeSeedRefs.current[player][index] = el
-}
-
- const Pit = ({ pitIndex, beadCount }) => {
-        return(
-            <>
-                 <div
-                    ref={(el) => registerPitRef(pitIndex, el)}
-                    className="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-4">
-                    {Array.from( {length: beadCount }).map((_, seedIndex) =>(
-                        <div key={seedIndex}
-                        ref={(el) => registerSeedRef(pitIndex, seedIndex, el)}
-                        className='rounded-full bg-gradient-to-br from-grey-600 to-green-300 size-4'></div>
-
-                    ))}
-                </div>
-            </>
-
-        )
-    }
-
-    const StoreSeeds = ({ player, count }) => (
-        <div
-            ref={(el) => (storeGlowRefs.current[player] = el)}
-            className="flex flex-wrap gap-1 justify-center items-center rounded-full px-2"
-        >
-            {Array.from({ length: count }).map((_, i) => (
-                <div
-                    key={i}
-                    ref={(el) => registerStoreSeedRef(player, i, el)}
-                    className="rounded-full bg-gradient-to-br from-grey-600 to-green-300 size-3"
-                />
-            ))}
-        </div>
-    )
-
-   const steps = [{
+const steps = [{
         step: '1',
         text: "Always try to predict where your final seed will land before making a move. Thinking several steps ahead greatly improves your chances of creating captures and avoiding mistakes.",
         voice: 'Foolish boy Siaw'
@@ -128,8 +80,27 @@ const registerStoreSeedRef = (player, index, el) => {
         text: "Congratulations! You've completed the Oware tutorial. You now understand the basic rules, how to sow seeds, capture your opponent's seeds, and think strategically before each move. Keep practising to sharpen your skills, challenge stronger opponents, and enjoy one of Africa's greatest traditional board games. Good luck, and have fun playing!",
     } ]
 
+//Navigate
+const navigate = useNavigate()
 
-    const [currentStep, setCurrentStep] = useState(0)
+const goBack = () => {
+        navigate(-1)
+        woodTap.current.currentTime = 0
+        woodTap.current.play()
+    }
+
+const goForward = () => {
+    navigate(1)
+    woodTap.current.currentTime = 0
+    woodTap.current.play()  
+}
+
+const getBoardState = () => {
+    console.log('i have played')    
+}
+
+
+const [currentStep, setCurrentStep] = useState(0)
     const [nextLesson, setNextLesson] = useState(false)
     const [previousLesson, setPreviousLesson] = useState(false)
     const [previousLessonVariable, setPreviousLessonVariable] = useState(false)
@@ -184,7 +155,76 @@ const registerStoreSeedRef = (player, index, el) => {
             previousStep()
         }
     }
-    
+// BOARD STATE
+
+
+const PIT_COUNT = 12
+const STARTING_SEEDS = 4
+
+const createEmptyBoard = () => Array(PIT_COUNT).fill(0)
+
+const [board, setBoard] = useState(createEmptyBoard)
+const seedRefs = useRef({}) // seedRefs.current[pitIndex] = array of seed DOM nodes
+const pitRefs = useRef({}) // pitRefs.current[pitIndex] = the pit container DOM node
+
+const registerSeedRef = (pitIndex, seedIndex, el) => {
+    if (!seedRefs.current[pitIndex]) seedRefs.current[pitIndex] = []
+    seedRefs.current[pitIndex][seedIndex] = el
+}
+
+const registerPitRef = (pitIndex, el) => {
+    pitRefs.current[pitIndex] = el
+}
+
+// STORE STATE 
+
+const [store1, setStore1] = useState(0) // user's captured seeds
+const [store2, setStore2] = useState(0) // opponent's captured seeds
+
+const storeSeedRefs = useRef({ 1: [], 2: [] })
+const storeGlowRefs = useRef({ 1: null, 2: null })
+
+const registerStoreSeedRef = (player, index, el) => {
+    if (!storeSeedRefs.current[player]) storeSeedRefs.current[player] = []
+    storeSeedRefs.current[player][index] = el
+}
+
+ const Pit = ({ pitIndex, beadCount }) => {
+        return(
+            <>
+                 <div
+                    ref={(el) => registerPitRef(pitIndex, el)}
+                    className="w-27 h-27 rounded-full bg-[#5c3317] shadow-inner flex flex-wrap items-center justify-center gap-1 p-4">
+                    {Array.from( {length: beadCount }).map((_, seedIndex) =>(
+                        <div key={seedIndex}
+                        ref={(el) => registerSeedRef(pitIndex, seedIndex, el)}
+                        className='rounded-full bg-gradient-to-br from-grey-600 to-green-300 size-4'></div>
+
+                    ))}
+                </div>
+            </>
+
+        )
+    }
+
+    const StoreSeeds = ({ player, count }) => (
+        <div
+            ref={(el) => (storeGlowRefs.current[player] = el)}
+            className="flex flex-wrap gap-1 justify-center items-center rounded-full px-2"
+        >
+            {Array.from({ length: count }).map((_, i) => (
+                <div
+                    key={i}
+                    ref={(el) => registerStoreSeedRef(player, i, el)}
+                    className="rounded-full bg-gradient-to-br from-grey-600 to-green-300 size-3"
+                />
+            ))}
+        </div>
+    )
+
+   
+
+//Animation
 const step1Sequence = [
     // 1. Board setup: Player 1 has 3 seeds in Pit 2
     { 
@@ -392,9 +432,7 @@ case "fillBoard":
 
             });
 
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-
+           tl.call(playPlacePiece)
         });
 
         tl.to({}, { duration: 0.18 });
@@ -439,13 +477,10 @@ case "fillBoard":
             }
         }
 
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
+        tl.call(playHighLight)
     });
 
-    tl.to({}, { duration: 1.2 });
+    tl.to({}, { duration: 0.2 });
     break;
     
 }
@@ -481,10 +516,7 @@ case "highlightOpponentThreat": {
             });
         }
 
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
+       tl.call(playHighLight)
     });
 
     tl.to({}, { duration: 1.2 });
@@ -510,7 +542,9 @@ case "highlightSafeTerritory": {
         });
     });
 
-    tl.to({}, { duration: 1.0 });
+    tl.to({}, { duration: 0.4 });
+    tl.call(playHighLight)
+    
     break;
 }
     case "declareDraw": {
@@ -533,10 +567,7 @@ case "highlightSafeTerritory": {
             }
         });
 
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
+     tl.call(playError)
     });
 
     tl.to({}, { duration: 1.2 });
@@ -643,10 +674,7 @@ case "captureSeeds":
             }
         });
 
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
+        tl.call(playHighLight)
     });
 
     tl.to({}, { duration: 1.0 });
@@ -769,10 +797,7 @@ case "highlightHeavyPit": {
             }
         }
 
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
+      tl.call(playHighLight)
     });
 
     tl.to({}, { duration: 1.2 });
@@ -846,7 +871,8 @@ case "highlightWinner": {
         }
     });
 
-    tl.to({}, { duration: 1 });
+    tl.to({}, { duration: 0.5 });
+    tl.call(playVictory)
     break;
 }
 
@@ -876,6 +902,7 @@ case "denyCaptureInOpponentTerritory": {
     });
 
     tl.to({}, { duration: 0.5 });
+    tl.call(playError)
     break;
 }
 
@@ -954,7 +981,8 @@ case "declareWinner": {
         }
     });
 
-    tl.to({}, { duration: 1.2 });
+    tl.to({}, { duration: 0.6 });
+    tl.call(playVictory)
     break;
 }
 
@@ -972,6 +1000,7 @@ case "highlightCapturedPit": {
         }
     });
     tl.to({}, { duration: 0.4 });
+    tl.call(playHighLight)
     break;
 }
 
@@ -1095,7 +1124,7 @@ case "highlightTerritories":
 
     });
 
-    tl.to({}, { duration: 2.5 });
+    tl.to({}, { duration: 0.5 });
 
     break;
 

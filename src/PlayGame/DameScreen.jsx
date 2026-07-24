@@ -923,7 +923,7 @@ const [board, setBoard] = useState(createBoard);
                 
             </div>
 
-             <div className="absolute inset-0 flex items-center justify-center mt-35 -z-1">
+             <div className="absolute inset-0 flex items-center justify-center mt-35 -z-1 rotate-180">
               <div className='border-4 inline-block'>
                     {Array.from({ length: 8 }).map((_, rowIndex) => (
     <div key={rowIndex} className="flex">

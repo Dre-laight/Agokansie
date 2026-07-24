@@ -8,12 +8,13 @@ import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 import victorySound from '../../../../assets/sound/victory.mp3'
 import errorSound from '../../../../assets/sound/error.mp3'
+import placePiece from '../../../../assets/sound/piecePlacement.mp3'
 
 
 export default function OwareLesson1(){
 
 const woodTap = useRef(new Audio(woodTapSound))
-const thinking = "..."
+const pieceSound = useRef(new Audio(placePiece))
 
 
 
@@ -172,12 +173,12 @@ for (let pit = 0; pit < PIT_COUNT; pit++) {
             if (!seed) return;
             gsap.fromTo(seed,
                 { scale: 0, y: -20, opacity: 0 },
-                { scale: 1, y: 0, opacity: 1, duration: 0.3, delay: i * 0.05, ease: "back.out(2)" }
+                { scale: 1, y: 0, opacity: 1, duration: 0.7, delay: i * 0.05, ease: "back.out(2)" }
             );
         });
 
-        woodTap.current.currentTime = 0;
-        woodTap.current.play();
+        pieceSound.current.currentTime = 0;
+        pieceSound.current.play();
     });
 
     tl.to({}, { duration: 0.15 }); // brief beat before the next pit starts filling

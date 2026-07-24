@@ -6,13 +6,53 @@ import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
-
-
+import placePiece from '../../../../assets/sound/piecePlacement.mp3'
+import Hightlight from '../../../../assets/sound/blocked.mp3'
+import errorSound from '../../../../assets/sound/error.mp3'
+import victorySound from '../../../../assets/sound/victory.mp3'
 export default function OwareLesson5(){
     
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
+const pieceSound = useRef(new Audio(placePiece))
+const hightlight  = useRef(new Audio(Hightlight))
+const error = useRef (new Audio(errorSound))
+const victory = useRef(new Audio(victorySound))
+const playPlacePiece = () => {
+    if (pieceSound.current){
+        pieceSound.current.currentTime = 0; 
+        pieceSound.current.play()
+    }
+}
+
+const playHighLight = () => {
+    if (hightlight.current) {
+        hightlight.current.currentTime = 0;
+        hightlight.current.play();
+    }
+}
+
+const playError = () => {
+    if (error.current) {
+        error.current.currentTime = 0; 
+        error.current.play()
+    }
+}
+
+const playVictory = () => {
+    if (victory.current){
+        victory.current.currentTime = 0;
+        victory.current.play()
+    }
+}
+const playWoodTap = () => {
+    if (woodTap.current){
+        woodTap.current.currentTime = 0;
+        woodTap.current.play()
+    }
+}
+
 
 const steps = [{
         step: '1',
@@ -376,6 +416,7 @@ case "fillBoard":
         tl.to({}, { duration: 0.18 });
 
     }
+    tl.call (playPlacePiece)
 
     break;
 
@@ -460,6 +501,7 @@ case "setStoreScores": {
         setStore2(action.store2);
     });
     tl.to({}, { duration: 0.1 });
+    tl.call(playHighLight)
     break;
 }
 
@@ -481,6 +523,7 @@ case "scoreUpdate": {
     });
 
     tl.to({}, { duration: 0.4 });
+    tl.call(playHighLight)
     break;
 }
 
@@ -500,7 +543,8 @@ case "highlightWinner": {
         }
     });
 
-    tl.to({}, { duration: 1 });
+    tl.to({}, { duration: 0.3 });
+    tl.call(playVictory)
     break;
 }
 
@@ -530,7 +574,9 @@ case "denyCaptureInOpponentTerritory": {
     });
 
     tl.to({}, { duration: 0.5 });
+    tl.call(playError)
     break;
+    
 }
 
 case "highlightCapturedPit": {
@@ -547,6 +593,7 @@ case "highlightCapturedPit": {
         }
     });
     tl.to({}, { duration: 0.4 });
+    tl.call(playHighLight)
     break;
 }
 
@@ -783,10 +830,7 @@ case "pickUpSeeds":
             });
         });
 
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
+     tl.call(playPlacePiece)
     });
 
     tl.to({}, { duration: 0.4 });

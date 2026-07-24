@@ -6,6 +6,8 @@ import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lu
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
 import { gsap } from 'gsap'
+import placePiece from '../../../../assets/sound/piecePlacement.mp3'
+import Hightlight from '../../../../assets/sound/blocked.mp3'
 
 
 
@@ -14,6 +16,23 @@ function OwareLesson3(){
     
 
 const woodTap = useRef(new Audio(woodTapSound))
+const pieceSound = useRef(new Audio(placePiece))
+const hightlight  = useRef(new Audio(Hightlight))
+
+const playPlacePiece = () => {
+    if (pieceSound.current){
+        pieceSound.current.currentTime = 0; 
+        pieceSound.current.play()
+    }
+}
+
+const playHighLight = () => {
+    if (hightlight.current) {
+        hightlight.current.currentTime = 0;
+        hightlight.current.play();
+    }
+}
+
 const thinking = "..."
 
 
@@ -292,12 +311,10 @@ switch(action.type){
 
             });
 
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-
         });
 
         tl.to({}, { duration: 0.18 });
+        tl.call(playPlacePiece)
 
     }
 
@@ -342,8 +359,8 @@ case "highlightTerritories":
 
     });
 
-    tl.to({}, { duration: 2.5 });
-
+    tl.to({}, { duration: 0.5 });
+    tl.call(playHighLight)
     break;
 
     case "verifyPits":
@@ -360,6 +377,7 @@ case "highlightTerritories":
                 .to(target, {
                     boxShadow: "0 0 22px 7px rgba(255,215,0,0.9)",
                     duration: 0.25
+                    
                 })
 
                 .to(target, {
@@ -367,11 +385,16 @@ case "highlightTerritories":
                     duration: 0.25
                 });
 
+
         });
 
         tl.to({}, { duration: 0.22 });
+        tl.call(playHighLight)
+
 
     }
+        
+
 
     break;
 

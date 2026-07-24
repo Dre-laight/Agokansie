@@ -6,13 +6,30 @@ import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
+import placePiece from '../../../../assets/sound/piecePlacement.mp3'
+import Hightlight from '../../../../assets/sound/blocked.mp3'
 
 
 export default function OwareLesson4(){
     
 
 const woodTap = useRef(new Audio(woodTapSound))
-const thinking = "..."
+const pieceSound = useRef(new Audio(placePiece))
+const hightlight  = useRef(new Audio(Hightlight))
+
+const playPlacePiece = () => {
+    if (pieceSound.current){
+        pieceSound.current.currentTime = 0; 
+        pieceSound.current.play()
+    }
+}
+
+const playHighLight = () => {
+    if (hightlight.current) {
+        hightlight.current.currentTime = 0;
+        hightlight.current.play();
+    }
+}
 
 const steps = [{
         step: '1',
@@ -364,14 +381,13 @@ seeds.forEach((seed, i) => {
 
 });
 
-woodTap.current.currentTime = 0;
-woodTap.current.play();
 
 });
 
 tl.to({}, { duration: 0.18 });
 
 }
+tl.call (playPlacePiece)
 break;
 
 
@@ -414,7 +430,6 @@ gsap.to(seed, {
 });
 });
 
-// Play wood tap sound effect
 if (woodTap.current) {
 woodTap.current.currentTime = 0;
 woodTap.current.play();
@@ -492,15 +507,19 @@ if (newSeed) {
 }
 
 // Play tap sound
-if (woodTap.current) {
-    woodTap.current.currentTime = 0;
-    woodTap.current.play();
-}
+
 });
 
 // Stagger time delay between dropping seeds into consecutive pits
 tl.to({}, { duration: 0.35 });
 }
+tl.call(() => {
+    if (woodTap.current){
+        woodTap.current.currentTime = 0;
+        woodTap.current.play()
+    }
+})
+
 break;
 
 case "setupBoardState":
@@ -527,6 +546,7 @@ gsap.to(pitEl, {
 });
 
 tl.to({}, { duration: 0.8 });
+tl.call(playHighLight)
 
 // Flash opponent store to signal turn transition
 tl.call(() => {
@@ -558,6 +578,7 @@ if (pitEl) {
 }
 });
 tl.to({}, { duration: 0.6 });
+tl.call(playHighLight)
 break;
 
 case "confirmFedOpponent":
@@ -575,7 +596,8 @@ if (pitEl) {
 }
 }
 });
-tl.to({}, { duration: 0.8 });
+tl.to({}, { duration: 0.8 });  
+tl.call(playHighLight)
 break;
 
 
@@ -615,10 +637,7 @@ gsap.to(seed, {
 });
 });
 
-if (woodTap.current) {
-woodTap.current.currentTime = 0;
-woodTap.current.play();
-}
+tl.call(playPlacePiece)
 });
 
 tl.to({}, { duration: 0.4 });
@@ -635,6 +654,7 @@ return next;
 tl.to({}, { duration: 0.1 });
 break;
 
+t
 }}
 
 

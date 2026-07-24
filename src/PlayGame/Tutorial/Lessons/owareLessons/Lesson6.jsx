@@ -5,14 +5,54 @@ import bg from '../../../../assets/background-collage.png'
 import thinking_image  from '../../../../assets/black_man_thinking.webp'
 import { ArrowRight, ArrowLeft, CornerDownLeft, CornerDownRight, House} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
+import placePiece from '../../../../assets/sound/piecePlacement.mp3'
+import Hightlight from '../../../../assets/sound/blocked.mp3'
+import errorSound from '../../../../assets/sound/error.mp3'
+import victorySound from '../../../../assets/sound/victory.mp3'
 import woodTapSound from '../../../../assets/sound/woodTap.mp3'
-
 
 function OwareLesson6(){
     
 
 const woodTap = useRef(new Audio(woodTapSound))
 const thinking = "..."
+const pieceSound = useRef(new Audio(placePiece))
+const hightlight  = useRef(new Audio(Hightlight))
+const error = useRef (new Audio(errorSound))
+const victory = useRef(new Audio(victorySound))
+const playPlacePiece = () => {
+    if (pieceSound.current){
+        pieceSound.current.currentTime = 0; 
+        pieceSound.current.play()
+    }
+}
+
+const playHighLight = () => {
+    if (hightlight.current) {
+        hightlight.current.currentTime = 0;
+        hightlight.current.play();
+    }
+}
+
+const playError = () => {
+    if (error.current) {
+        error.current.currentTime = 0; 
+        error.current.play()
+    }
+}
+
+const playVictory = () => {
+    if (victory.current){
+        victory.current.currentTime = 0;
+        victory.current.play()
+    }
+}
+const playWoodTap = () => {
+    if (woodTap.current){
+        woodTap.current.currentTime = 0;
+        woodTap.current.play()
+    }
+}
 
 
 const steps = [{
@@ -343,14 +383,12 @@ case "fillBoard":
 
             });
 
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-
         });
 
         tl.to({}, { duration: 0.18 });
 
     }
+    tl.call(playPlacePiece)
 
     break;
 
@@ -396,89 +434,17 @@ case "fillBoard":
             }
         });
 
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
+        
     });
 
-    tl.to({}, { duration: 1.2 });
+    tl.to({}, { duration: 0.3 });
+    tl.call(playHighLight)
     break;
 }
 
 
 
-    // 1. Gold pulse highlight on the pit to signal a valid 4-seed capture
-    tl.call(() => {
-        const pitEl = pitRefs.current[targetPit];
-        if (pitEl) {
-            gsap.to(pitEl, {
-                boxShadow: "0 0 28px 10px rgba(255, 215, 0, 1)",
-                scale: 1.08,
-                duration: 0.35,
-                yoyo: true,
-                repeat: 1
-            });
-        }
-    });
-
-    tl.to({}, { duration: 0.5 });
-
-    // 2. Animate the 4 seeds flying from the pit toward the player's store
-    tl.call(() => {
-        const seeds = seedRefs.current[targetPit] || [];
-
-        seeds.forEach((seed, i) => {
-            if (!seed) return;
-
-            gsap.to(seed, {
-                y: playerStore === 1 ? 80 : -80, // Move toward bottom store for Player 1
-                scale: 0.5,
-                opacity: 0,
-                duration: 0.45,
-                delay: i * 0.05,
-                ease: "power2.in"
-            });
-        });
-
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
-    });
-
-    tl.to({}, { duration: 0.5 });
-
-    // 3. Clear target pit and update captured store count
-    tl.call(() => {
-        setBoard(prev => {
-            const next = [...prev];
-            next[targetPit] = 0;
-            return next;
-        });
-
-        if (playerStore === 1) {
-            setStore1(prev => prev + 4);
-        } else {
-            setStore2(prev => prev + 4);
-        }
-    });
-
-    // 4. Highlight the store glowing to celebrate the point scored
-    tl.call(() => {
-        const storeGlow = storeGlowRefs.current[playerStore];
-        if (storeGlow) {
-            gsap.to(storeGlow, {
-                boxShadow: "0 0 25px 8px rgba(34, 197, 94, 0.9)", // Green store glow
-                duration: 0.4,
-                yoyo: true,
-                repeat: 1
-            });
-        }
-    });
-
-    tl.to({}, { duration: 0.5 });
-    break;
+    
 
 case "sweepRemainingSeeds": {
     // 1. Animate remaining board seeds sweeping into each player's store
@@ -515,10 +481,7 @@ case "sweepRemainingSeeds": {
             });
         }
 
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
+        
     });
 
     tl.to({}, { duration: 0.6 });
@@ -555,7 +518,8 @@ case "declareWinner": {
         }
     });
 
-    tl.to({}, { duration: 1.2 });
+    tl.to({}, { duration: 0.2 });
+    tl.call(playVictory)
     break;
 }
 
@@ -565,115 +529,6 @@ case "setStoreScores": {
         setStore2(action.store2);
     });
     tl.to({}, { duration: 0.1 });
-    break;
-}
-
-
-
-
-    const { targetPit } = action;
-
-    // 1. Flash target pit in red to indicate an invalid/disallowed capture
-    tl.call(() => {
-        const pitEl = pitRefs.current[targetPit];
-        if (pitEl) {
-            gsap.to(pitEl, {
-                boxShadow: "0 0 25px 8px rgba(239, 68, 68, 0.9)", // Warning Red
-                scale: 1.05,
-                duration: 0.3,
-                repeat: 2,
-                yoyo: true
-            });
-        }
-    });
-
-    tl.to({}, { duration: 0.8 });
-
-    // 2. Keep seeds in the pit without moving them to the store
-    tl.call(() => {
-        // Pits remain untouched, state stays at 4
-        console.log(`Pit ${targetPit} formed 4 seeds in opponent territory - No capture made.`);
-    });
-
-    tl.to({}, { duration: 0.5 });
-    break
-
-case "sweepRemainingSeeds": {
-    // 1. Animate remaining board seeds sweeping into each player's store
-    tl.call(() => {
-        // Player 1 sweeps Pits 0-5
-        for (let i = 0; i <= 5; i++) {
-            const seeds = seedRefs.current[i] || [];
-            seeds.forEach((seed, idx) => {
-                if (!seed) return;
-                gsap.to(seed, {
-                    y: 120, // Down into Player 1 store
-                    scale: 0.5,
-                    opacity: 0,
-                    duration: 0.5,
-                    delay: idx * 0.05,
-                    ease: "power2.in"
-                });
-            });
-        }
-
-        // Player 2 sweeps Pits 6-11
-        for (let i = 6; i <= 11; i++) {
-            const seeds = seedRefs.current[i] || [];
-            seeds.forEach((seed, idx) => {
-                if (!seed) return;
-                gsap.to(seed, {
-                    y: -120, // Up into Player 2 store
-                    scale: 0.5,
-                    opacity: 0,
-                    duration: 0.5,
-                    delay: idx * 0.05,
-                    ease: "power2.in"
-                });
-            });
-        }
-
-        if (woodTap.current) {
-            woodTap.current.currentTime = 0;
-            woodTap.current.play();
-        }
-    });
-
-    tl.to({}, { duration: 0.6 });
-
-    // 2. Clear board and finalize total seed scores
-    tl.call(() => {
-        setBoard(createEmptyBoard());
-        setStore1(26); // 24 initial + 2 remaining
-        setStore2(20); // 18 initial + 2 remaining
-    });
-
-    tl.to({}, { duration: 0.4 });
-    break;
-}
-
-case "declareWinner": {
-    const { winnerStore } = action;
-
-    // Highlight winning store container with victory animation
-    tl.call(() => {
-        const winningGlow = storeGlowRefs.current[winnerStore];
-        if (winningGlow) {
-            gsap.fromTo(
-                winningGlow,
-                { boxShadow: "0 0 0px rgba(255, 215, 0, 0)" },
-                {
-                    boxShadow: "0 0 35px 12px rgba(255, 215, 0, 1)", // Gold Victory Glow
-                    scale: 1.1,
-                    duration: 0.5,
-                    repeat: 3,
-                    yoyo: true
-                }
-            );
-        }
-    });
-
-    tl.to({}, { duration: 1.2 });
     break;
 }
 
